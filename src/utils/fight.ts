@@ -24,7 +24,7 @@ export function fightLoop(
 ) {
   if (player.wounds <= 0 || enemy.wounds <= 0) return;
 
-  const weapon = player.weapons[0];
+  const weapon = player.equippedWeapon;
   const playerRolled = rollDice(6);
   const playerHit = playerRolled >= hitOn(weapon.strength, enemy.toughness);
 
@@ -51,7 +51,8 @@ export function fightLoop(
       payload: {
         wounds: enemyWounds,
         message: [
-          `You rolled a ${playerRolled}. ${enemy.name} took ${damage} damage`,
+          `You rolled a ${playerRolled}`,
+          `${enemy.name} took ${damage} damage`,
         ],
       },
     });
@@ -82,7 +83,8 @@ export function fightLoop(
       payload: {
         wounds: playerWounds,
         message: [
-          `${enemy.name} rolled a ${enemyRolled}. You took ${damage} damage`,
+          `${enemy.name} rolled a ${enemyRolled}`,
+          `You took ${damage} damage`,
         ],
       },
     });

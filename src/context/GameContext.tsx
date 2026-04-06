@@ -1,7 +1,8 @@
 import type { Enemy } from "@/datasheets/enemies";
-import { player } from "@/datasheets/player";
+import { player, type Player } from "@/datasheets/player";
 import type { Room } from "@/datasheets/rooms";
 import type { Trap } from "@/datasheets/traps";
+import type { Weapon } from "@/datasheets/weapons";
 import {
   createContext,
   useContext,
@@ -11,7 +12,7 @@ import {
 } from "react";
 
 export type GameState = {
-  player: any;
+  player: Player;
   rooms: any;
   activeStep: null | Room | Enemy | Trap;
   message: string[];
@@ -46,6 +47,12 @@ export type GameAction =
       payload: {
         wounds: number;
         message?: string[];
+      };
+    }
+  | {
+      type: "equip_weapon";
+      payload: {
+        weapon: Weapon;
       };
     }
   | { type: "game_over" };
@@ -113,6 +120,17 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         };
       }
       return state;
+    }
+
+    case "equip_weapon": {
+      return {
+        ...state,
+
+        player: {
+          ...player,
+          equippedWeapon: action.payload.weapon,
+        },
+      };
     }
 
     case "game_over":

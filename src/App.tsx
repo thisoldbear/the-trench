@@ -1,5 +1,4 @@
 import { GameProvider, useGame } from "./context/GameContext";
-import { player } from "./datasheets/player";
 import "./index.css";
 import { fightLoop, hitOn } from "./utils/fight";
 
@@ -14,6 +13,36 @@ const Stats = () => {
         {state.player.wounds} / {state.player.totalWounds}
       </p>
       <p>Lamps lit: {state.rooms || 0}</p>
+    </div>
+  );
+};
+
+const Inventory = () => {
+  const { state, dispatch } = useGame();
+
+  return (
+    <div>
+      <ul>
+        {state.player.weapons.map((weapon) => {
+          return (
+            <li key={weapon.name}>
+              <button
+                onClick={() => {
+                  dispatch({
+                    type: "equip_weapon",
+                    payload: {
+                      weapon,
+                    },
+                  });
+                }}
+              >
+                {weapon.name === state.player.equippedWeapon?.name ? "👉🏻 " : ""}
+                {weapon.name}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 };
@@ -77,7 +106,7 @@ const ActiveStep = () => {
 
         <p>
           Player:{" "}
-          {hitOn(state.player.weapons[0].strength, activeStep.toughness)}+ to
+          {hitOn(state.player.weapons[0]?.strength, activeStep.toughness)}+ to
           hit
         </p>
 
@@ -174,7 +203,10 @@ export function App() {
     <GameProvider>
       <div className="app">
         <Stats />
+
         <ActiveStep />
+
+        <Inventory />
       </div>
     </GameProvider>
   );
