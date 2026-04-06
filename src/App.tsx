@@ -61,8 +61,8 @@ const Message = () => {
   if (state.message.length > 0) {
     return (
       <ul className="messages">
-        {state.message.reverse().map((message) => (
-          <li>
+        {[...state.message].reverse().map((message) => (
+          <li key={message}>
             <p>{message}</p>
           </li>
         ))}

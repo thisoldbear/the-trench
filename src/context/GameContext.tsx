@@ -96,9 +96,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
           ...state.player,
           wounds: action.payload.wounds,
         },
-        message: action.payload.message
-          ? [...state.message, ...action.payload.message]
-          : state.message,
+        message: [...state.message, ...(action.payload.message || [])],
       };
 
     case "enemy_wounded": {
@@ -109,9 +107,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
             ...state.activeStep,
             wounds: action.payload.wounds,
           },
-          message: action.payload.message
-            ? [...state.message, ...action.payload.message]
-            : state.message,
+          message: [...state.message, ...(action.payload.message || [])],
         };
       }
 
@@ -126,9 +122,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
             ...state.activeStep,
             wounds: action.payload.wounds,
           },
-          message: action.payload.message
-            ? [...state.message, ...action.payload.message]
-            : state.message,
+          message: [...state.message, ...(action.payload.message || [])],
         };
       }
       return state;
@@ -154,9 +148,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
           ),
           equippedWeapon: null,
         },
-        message: action.payload.message
-          ? [...state.message, ...action.payload.message]
-          : state.message,
+        message: [...state.message, ...(action.payload.message || [])],
       };
     }
 
