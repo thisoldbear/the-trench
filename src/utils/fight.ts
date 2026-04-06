@@ -2,6 +2,8 @@ import type { Enemy } from "@/datasheets/enemies";
 import { rollDice } from "./rollDice";
 import type { Dispatch } from "react";
 import type { GameAction } from "@/context/GameContext";
+import type { Weapon } from "@/datasheets/weapons";
+import type { Player } from "@/datasheets/player";
 
 export function hitOn(attackerStrength: any, defenderToughness: any) {
   let hitOn = 3;
@@ -17,14 +19,28 @@ export function hitOn(attackerStrength: any, defenderToughness: any) {
   return hitOn;
 }
 
+export function resolveWeaponAmmo(
+  weapon: Weapon,
+  dispatch: Dispatch<GameAction>,
+) {
+  if (weapon.limited) {
+    dispatch({
+      type: "equipped_weapon_remove_ammo",
+      payload: {},
+    });
+  }
+}
+
 export function fightLoop(
-  player: any,
+  player: Player,
   enemy: Enemy,
   dispatch: Dispatch<GameAction>,
 ) {
   if (player.wounds <= 0 || enemy.wounds <= 0) return;
 
-  const weapon = player.equippedWeapon;
+  const weapon = player.weapons.find(
+    (weapon) => weapon.id === player.equippedWeapon,
+  );
 
   if (!weapon) {
     return;
@@ -52,18 +68,9 @@ export function fightLoop(
         },
       });
 
-      if (weapon.limited) {
-        dispatch({
-          type: "equipped_weapon_remove",
-          payload: {
-            weapon,
-            messages: [
-              { id: crypto.randomUUID(), text: `${weapon.name} was used` },
-            ],
-          },
-        });
-      }
-      return;
+      resolveWeaponAmmo(weapon, dispatch);
+
+      return; // EXIT from fightLoop
     }
 
     dispatch({
@@ -94,17 +101,7 @@ export function fightLoop(
     });
   }
 
-  if (weapon.limited) {
-    dispatch({
-      type: "equipped_weapon_remove",
-      payload: {
-        weapon,
-        messages: [
-          { id: crypto.randomUUID(), text: `${weapon.name} was used` },
-        ],
-      },
-    });
-  }
+  resolveWeaponAmmo(weapon, dispatch);
 
   const enemyRolled = rollDice(6);
   const enemyHit = enemyRolled >= hitOn(enemy.strength, player.toughness);

@@ -56,14 +56,19 @@ export type GameAction =
   | {
       type: "equipped_weapon_add";
       payload: {
-        weapon: Weapon;
+        weaponId: Weapon["id"];
+        messages?: GameState["messages"];
+      };
+    }
+  | {
+      type: "equipped_weapon_remove_ammo";
+      payload: {
         messages?: GameState["messages"];
       };
     }
   | {
       type: "equipped_weapon_remove";
       payload: {
-        weapon: Weapon;
         messages?: GameState["messages"];
       };
     }
@@ -136,7 +141,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         player: {
           ...state.player,
-          equippedWeapon: action.payload.weapon,
+          equippedWeapon: action.payload.weaponId,
         },
       };
     }
@@ -147,9 +152,35 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         player: {
           ...state.player,
           weapons: [...state.player.weapons].filter(
-            (weapon) => weapon.name !== action.payload.weapon.name,
+            (weapon) => weapon.id !== state.player.equippedWeapon,
           ),
           equippedWeapon: null,
+        },
+        messages: [...state.messages, ...(action.payload.messages || [])],
+      };
+    }
+
+    case "equipped_weapon_remove_ammo": {
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          weapons: [...state.player.weapons].reduce(
+            (acc: Weapon[], curr: Weapon) => {
+              if (curr.id === state.player.equippedWeapon && curr.ammo > 0) {
+                return [
+                  ...acc,
+                  {
+                    ...curr,
+                    ammo: curr.ammo > 1 ? curr.ammo - 1 : 0,
+                  },
+                ];
+              } else {
+                return [...acc, curr];
+              }
+            },
+            [],
+          ),
         },
         messages: [...state.messages, ...(action.payload.messages || [])],
       };

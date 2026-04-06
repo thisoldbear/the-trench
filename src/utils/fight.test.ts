@@ -1,5 +1,6 @@
 import { enemies, type Enemy } from "@/datasheets/enemies";
 import { player } from "@/datasheets/player";
+import { weapons } from "@/datasheets/weapons";
 import { expect, test, mock, describe, beforeEach } from "bun:test";
 
 let rollQueue: number[] = [];
@@ -9,7 +10,7 @@ mock.module("./rollDice", () => ({
   rollDice: mockRollDice,
 }));
 
-import { hitOn, fightLoop } from "./fight";
+import { hitOn, fightLoop, resolveWeaponAmmo } from "./fight";
 
 const expectedPlayerHitOn: Record<string, number> = {
   "Swarm of Rats": 3,
@@ -47,7 +48,7 @@ describe("hitOn", () => {
   });
 });
 
-// Test enemy: wounds 4, damage d3+0, toughness 2, strength 2
+// Test enemy (Swarm of Rats): wounds 4, damage d3+0, toughness 2, strength 2
 // Player (Pistol): wounds 15, damage d6+1, toughness 3, strength 3
 // Player needs 3+ to hit (str 3 > tough 2)
 // Enemy needs 5+ to hit (str 2 < tough 3)
@@ -64,6 +65,27 @@ const testEnemy = {
   wounds: 4,
   totalWounds: 4,
 } as Enemy;
+
+describe("resolveWeaponAmmo", () => {
+  let dispatch: ReturnType<typeof mock>;
+
+  beforeEach(() => {
+    dispatch = mock(() => {});
+  });
+
+  test("dispatches equipped_weapon_remove_ammo for limited weapons", () => {
+    resolveWeaponAmmo({ ...weapons[0] }, dispatch);
+    expect(dispatch).toHaveBeenCalledTimes(1);
+    expect(dispatch.mock.calls[0]![0]!.type).toBe(
+      "equipped_weapon_remove_ammo",
+    );
+  });
+
+  test("does not dispatch for non-limited weapons", () => {
+    resolveWeaponAmmo({ ...weapons[1] }, dispatch);
+    expect(dispatch).not.toHaveBeenCalled();
+  });
+});
 
 describe("fightLoop", () => {
   let dispatch: ReturnType<typeof mock>;
@@ -84,63 +106,101 @@ describe("fightLoop", () => {
     expect(dispatch).not.toHaveBeenCalled();
   });
 
-  test("dispatches enemy_defeated when enemy is killed", () => {
+  test("does nothing when no weapon is equipped", () => {
+    fightLoop({ ...player, equippedWeapon: null }, { ...testEnemy }, dispatch);
+    expect(dispatch).not.toHaveBeenCalled();
+  });
+
+  test("dispatches enemy_defeated and removes ammo when enemy is killed", () => {
     // Player rolls 6 (hit, needs 3+), damage 6 → 6+1=7 kills 4hp enemy
     rollQueue = [6, 6];
     fightLoop({ ...player }, { ...testEnemy }, dispatch);
 
-    expect(dispatch).toHaveBeenCalledTimes(1);
+    expect(dispatch).toHaveBeenCalledTimes(2);
     expect(dispatch.mock.calls[0]![0]!.type).toBe("enemy_defeated");
     expect(dispatch.mock.calls[0]![0]!.payload.wounds).toBe(0);
+    expect(dispatch.mock.calls[0]![0]!.payload.messages).toHaveLength(2);
+    expect(dispatch.mock.calls[1]![0]!.type).toBe(
+      "equipped_weapon_remove_ammo",
+    );
   });
 
-  test("dispatches enemy_wounded when enemy survives", () => {
+  test("dispatches enemy_wounded, removes ammo, then player_wounded on enemy miss", () => {
     // Player rolls 3 (hit, needs 3+), damage 1 → 1+1=2, enemy at 2hp
     // Enemy rolls 1 (miss, needs 5+)
     rollQueue = [3, 1, 1];
     fightLoop({ ...player }, { ...testEnemy }, dispatch);
 
-    expect(dispatch).toHaveBeenCalledTimes(2);
+    expect(dispatch).toHaveBeenCalledTimes(3);
     expect(dispatch.mock.calls[0]![0]!.type).toBe("enemy_wounded");
     expect(dispatch.mock.calls[0]![0]!.payload.wounds).toBe(2);
+    expect(dispatch.mock.calls[0]![0]!.payload.messages).toHaveLength(2);
+    expect(dispatch.mock.calls[1]![0]!.type).toBe(
+      "equipped_weapon_remove_ammo",
+    );
+    expect(dispatch.mock.calls[2]![0]!.type).toBe("player_wounded");
+    expect(dispatch.mock.calls[2]![0]!.payload.wounds).toBe(15);
+    expect(dispatch.mock.calls[2]![0]!.payload.messages).toHaveLength(1);
   });
 
-  test("dispatches miss when player rolls too low", () => {
+  test("dispatches miss with unchanged enemy wounds when player misses", () => {
     // Player rolls 1 (miss, needs 3+), enemy rolls 1 (miss, needs 5+)
     rollQueue = [1, 1];
     fightLoop({ ...player }, { ...testEnemy }, dispatch);
 
-    expect(dispatch).toHaveBeenCalledTimes(2);
+    expect(dispatch).toHaveBeenCalledTimes(3);
     expect(dispatch.mock.calls[0]![0]!.type).toBe("enemy_wounded");
-    expect(dispatch.mock.calls[0]![0]!.payload.wounds).toBe(4); // unchanged
+    expect(dispatch.mock.calls[0]![0]!.payload.wounds).toBe(4);
+    expect(dispatch.mock.calls[0]![0]!.payload.messages).toHaveLength(1);
+    expect(dispatch.mock.calls[1]![0]!.type).toBe(
+      "equipped_weapon_remove_ammo",
+    );
+    expect(dispatch.mock.calls[2]![0]!.type).toBe("player_wounded");
+    expect(dispatch.mock.calls[2]![0]!.payload.wounds).toBe(15);
   });
 
-  test("dispatches player_wounded when enemy hits", () => {
-    // Player rolls 1 (miss), enemy rolls 5 (hit, needs 5+), damage 3 → 3+0=3
-    rollQueue = [1, 5, 3];
+  test("dispatches player_wounded with damage when enemy hits", () => {
+    // Player rolls 1 (miss, needs 3+)
+    // Enemy rolls 5 (hit, needs 5+), damage 2 → 2+0=2, player at 13hp
+    rollQueue = [1, 5, 2];
     fightLoop({ ...player }, { ...testEnemy }, dispatch);
 
-    expect(dispatch).toHaveBeenCalledTimes(2);
-    expect(dispatch.mock.calls[1]![0]!.type).toBe("player_wounded");
-    expect(dispatch.mock.calls[1]![0]!.payload.wounds).toBe(12); // 15-3
+    expect(dispatch).toHaveBeenCalledTimes(3);
+    expect(dispatch.mock.calls[0]![0]!.type).toBe("enemy_wounded");
+    expect(dispatch.mock.calls[2]![0]!.type).toBe("player_wounded");
+    expect(dispatch.mock.calls[2]![0]!.payload.wounds).toBe(13);
+    expect(dispatch.mock.calls[2]![0]!.payload.messages).toHaveLength(2);
   });
 
   test("dispatches game_over when player is killed", () => {
-    // Player rolls 1 (miss), enemy rolls 5 (hit, needs 5+), damage 3 → 3+0=3
-    rollQueue = [1, 5, 3];
-    fightLoop({ ...player, wounds: 1 }, { ...testEnemy }, dispatch);
+    // Player rolls 1 (miss, needs 3+)
+    // Enemy rolls 6 (hit, needs 5+), damage 3 → 3+0=3
+    // Player has 2 wounds → 2-3=-1 ≤ 0 → game over
+    rollQueue = [1, 6, 3];
+    fightLoop({ ...player, wounds: 2 }, { ...testEnemy }, dispatch);
 
-    expect(dispatch).toHaveBeenCalledTimes(2);
-    expect(dispatch.mock.calls[1]![0]!.type).toBe("game_over");
+    expect(dispatch).toHaveBeenCalledTimes(3);
+    expect(dispatch.mock.calls[0]![0]!.type).toBe("enemy_wounded");
+    expect(dispatch.mock.calls[1]![0]!.type).toBe(
+      "equipped_weapon_remove_ammo",
+    );
+    expect(dispatch.mock.calls[2]![0]!.type).toBe("game_over");
   });
 
-  test("enemy miss leaves player wounds unchanged", () => {
-    // Player rolls 1 (miss, needs 3+), enemy rolls 4 (miss, needs 5+)
-    rollQueue = [1, 4];
-    fightLoop({ ...player }, { ...testEnemy }, dispatch);
+  test("skips ammo removal with non-limited weapon", () => {
+    const knife = weapons[1];
+    const playerWithKnife = {
+      ...player,
+      equippedWeapon: knife.id,
+    };
+    // Player rolls 3 (hit, needs 3+), damage 1 → 1+0=1, enemy at 3hp
+    // Enemy rolls 1 (miss, needs 5+)
+    rollQueue = [3, 1, 1];
+    fightLoop(playerWithKnife, { ...testEnemy }, dispatch);
 
     expect(dispatch).toHaveBeenCalledTimes(2);
+    expect(dispatch.mock.calls[0]![0]!.type).toBe("enemy_wounded");
+    expect(dispatch.mock.calls[0]![0]!.payload.wounds).toBe(3);
     expect(dispatch.mock.calls[1]![0]!.type).toBe("player_wounded");
-    expect(dispatch.mock.calls[1]![0]!.payload.wounds).toBe(15); // unchanged
   });
 });

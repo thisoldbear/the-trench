@@ -28,16 +28,17 @@ const Inventory = () => {
           return (
             <li key={weapon.name}>
               <button
+                disabled={weapon.ammo <= 0}
                 onClick={() => {
                   dispatch({
                     type: "equipped_weapon_add",
                     payload: {
-                      weapon,
+                      weaponId: weapon.id,
                     },
                   });
                 }}
               >
-                {weapon.name === state.player.equippedWeapon?.name ? "👉🏻 " : ""}
+                {weapon.id === state.player.equippedWeapon ? "👉🏻 " : ""}
                 {weapon.name}
                 {` `}
                 S:{weapon.strength}
@@ -45,7 +46,9 @@ const Inventory = () => {
                 D:D{weapon.damage}
                 {` `}
                 {weapon.damageModifier ? `+ ${weapon.damageModifier}` : ""}
-                {weapon.limited && `(Single Use)`}
+                {` `}
+                {weapon.limited && weapon.ammo === 1 && `[x1]`}
+                {weapon.limited && weapon.ammo > 1 && `[x${weapon.ammo}]`}
               </button>
             </li>
           );
@@ -54,8 +57,6 @@ const Inventory = () => {
     </div>
   );
 };
-
-import { useId } from "react";
 
 const Message = () => {
   const { state } = useGame();
@@ -130,7 +131,12 @@ const ActiveStep = () => {
               onClick={() => {
                 fightLoop(state.player, activeStep, dispatch);
               }}
-              disabled={!state.player.equippedWeapon}
+              disabled={
+                !state.player.equippedWeapon ||
+                state.player.weapons.find(
+                  (weapon) => weapon.id === state.player.equippedWeapon,
+                )?.ammo === 0
+              }
             >
               Fight
             </button>
