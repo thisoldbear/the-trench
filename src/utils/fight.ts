@@ -42,9 +42,12 @@ export function fightLoop(
         type: "enemy_defeated",
         payload: {
           wounds: 0,
-          message: [
-            `You rolled a ${playerRolled}. ${enemy.name} took ${damage} damage`,
-            `${enemy.name} defeated`,
+          messages: [
+            {
+              id: crypto.randomUUID(),
+              text: `You rolled a ${playerRolled}. ${enemy.name} took ${damage} damage`,
+            },
+            { id: crypto.randomUUID(), text: `${enemy.name} defeated` },
           ],
         },
       });
@@ -54,7 +57,9 @@ export function fightLoop(
           type: "equipped_weapon_remove",
           payload: {
             weapon,
-            message: [`${weapon.name} was used`],
+            messages: [
+              { id: crypto.randomUUID(), text: `${weapon.name} was used` },
+            ],
           },
         });
       }
@@ -65,9 +70,12 @@ export function fightLoop(
       type: "enemy_wounded",
       payload: {
         wounds: enemyWounds,
-        message: [
-          `You rolled a ${playerRolled}`,
-          `${enemy.name} took ${damage} damage`,
+        messages: [
+          { id: crypto.randomUUID(), text: `You rolled a ${playerRolled}` },
+          {
+            id: crypto.randomUUID(),
+            text: `${enemy.name} took ${damage} damage`,
+          },
         ],
       },
     });
@@ -76,7 +84,12 @@ export function fightLoop(
       type: "enemy_wounded",
       payload: {
         wounds: enemy.wounds,
-        message: [`You rolled a ${playerRolled} (miss)`],
+        messages: [
+          {
+            id: crypto.randomUUID(),
+            text: `You rolled a ${playerRolled} (miss)`,
+          },
+        ],
       },
     });
   }
@@ -86,7 +99,9 @@ export function fightLoop(
       type: "equipped_weapon_remove",
       payload: {
         weapon,
-        message: [`${weapon.name} was used`],
+        messages: [
+          { id: crypto.randomUUID(), text: `${weapon.name} was used` },
+        ],
       },
     });
   }
@@ -107,9 +122,12 @@ export function fightLoop(
       type: "player_wounded",
       payload: {
         wounds: playerWounds,
-        message: [
-          `${enemy.name} rolled a ${enemyRolled}`,
-          `You took ${damage} damage`,
+        messages: [
+          {
+            id: crypto.randomUUID(),
+            text: `${enemy.name} rolled a ${enemyRolled}`,
+          },
+          { id: crypto.randomUUID(), text: `You took ${damage} damage` },
         ],
       },
     });
@@ -118,7 +136,12 @@ export function fightLoop(
       type: "player_wounded",
       payload: {
         wounds: player.wounds,
-        message: [`${enemy.name} rolled a ${enemyRolled} (miss)`],
+        messages: [
+          {
+            id: crypto.randomUUID(),
+            text: `${enemy.name} rolled a ${enemyRolled} (miss)`,
+          },
+        ],
       },
     });
   }

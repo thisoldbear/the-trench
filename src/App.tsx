@@ -55,15 +55,17 @@ const Inventory = () => {
   );
 };
 
+import { useId } from "react";
+
 const Message = () => {
   const { state } = useGame();
 
-  if (state.message.length > 0) {
+  if (state.messages.length > 0) {
     return (
       <ul className="messages">
-        {[...state.message].reverse().map((message) => (
-          <li key={message}>
-            <p>{message}</p>
+        {[...state.messages].reverse().map((message) => (
+          <li key={message.id}>
+            <p>{message.text}</p>
           </li>
         ))}
       </ul>

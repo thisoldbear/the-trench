@@ -194,6 +194,6 @@ code {
   border: 1px solid #000;
 }
 
-.messages li:not(:first-child) {
+.messages li:not(:nth-child(1)):not(:nth-child(2)) {
   opacity: 0.5;
 }

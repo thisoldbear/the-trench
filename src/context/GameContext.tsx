@@ -16,7 +16,10 @@ export type GameState = {
   player: Player;
   rooms: any;
   activeStep: null | Room | Enemy | Trap;
-  message: string[];
+  messages: {
+    id: string;
+    text: string;
+  }[];
   gameOver: boolean;
 };
 
@@ -25,7 +28,7 @@ export type GameAction =
       type: "active_step";
       payload: {
         activeStep: GameState["activeStep"];
-        message?: string[];
+        messages?: GameState["messages"];
         rooms?: number;
       };
     }
@@ -33,35 +36,35 @@ export type GameAction =
       type: "player_wounded";
       payload: {
         wounds: number;
-        message?: string[];
+        messages?: GameState["messages"];
       };
     }
   | {
       type: "enemy_wounded";
       payload: {
         wounds: number;
-        message?: string[];
+        messages?: GameState["messages"];
       };
     }
   | {
       type: "enemy_defeated";
       payload: {
         wounds: number;
-        message?: string[];
+        messages?: GameState["messages"];
       };
     }
   | {
       type: "equipped_weapon_add";
       payload: {
         weapon: Weapon;
-        message?: string[];
+        messages?: GameState["messages"];
       };
     }
   | {
       type: "equipped_weapon_remove";
       payload: {
         weapon: Weapon;
-        message?: string[];
+        messages?: GameState["messages"];
       };
     }
   | { type: "game_over" };
@@ -74,7 +77,7 @@ const initialState: GameState = {
   rooms: null,
   activeStep: null,
   gameOver: false,
-  message: [],
+  messages: [],
 };
 
 function gameReducer(state: GameState, action: GameAction): GameState {
@@ -83,7 +86,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       return {
         ...state,
         activeStep: action.payload.activeStep,
-        message: action.payload.message ? [...action.payload.message] : [],
+        messages: action.payload.messages ? [...action.payload.messages] : [],
         rooms: action.payload.rooms
           ? state.rooms + action.payload.rooms
           : state.rooms,
@@ -96,7 +99,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
           ...state.player,
           wounds: action.payload.wounds,
         },
-        message: [...state.message, ...(action.payload.message || [])],
+        messages: [...state.messages, ...(action.payload.messages || [])],
       };
 
     case "enemy_wounded": {
@@ -107,7 +110,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
             ...state.activeStep,
             wounds: action.payload.wounds,
           },
-          message: [...state.message, ...(action.payload.message || [])],
+          messages: [...state.messages, ...(action.payload.messages || [])],
         };
       }
 
@@ -122,7 +125,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
             ...state.activeStep,
             wounds: action.payload.wounds,
           },
-          message: [...state.message, ...(action.payload.message || [])],
+          messages: [...state.messages, ...(action.payload.messages || [])],
         };
       }
       return state;
@@ -148,7 +151,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
           ),
           equippedWeapon: null,
         },
-        message: [...state.message, ...(action.payload.message || [])],
+        messages: [...state.messages, ...(action.payload.messages || [])],
       };
     }
 
