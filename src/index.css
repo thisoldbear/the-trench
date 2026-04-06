@@ -189,6 +189,9 @@ code {
 .messages {
   text-align: left;
   background: #242424;
+  max-height: 150px;
+  overflow-y: scroll;
+  border: 1px solid #000;
 }
 
 .messages li:not(:first-child) {

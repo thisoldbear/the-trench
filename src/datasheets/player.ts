@@ -4,7 +4,7 @@ export type Player = {
   totalWounds: number;
   wounds: number;
   weapons: Weapon[];
-  equippedWeapon: Weapon;
+  equippedWeapon: Weapon | null;
   toughness: number;
 };
 

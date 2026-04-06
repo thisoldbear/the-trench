@@ -25,6 +25,11 @@ export function fightLoop(
   if (player.wounds <= 0 || enemy.wounds <= 0) return;
 
   const weapon = player.equippedWeapon;
+
+  if (!weapon) {
+    return;
+  }
+
   const playerRolled = rollDice(6);
   const playerHit = playerRolled >= hitOn(weapon.strength, enemy.toughness);
 
@@ -43,6 +48,16 @@ export function fightLoop(
           ],
         },
       });
+
+      if (weapon.limited) {
+        dispatch({
+          type: "equipped_weapon_remove",
+          payload: {
+            weapon,
+            message: [`${weapon.name} was used`],
+          },
+        });
+      }
       return;
     }
 
@@ -62,6 +77,16 @@ export function fightLoop(
       payload: {
         wounds: enemy.wounds,
         message: [`You rolled a ${playerRolled} (miss)`],
+      },
+    });
+  }
+
+  if (weapon.limited) {
+    dispatch({
+      type: "equipped_weapon_remove",
+      payload: {
+        weapon,
+        message: [`${weapon.name} was used`],
       },
     });
   }

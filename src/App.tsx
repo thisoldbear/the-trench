@@ -1,4 +1,5 @@
 import { GameProvider, useGame } from "./context/GameContext";
+import { player } from "./datasheets/player";
 import "./index.css";
 import { fightLoop, hitOn } from "./utils/fight";
 
@@ -29,7 +30,7 @@ const Inventory = () => {
               <button
                 onClick={() => {
                   dispatch({
-                    type: "equip_weapon",
+                    type: "equipped_weapon_add",
                     payload: {
                       weapon,
                     },
@@ -38,6 +39,13 @@ const Inventory = () => {
               >
                 {weapon.name === state.player.equippedWeapon?.name ? "👉🏻 " : ""}
                 {weapon.name}
+                {` `}
+                S:{weapon.strength}
+                {` `}
+                D:D{weapon.damage}
+                {` `}
+                {weapon.damageModifier ? `+ ${weapon.damageModifier}` : ""}
+                {weapon.limited && `(Single Use)`}
               </button>
             </li>
           );
@@ -53,14 +61,11 @@ const Message = () => {
   if (state.message.length > 0) {
     return (
       <ul className="messages">
-        {state.message
-          .slice(-3)
-          .reverse()
-          .map((message) => (
-            <li>
-              <p>{message}</p>
-            </li>
-          ))}
+        {state.message.reverse().map((message) => (
+          <li>
+            <p>{message}</p>
+          </li>
+        ))}
       </ul>
     );
   }
@@ -123,6 +128,7 @@ const ActiveStep = () => {
               onClick={() => {
                 fightLoop(state.player, activeStep, dispatch);
               }}
+              disabled={!state.player.equippedWeapon}
             >
               Fight
             </button>

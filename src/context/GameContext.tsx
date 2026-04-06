@@ -2,7 +2,8 @@ import type { Enemy } from "@/datasheets/enemies";
 import { player, type Player } from "@/datasheets/player";
 import type { Room } from "@/datasheets/rooms";
 import type { Trap } from "@/datasheets/traps";
-import type { Weapon } from "@/datasheets/weapons";
+import { weapons, type Weapon } from "@/datasheets/weapons";
+import { loadout } from "@/utils/loadout";
 import {
   createContext,
   useContext,
@@ -50,15 +51,26 @@ export type GameAction =
       };
     }
   | {
-      type: "equip_weapon";
+      type: "equipped_weapon_add";
       payload: {
         weapon: Weapon;
+        message?: string[];
+      };
+    }
+  | {
+      type: "equipped_weapon_remove";
+      payload: {
+        weapon: Weapon;
+        message?: string[];
       };
     }
   | { type: "game_over" };
 
 const initialState: GameState = {
-  player: player,
+  player: {
+    ...player,
+    weapons: loadout(),
+  },
   rooms: null,
   activeStep: null,
   gameOver: false,
@@ -122,14 +134,29 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       return state;
     }
 
-    case "equip_weapon": {
+    case "equipped_weapon_add": {
       return {
         ...state,
-
         player: {
-          ...player,
+          ...state.player,
           equippedWeapon: action.payload.weapon,
         },
+      };
+    }
+
+    case "equipped_weapon_remove": {
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          weapons: [...state.player.weapons].filter(
+            (weapon) => weapon.name !== action.payload.weapon.name,
+          ),
+          equippedWeapon: null,
+        },
+        message: action.payload.message
+          ? [...state.message, ...action.payload.message]
+          : state.message,
       };
     }
 
