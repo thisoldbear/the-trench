@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { GameProvider, useGame } from "./context/GameContext";
 import { player } from "./datasheets/player";
 import "./index.css";
@@ -12,7 +13,17 @@ const Stats = () => {
   return (
     <div>
       <p>
-        {state.player.wounds} / {state.player.totalWounds}
+        <span
+          style={{
+            color:
+              state.player.wounds > state.player.totalWounds
+                ? "green"
+                : "inherit",
+          }}
+        >
+          {state.player.wounds}
+        </span>{" "}
+        / {state.player.totalWounds}
       </p>
       <p>Lamps lit: {state.rooms || 0}</p>
     </div>
@@ -82,6 +93,68 @@ const ActiveStep = () => {
   if (state.gameOver) {
     return <h1>Game Over</h1>;
   }
+
+  const hasRestoredHealth = useRef(false);
+  const hasBeenTrapped = useRef(false);
+
+  useEffect(() => {
+    if (
+      activeStep?._type === "room" &&
+      activeStep.name === "Chapel" &&
+      !hasRestoredHealth.current
+    ) {
+      hasRestoredHealth.current = true;
+      dispatch({
+        type: "player_restored",
+        payload: {
+          wounds:
+            state.player.wounds === state.player.totalWounds
+              ? state.player.totalWounds + 2
+              : state.player.totalWounds,
+          messages: [
+            {
+              id: crypto.randomUUID(),
+              text:
+                state.player.wounds === state.player.totalWounds
+                  ? `You prayed. Blessed with +2 health.`
+                  : `You prayed. Health restored.`,
+            },
+          ],
+        },
+      });
+    } else if (activeStep?._type !== "room" || activeStep.name !== "Chapel") {
+      hasRestoredHealth.current = false;
+    }
+  }, [activeStep]);
+
+  useEffect(() => {
+    if (activeStep?._type === "trap" && !hasBeenTrapped.current) {
+      hasRestoredHealth.current = true;
+
+      const trapDamage = rollDice(3);
+
+      if (state.player.wounds - trapDamage <= 0) {
+        dispatch({
+          type: "game_over",
+        });
+      } else if (state.player.wounds - trapDamage > 0) {
+        dispatch({
+          type: "player_wounded",
+          payload: {
+            wounds: state.player.wounds - trapDamage,
+            messages: [
+              {
+                id: crypto.randomUUID(),
+                text: `Trap dealt ${trapDamage} wounds.`,
+              },
+            ],
+          },
+        });
+      }
+    } else if (activeStep?._type !== "trap") {
+      hasRestoredHealth.current = false;
+    }
+  }, [activeStep]);
 
   if (activeStep?._type === "room") {
     return (
@@ -205,7 +278,8 @@ const ActiveStep = () => {
   if (activeStep?._type === "trap") {
     return (
       <div>
-        <h1>Trap</h1>
+        <h1>{activeStep.name}</h1>
+        <p>{activeStep.description}</p>
         <button
           onClick={() => {
             dispatch({

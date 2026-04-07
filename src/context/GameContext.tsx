@@ -40,6 +40,13 @@ export type GameAction =
       };
     }
   | {
+      type: "player_restored";
+      payload: {
+        wounds: number;
+        messages?: GameState["messages"];
+      };
+    }
+  | {
       type: "enemy_wounded";
       payload: {
         wounds: number;
@@ -98,6 +105,16 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       };
 
     case "player_wounded":
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          wounds: action.payload.wounds,
+        },
+        messages: [...state.messages, ...(action.payload.messages || [])],
+      };
+
+    case "player_restored":
       return {
         ...state,
         player: {
