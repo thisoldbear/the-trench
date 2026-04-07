@@ -39,15 +39,16 @@ export function rollOnDecisionTable() {
       return enemies[2];
     }
 
-    if (secondDice <= 17) {
+    if (secondDice <= 19) {
       return enemies[3];
     }
 
-    if (secondDice <= 18) {
-      return enemies[4];
-    }
+    // Ghost
+    // if (secondDice <= 18) {
+    //   return enemies[4];
+    // }
 
-    return enemies[5];
+    return enemies[4];
   }
 
   // Trap
