@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "react";
 import { GameProvider, useGame } from "./context/GameContext";
-import { player } from "./datasheets/player";
+import type { Enemy } from "./datasheets/enemies";
+import type { Room } from "./datasheets/rooms";
+import type { Trap } from "./datasheets/traps";
 import "./index.css";
 import { fightLoop, hitOn } from "./utils/fight";
-
 import { rollOnDecisionTable } from "./utils/resolveDice";
 import { rollDice } from "./utils/rollDice";
 
@@ -36,35 +37,31 @@ const Inventory = () => {
   return (
     <div>
       <ul>
-        {state.player.weapons.map((weapon) => {
-          return (
-            <li key={weapon.name}>
-              <button
-                disabled={weapon.ammo <= 0}
-                onClick={() => {
-                  dispatch({
-                    type: "equipped_weapon_add",
-                    payload: {
-                      weaponId: weapon.id,
-                    },
-                  });
-                }}
-              >
-                {weapon.id === state.player.equippedWeapon ? "👉🏻 " : ""}
-                {weapon.name}
-                {` `}
-                S:{weapon.strength}
-                {` `}
-                D:D{weapon.damage}
-                {` `}
-                {weapon.damageModifier ? `+ ${weapon.damageModifier}` : ""}
-                {` `}
-                {weapon.limited && weapon.ammo === 1 && `[x1]`}
-                {weapon.limited && weapon.ammo > 1 && `[x${weapon.ammo}]`}
-              </button>
-            </li>
-          );
-        })}
+        {state.player.weapons.map((weapon) => (
+          <li key={weapon.name}>
+            <button
+              disabled={weapon.ammo <= 0}
+              onClick={() => {
+                dispatch({
+                  type: "equipped_weapon_add",
+                  payload: { weaponId: weapon.id },
+                });
+              }}
+            >
+              {weapon.id === state.player.equippedWeapon ? "👉🏻 " : ""}
+              {weapon.name}
+              {` `}
+              S:{weapon.strength}
+              {` `}
+              D:D{weapon.damage}
+              {` `}
+              {weapon.damageModifier ? `+ ${weapon.damageModifier}` : ""}
+              {` `}
+              {weapon.limited && weapon.ammo === 1 && `[x1]`}
+              {weapon.limited && weapon.ammo > 1 && `[x${weapon.ammo}]`}
+            </button>
+          </li>
+        ))}
       </ul>
     </div>
   );
@@ -86,24 +83,129 @@ const Message = () => {
   }
 };
 
+function useAdvanceStep() {
+  const { dispatch } = useGame();
+  return (opts?: { rooms?: number; messages?: { id: string; text: string }[] }) => {
+    dispatch({
+      type: "active_step",
+      payload: {
+        activeStep: rollOnDecisionTable(),
+        ...opts,
+      },
+    });
+  };
+}
+
+const RoomStep = ({ room }: { room: Room }) => {
+  const advanceStep = useAdvanceStep();
+
+  return (
+    <div>
+      <h1>{room.name}</h1>
+      <p>{room.description}</p>
+      <Message />
+      <button onClick={() => advanceStep({ rooms: 1 })}>Light the lamp</button>
+    </div>
+  );
+};
+
+const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
+  const { state, dispatch } = useGame();
+  const advanceStep = useAdvanceStep();
+  const equippedWeapon = state.player.weapons.find(
+    (w) => w.id === state.player.equippedWeapon,
+  );
+
+  return (
+    <div>
+      <h1>{enemy.name}</h1>
+      <p>
+        {enemy.wounds} / {enemy.totalWounds}
+      </p>
+
+      <p>
+        Player: {hitOn(equippedWeapon?.strength, enemy.toughness)}+ to hit
+      </p>
+
+      <p>
+        {enemy.name}: {hitOn(enemy.strength, state.player.toughness)}+ to hit
+      </p>
+
+      <Message />
+
+      {enemy.wounds > 0 ? (
+        <>
+          <button
+            onClick={() => fightLoop(state.player, enemy, dispatch)}
+            disabled={!equippedWeapon || equippedWeapon.ammo === 0}
+          >
+            Fight
+          </button>
+
+          <button
+            onClick={() => {
+              const retreatDamage = rollDice(3);
+
+              if (state.player.wounds - retreatDamage > 0) {
+                dispatch({
+                  type: "player_wounded",
+                  payload: {
+                    wounds: state.player.wounds - retreatDamage,
+                  },
+                });
+
+                advanceStep({
+                  messages: [
+                    {
+                      id: crypto.randomUUID(),
+                      text: `Rolled D3: Retreat dealt ${retreatDamage} damage`,
+                    },
+                  ],
+                });
+              } else {
+                dispatch({
+                  type: "player_wounded",
+                  payload: { wounds: 0 },
+                });
+
+                dispatch({ type: "game_over" });
+              }
+            }}
+          >
+            Retreat
+          </button>
+        </>
+      ) : (
+        <button onClick={() => advanceStep()}>Continue</button>
+      )}
+    </div>
+  );
+};
+
+const TrapStep = ({ trap }: { trap: Trap }) => {
+  const advanceStep = useAdvanceStep();
+
+  return (
+    <div>
+      <h1>{trap.name}</h1>
+      <p>{trap.description}</p>
+      <button onClick={() => advanceStep()}>Continue</button>
+      <Message />
+    </div>
+  );
+};
+
 const ActiveStep = () => {
   const { state, dispatch } = useGame();
   const { activeStep } = state;
-
-  if (state.gameOver) {
-    return <h1>Game Over</h1>;
-  }
-
-  const hasRestoredHealth = useRef(false);
-  const hasBeenTrapped = useRef(false);
+  const advanceStep = useAdvanceStep();
+  const lastStepRef = useRef(activeStep);
 
   useEffect(() => {
-    if (
-      activeStep?._type === "room" &&
-      activeStep.name === "Chapel" &&
-      !hasRestoredHealth.current
-    ) {
-      hasRestoredHealth.current = true;
+    if (activeStep === lastStepRef.current) return;
+    lastStepRef.current = activeStep;
+
+    if (activeStep?._type === "room" && activeStep.name === "Chapel") {
       dispatch({
         type: "player_restored",
         payload: {
@@ -122,22 +224,12 @@ const ActiveStep = () => {
           ],
         },
       });
-    } else if (activeStep?._type !== "room" || activeStep.name !== "Chapel") {
-      hasRestoredHealth.current = false;
-    }
-  }, [activeStep]);
-
-  useEffect(() => {
-    if (activeStep?._type === "trap" && !hasBeenTrapped.current) {
-      hasRestoredHealth.current = true;
-
+    } else if (activeStep?._type === "trap") {
       const trapDamage = rollDice(3);
 
       if (state.player.wounds - trapDamage <= 0) {
-        dispatch({
-          type: "game_over",
-        });
-      } else if (state.player.wounds - trapDamage > 0) {
+        dispatch({ type: "game_over" });
+      } else {
         dispatch({
           type: "player_wounded",
           payload: {
@@ -151,166 +243,28 @@ const ActiveStep = () => {
           },
         });
       }
-    } else if (activeStep?._type !== "trap") {
-      hasRestoredHealth.current = false;
     }
   }, [activeStep]);
 
+  if (state.gameOver) {
+    return <h1>Game Over</h1>;
+  }
+
   if (activeStep?._type === "room") {
-    return (
-      <div>
-        <h1>{activeStep.name}</h1>
-        <p>{activeStep.description}</p>
-        <Message />
-        <button
-          onClick={() => {
-            dispatch({
-              type: "active_step",
-              payload: {
-                activeStep: rollOnDecisionTable(),
-                rooms: 1,
-              },
-            });
-          }}
-        >
-          Light the lamp
-        </button>
-      </div>
-    );
+    return <RoomStep room={activeStep} />;
   }
+
   if (activeStep?._type === "enemy") {
-    return (
-      <div>
-        <h1>{activeStep.name}</h1>
-        <p>
-          {activeStep.wounds} / {activeStep.totalWounds}
-        </p>
-
-        <p>
-          Player:{" "}
-          {hitOn(state.player.weapons[0]?.strength, activeStep.toughness)}+ to
-          hit
-        </p>
-
-        <p>
-          {activeStep.name}:{" "}
-          {hitOn(activeStep.strength, state.player.toughness)}+ to hit
-        </p>
-
-        <Message />
-
-        {activeStep.wounds > 0 ? (
-          <>
-            <button
-              onClick={() => {
-                fightLoop(state.player, activeStep, dispatch);
-              }}
-              disabled={
-                !state.player.equippedWeapon ||
-                state.player.weapons.find(
-                  (weapon) => weapon.id === state.player.equippedWeapon,
-                )?.ammo === 0
-              }
-            >
-              Fight
-            </button>
-
-            <button
-              onClick={() => {
-                const retreatDamage = rollDice(3);
-
-                if (state.player.wounds - retreatDamage > 0) {
-                  dispatch({
-                    type: "player_wounded",
-                    payload: {
-                      wounds: state.player.wounds - retreatDamage,
-                    },
-                  });
-
-                  dispatch({
-                    type: "active_step",
-                    payload: {
-                      activeStep: rollOnDecisionTable(),
-                      messages: [
-                        {
-                          id: crypto.randomUUID(),
-                          text: `Rolled D3: Retreat dealt ${retreatDamage} damage`,
-                        },
-                      ],
-                    },
-                  });
-                } else {
-                  dispatch({
-                    type: "player_wounded",
-                    payload: {
-                      wounds: 0,
-                    },
-                  });
-
-                  dispatch({
-                    type: "game_over",
-                  });
-                }
-              }}
-            >
-              Retreat
-            </button>
-          </>
-        ) : (
-          <>
-            <button
-              onClick={() => {
-                dispatch({
-                  type: "active_step",
-                  payload: {
-                    activeStep: rollOnDecisionTable(),
-                  },
-                });
-              }}
-            >
-              Continue
-            </button>
-          </>
-        )}
-      </div>
-    );
+    return <EnemyStep enemy={activeStep} />;
   }
+
   if (activeStep?._type === "trap") {
-    return (
-      <div>
-        <h1>{activeStep.name}</h1>
-        <p>{activeStep.description}</p>
-        <button
-          onClick={() => {
-            dispatch({
-              type: "active_step",
-              payload: {
-                activeStep: rollOnDecisionTable(),
-              },
-            });
-          }}
-        >
-          Continue
-        </button>
-        <Message />
-      </div>
-    );
+    return <TrapStep trap={activeStep} />;
   }
 
   return (
     <div>
-      <button
-        onClick={() => {
-          dispatch({
-            type: "active_step",
-            payload: {
-              activeStep: rollOnDecisionTable(),
-            },
-          });
-        }}
-      >
-        Enter The Trench
-      </button>
+      <button onClick={() => advanceStep()}>Enter The Trench</button>
     </div>
   );
 };
@@ -320,9 +274,7 @@ export function App() {
     <GameProvider>
       <div className="app">
         <Stats />
-
         <ActiveStep />
-
         <Inventory />
       </div>
     </GameProvider>
