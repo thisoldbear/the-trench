@@ -4,6 +4,7 @@ import "./index.css";
 import { fightLoop, hitOn } from "./utils/fight";
 
 import { rollOnDecisionTable } from "./utils/resolveDice";
+import { rollDice } from "./utils/rollDice";
 
 const Stats = () => {
   const { state } = useGame();
@@ -143,12 +144,40 @@ const ActiveStep = () => {
 
             <button
               onClick={() => {
-                dispatch({
-                  type: "active_step",
-                  payload: {
-                    activeStep: rollOnDecisionTable(),
-                  },
-                });
+                const retreatDamage = rollDice(3);
+
+                if (state.player.wounds - retreatDamage > 0) {
+                  dispatch({
+                    type: "player_wounded",
+                    payload: {
+                      wounds: state.player.wounds - retreatDamage,
+                    },
+                  });
+
+                  dispatch({
+                    type: "active_step",
+                    payload: {
+                      activeStep: rollOnDecisionTable(),
+                      messages: [
+                        {
+                          id: crypto.randomUUID(),
+                          text: `Rolled D3: Retreat dealt ${retreatDamage} damage`,
+                        },
+                      ],
+                    },
+                  });
+                } else {
+                  dispatch({
+                    type: "player_wounded",
+                    payload: {
+                      wounds: 0,
+                    },
+                  });
+
+                  dispatch({
+                    type: "game_over",
+                  });
+                }
               }}
             >
               Retreat
