@@ -1,3 +1,4 @@
+import type { Chest } from "@/datasheets/chests";
 import type { Enemy } from "@/datasheets/enemies";
 import { player, type Player } from "@/datasheets/player";
 import type { Room } from "@/datasheets/rooms";
@@ -15,7 +16,7 @@ import {
 export type GameState = {
   player: Player;
   rooms: any;
-  activeStep: null | Room | Enemy | Trap;
+  activeStep: null | Room | Enemy | Trap | Chest;
   messages: {
     id: string;
     text: string;
@@ -126,10 +127,11 @@ function gameReducer(state: GameState, action: GameAction): GameState {
 
     case "enemy_wounded": {
       if (state.activeStep?._type === "enemy") {
+        const enemy = state.activeStep as Enemy;
         return {
           ...state,
           activeStep: {
-            ...state.activeStep,
+            ...enemy,
             wounds: action.payload.wounds,
           },
           messages: [...state.messages, ...(action.payload.messages || [])],
@@ -141,10 +143,11 @@ function gameReducer(state: GameState, action: GameAction): GameState {
 
     case "enemy_defeated": {
       if (state.activeStep?._type === "enemy") {
+        const enemy = state.activeStep as Enemy;
         return {
           ...state,
           activeStep: {
-            ...state.activeStep,
+            ...enemy,
             wounds: action.payload.wounds,
           },
           messages: [...state.messages, ...(action.payload.messages || [])],

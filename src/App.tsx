@@ -85,11 +85,15 @@ const Message = () => {
 
 function useAdvanceStep() {
   const { dispatch } = useGame();
-  return (opts?: { rooms?: number; messages?: { id: string; text: string }[] }) => {
+  return (opts?: {
+    rooms?: number;
+    messages?: { id: string; text: string }[];
+  }) => {
     dispatch({
       type: "active_step",
       payload: {
-        activeStep: rollOnDecisionTable(),
+        // TODO: Fix !
+        activeStep: rollOnDecisionTable()!,
         ...opts,
       },
     });
@@ -123,9 +127,7 @@ const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
         {enemy.wounds} / {enemy.totalWounds}
       </p>
 
-      <p>
-        Player: {hitOn(equippedWeapon?.strength, enemy.toughness)}+ to hit
-      </p>
+      <p>Player: {hitOn(equippedWeapon?.strength, enemy.toughness)}+ to hit</p>
 
       <p>
         {enemy.name}: {hitOn(enemy.strength, state.player.toughness)}+ to hit
@@ -251,15 +253,19 @@ const ActiveStep = () => {
   }
 
   if (activeStep?._type === "room") {
-    return <RoomStep room={activeStep} />;
+    return <RoomStep room={activeStep as Room} />;
   }
 
   if (activeStep?._type === "enemy") {
-    return <EnemyStep enemy={activeStep} />;
+    return <EnemyStep enemy={activeStep as Enemy} />;
   }
 
   if (activeStep?._type === "trap") {
-    return <TrapStep trap={activeStep} />;
+    return <TrapStep trap={activeStep as Trap} />;
+  }
+
+  if (activeStep?._type === "chest") {
+    return <>CHest</>;
   }
 
   return (
