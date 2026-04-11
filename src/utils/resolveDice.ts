@@ -1,3 +1,4 @@
+import { chests } from "../datasheets/chests";
 import { enemies } from "../datasheets/enemies";
 import { rooms } from "../datasheets/rooms";
 import { traps } from "../datasheets/traps";
@@ -18,12 +19,13 @@ export function rollOnDecisionTable() {
   }
 
   // Booty
-  // if (firstDice <= 8) {
-  //   return {
-  //     ...rooms[0],
-  //     name: "Booty",
-  //   };
-  // }
+  if (firstDice <= 8) {
+    if (secondDice <= 10) {
+      return chests[0];
+    }
+
+    return chests[1];
+  }
 
   // Enemies
   if (firstDice <= 18) {
