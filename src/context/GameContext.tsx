@@ -1,10 +1,11 @@
 import type { Chest } from "@/datasheets/chests";
 import type { Enemy } from "@/datasheets/enemies";
+import type { Equipment } from "@/datasheets/equipment";
 import { player, type Player } from "@/datasheets/player";
 import type { Room } from "@/datasheets/rooms";
 import type { Trap } from "@/datasheets/traps";
 import { weapons, type Weapon } from "@/datasheets/weapons";
-import { loadout } from "@/utils/loadout";
+import { equipmentLoadout, weaponsLoadout } from "@/utils/loadout";
 import {
   createContext,
   useContext,
@@ -48,6 +49,34 @@ export type GameAction =
       };
     }
   | {
+      type: "player_toughness_add";
+      payload: {
+        toughness: number;
+        messages?: GameState["messages"];
+      };
+    }
+  | {
+      type: "player_toughness_remove";
+      payload: {
+        toughness: number;
+        messages?: GameState["messages"];
+      };
+    }
+  | {
+      type: "player_damage_add";
+      payload: {
+        damageModifier: number;
+        messages?: GameState["messages"];
+      };
+    }
+  | {
+      type: "player_damage_remove";
+      payload: {
+        damageModifier: number;
+        messages?: GameState["messages"];
+      };
+    }
+  | {
       type: "enemy_wounded";
       payload: {
         wounds: number;
@@ -80,12 +109,27 @@ export type GameAction =
         messages?: GameState["messages"];
       };
     }
+  | {
+      type: "equipment_add";
+      payload: {
+        equipment: Equipment;
+        messages?: GameState["messages"];
+      };
+    }
+  | {
+      type: "equipment_remove";
+      payload: {
+        equipment: Equipment[];
+        messages?: GameState["messages"];
+      };
+    }
   | { type: "game_over" };
 
 const initialState: GameState = {
   player: {
     ...player,
-    weapons: loadout(),
+    weapons: weaponsLoadout(),
+    equipment: equipmentLoadout(),
   },
   rooms: null,
   activeStep: null,
@@ -111,6 +155,46 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         player: {
           ...state.player,
           wounds: action.payload.wounds,
+        },
+        messages: [...state.messages, ...(action.payload.messages || [])],
+      };
+
+    case "player_toughness_add":
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          toughness: action.payload.toughness,
+        },
+        messages: [...state.messages, ...(action.payload.messages || [])],
+      };
+
+    case "player_toughness_remove":
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          toughness: action.payload.toughness,
+        },
+        messages: [...state.messages, ...(action.payload.messages || [])],
+      };
+
+    case "player_damage_add":
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          damageModifier: action.payload.damageModifier,
+        },
+        messages: [...state.messages, ...(action.payload.messages || [])],
+      };
+
+    case "player_damage_remove":
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          damageModifier: action.payload.damageModifier,
         },
         messages: [...state.messages, ...(action.payload.messages || [])],
       };
@@ -203,6 +287,26 @@ function gameReducer(state: GameState, action: GameAction): GameState {
           ),
         },
         messages: [...state.messages, ...(action.payload.messages || [])],
+      };
+    }
+
+    case "equipment_add": {
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          equipment: [...state.player.equipment, action.payload.equipment],
+        },
+      };
+    }
+
+    case "equipment_remove": {
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          equipment: action.payload.equipment,
+        },
       };
     }
 

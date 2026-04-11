@@ -51,7 +51,7 @@ export function fightLoop(
 
   if (playerHit) {
     const damage = rollDice(weapon.damage) + weapon.damageModifier;
-    const enemyWounds = enemy.wounds - damage;
+    const enemyWounds = enemy.wounds - damage - player.damageModifier;
 
     if (enemyWounds <= 0) {
       dispatch({
@@ -61,9 +61,22 @@ export function fightLoop(
           messages: [
             {
               id: crypto.randomUUID(),
-              text: `You rolled a ${playerRolled}. ${enemy.name} took ${damage} damage`,
+              text: `${enemy.name} was defeated`,
             },
             { id: crypto.randomUUID(), text: `${enemy.name} defeated` },
+          ],
+        },
+      });
+
+      dispatch({
+        type: "player_damage_remove",
+        payload: {
+          damageModifier: 0,
+          messages: [
+            {
+              id: crypto.randomUUID(),
+              text: `Damage modifier removed`,
+            },
           ],
         },
       });
@@ -78,7 +91,10 @@ export function fightLoop(
       payload: {
         wounds: enemyWounds,
         messages: [
-          { id: crypto.randomUUID(), text: `You rolled a ${playerRolled}` },
+          {
+            id: crypto.randomUUID(),
+            text: `You rolled a ${playerRolled}. ${enemy.name} took ${damage} damage (${player.damageModifier ? `${damage} + ${player.damageModifier} modifier` : ``})`,
+          },
           {
             id: crypto.randomUUID(),
             text: `${enemy.name} took ${damage} damage`,
@@ -86,6 +102,21 @@ export function fightLoop(
         ],
       },
     });
+
+    if (player.damageModifier > 0) {
+      dispatch({
+        type: "player_damage_remove",
+        payload: {
+          damageModifier: player.damageModifier - 1,
+          messages: [
+            {
+              id: crypto.randomUUID(),
+              text: `Damage bonus dropped to ${player.damageModifier - 1}`,
+            },
+          ],
+        },
+      });
+    }
   } else {
     dispatch({
       type: "enemy_wounded",
@@ -128,6 +159,21 @@ export function fightLoop(
         ],
       },
     });
+
+    if (player.toughness > player.totalToughness) {
+      dispatch({
+        type: "player_toughness_remove",
+        payload: {
+          toughness: player.toughness - 1,
+          messages: [
+            {
+              id: crypto.randomUUID(),
+              text: `Toughness decreased`,
+            },
+          ],
+        },
+      });
+    }
   } else {
     dispatch({
       type: "player_wounded",
