@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState, type Dispatch } from "react";
-import { GameProvider, useGame, type GameAction } from "./context/GameContext";
+import { useEffect, useRef, useState } from "react";
+import { GameProvider, useGame } from "./context/GameContext";
 import type { Enemy } from "./datasheets/enemies";
 import type { Room } from "./datasheets/rooms";
 import type { Trap } from "./datasheets/traps";
@@ -8,9 +8,11 @@ import { fightLoop, hitOn } from "./utils/fight";
 import { rollOnDecisionTable } from "./utils/resolveDice";
 import { rollDice } from "./utils/rollDice";
 import type { Chest } from "./datasheets/chests";
-import { type Equipment, equipment } from "./datasheets/equipment";
-import { weapons, type Weapon } from "./datasheets/weapons";
+import { type Equipment } from "./datasheets/equipment";
+import { type Weapon } from "./datasheets/weapons";
 import { player } from "./datasheets/player";
+import { rollOnChestTable } from "./utils/chest";
+import { applyEquipmentEffect } from "./utils/equipmentEffects";
 
 const Stats = () => {
   const { state } = useGame();
@@ -93,76 +95,22 @@ const Inventory = () => {
             <button
               disabled={!state.activeStep}
               onClick={() => {
-                if (
-                  equipment.id === "morphine" &&
-                  state.player.toughness <= player.totalToughness + 3
-                ) {
-                  dispatch({
-                    type: "player_toughness_add",
-                    payload: {
-                      toughness: state.player.toughness + 3,
-                      messages: [
-                        {
-                          id: crypto.randomUUID(),
-                          text: `Toughness increased for a short while`,
-                        },
-                      ],
-                    },
-                  });
-                }
-
-                if (equipment.id === "bandage") {
-                  dispatch({
-                    type: "player_restored",
-                    payload: {
-                      wounds: state.player.wounds + 3,
-                      messages: [
-                        {
-                          id: crypto.randomUUID(),
-                          text: `Bandage restored 3 health.`,
-                        },
-                      ],
-                    },
-                  });
-                }
-
-                if (equipment.id === "hip-flask") {
-                  if (state.player.toughness <= player.totalToughness + 1) {
-                    dispatch({
-                      type: "player_toughness_add",
-                      payload: {
-                        toughness: state.player.toughness + 1,
-                        messages: [
-                          {
-                            id: crypto.randomUUID(),
-                            text: `Toughness increased for a short while`,
-                          },
-                        ],
-                      },
-                    });
-                  }
-
-                  dispatch({
-                    type: "player_damage_add",
-                    payload: {
-                      damageModifier: state.player.damageModifier + 2,
-                      messages: [
-                        {
-                          id: crypto.randomUUID(),
-                          text: `Damage results increased by 2 for a short while`,
-                        },
-                      ],
-                    },
-                  });
-                }
+                applyEquipmentEffect(
+                  equipment,
+                  {
+                    wounds: state.player.wounds,
+                    toughness: state.player.toughness,
+                    damageModifier: state.player.damageModifier,
+                  },
+                  dispatch,
+                );
 
                 dispatch({
                   type: "equipment_remove",
                   payload: {
-                    equipment:
-                      state.player.equipment.length > 1
-                        ? state.player.equipment.splice(index, 1)
-                        : [],
+                    equipment: state.player.equipment.filter(
+                      (_, i) => i !== index,
+                    ),
                     messages: [
                       {
                         id: crypto.randomUUID(),
@@ -243,7 +191,9 @@ const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
         {enemy.wounds} / {enemy.totalWounds}
       </p>
 
-      <p>Player: {hitOn(equippedWeapon?.strength, enemy.toughness)}+ to hit</p>
+      {equippedWeapon && (
+        <p>Player: {hitOn(equippedWeapon.strength, enemy.toughness)}+ to hit</p>
+      )}
 
       <p>
         {enemy.name}: {hitOn(enemy.strength, state.player.toughness)}+ to hit
@@ -328,68 +278,6 @@ const TrapStep = ({ trap }: { trap: Trap }) => {
   );
 };
 
-const rollOnChestTable = (chest: Chest, dispatch: Dispatch<GameAction>) => {
-  const diceResult = rollDice(20);
-
-  if (diceResult <= 1) {
-    const woundRoll = rollDice(3);
-
-    dispatch({
-      type: "player_wounded",
-      payload: {
-        wounds: rollDice(3),
-        messages: [
-          {
-            id: crypto.randomUUID(),
-            text: `${chest.name} was a trap. Received ${woundRoll} wounds.`,
-          },
-        ],
-      },
-    });
-
-    return [];
-  }
-
-  if (chest.id === "medic-bag") {
-    // Empty
-    if (diceResult <= 10) {
-      return [];
-    }
-
-    if (diceResult <= 16) {
-      // Bandage
-      return [equipment[0]!];
-    }
-
-    if (diceResult <= 20) {
-      // Morphine
-      return [equipment[1]!];
-    }
-  }
-
-  if (chest.id === "corpse") {
-    // Empty
-    if (diceResult <= 10) {
-      return [];
-    }
-
-    if (diceResult <= 15) {
-      return [weapons[Math.floor(Math.random() * weapons.length)]!];
-    }
-
-    if (diceResult <= 16) {
-      // Gin
-      return [equipment[2]!];
-    }
-    if (diceResult <= 20) {
-      // Hip flask
-      return [equipment[3]!];
-    }
-  }
-
-  return [];
-};
-
 const ChestStep = ({ chest }: { chest: Chest }) => {
   const { dispatch } = useGame();
   const advanceStep = useAdvanceStep();
@@ -414,11 +302,7 @@ const ChestStep = ({ chest }: { chest: Chest }) => {
             const equipment = rollForEquipment();
 
             if (equipment && equipment.length > 0) {
-              console.log(equipment);
-
               setFoundEquipment(equipment);
-            } else {
-              console.log("empty");
             }
           }}
         >
