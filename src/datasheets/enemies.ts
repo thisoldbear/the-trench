@@ -1,7 +1,6 @@
 export const enemies = [
   {
     _type: "enemy",
-    attack: 2,
     damage: 3,
     damageModifier: 0,
     name: "Zombie Soldier",
@@ -13,7 +12,6 @@ export const enemies = [
   },
   {
     _type: "enemy",
-    attack: 1,
     damage: 3,
     damageModifier: 0,
     name: "Swarm of Rats",
@@ -25,7 +23,6 @@ export const enemies = [
   },
   {
     _type: "enemy",
-    attack: 1,
     damage: 3,
     damageModifier: 0,
     name: "Rabid Dog",
@@ -37,7 +34,6 @@ export const enemies = [
   },
   // {
   //   _type: "enemy",
-  //   attack: 1,
   //   damage: 3,
   //   damageModifier: 0,
   //   name: "Spectral Soldier",
@@ -49,7 +45,6 @@ export const enemies = [
   // },
   {
     _type: "enemy",
-    attack: 2,
     damage: 3,
     damageModifier: 2,
     name: "Possessed Soldier",
@@ -61,7 +56,6 @@ export const enemies = [
   },
   {
     _type: "enemy",
-    attack: 2,
     damage: 6,
     damageModifier: 1,
     name: "Trench Tyrant",

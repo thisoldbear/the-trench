@@ -1,7 +1,6 @@
 export const weapons = [
   {
     _type: "gun",
-    attack: 1,
     damage: 6,
     damageModifier: 1,
     name: "Pistol",
@@ -14,7 +13,6 @@ export const weapons = [
   },
   {
     _type: "melee",
-    attack: 1,
     damage: 3,
     damageModifier: 0,
     name: "Knife",
@@ -27,7 +25,6 @@ export const weapons = [
   },
   {
     _type: "melee",
-    attack: 1,
     damage: 3,
     damageModifier: 2,
     name: "Sword",
@@ -40,7 +37,6 @@ export const weapons = [
   },
   {
     _type: "gun",
-    attack: 1,
     damage: 6,
     damageModifier: 2,
     name: "Rifle",
@@ -53,7 +49,6 @@ export const weapons = [
   },
   {
     _type: "gun",
-    attack: 1,
     damage: 6,
     damageModifier: 3,
     name: "Shotgun",
@@ -66,7 +61,6 @@ export const weapons = [
   },
   {
     _type: "explosive",
-    attack: 1,
     damage: 6,
     damageModifier: 4,
     name: "Grenade",
@@ -79,7 +73,6 @@ export const weapons = [
   },
   {
     _type: "explosive",
-    attack: 1,
     damage: 3,
     damageModifier: 0,
     name: "Flare Gun",
@@ -92,7 +85,6 @@ export const weapons = [
   },
   {
     _type: "melee",
-    attack: 1,
     damage: 6,
     damageModifier: 2,
     name: "Barbed Wire Bat",
