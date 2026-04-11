@@ -34,7 +34,7 @@ describe("hitOn", () => {
   enemies.forEach((enemy) => {
     test(`Player hit against ${enemy.name} for ${expectedPlayerHitOn[enemy.name]}+`, () => {
       const currentPlayer = { ...player };
-      expect(hitOn(currentPlayer.weapons[0]?.strength, enemy.toughness)).toBe(
+      expect(hitOn(currentPlayer.weapons[0]?.strength!, enemy.toughness)).toBe(
         expectedPlayerHitOn[enemy.name]!,
       );
     });
