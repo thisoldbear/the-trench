@@ -5,14 +5,14 @@ import type { GameAction } from "@/context/GameContext";
 import type { Weapon } from "@/datasheets/weapons";
 import type { Player } from "@/datasheets/player";
 
-export function hitOn(attackerStrength: any, defenderToughness: any) {
+export function hitOn(attackerStrength: number, defenderToughness: number) {
   let hitOn = 3;
 
   if (attackerStrength === defenderToughness) {
     hitOn = 4;
   }
 
-  if (attackerStrength < defenderToughness) {
+  if (attackerStrength && attackerStrength < defenderToughness) {
     hitOn = 5;
   }
 
@@ -63,7 +63,6 @@ export function fightLoop(
               id: crypto.randomUUID(),
               text: `${enemy.name} was defeated`,
             },
-            { id: crypto.randomUUID(), text: `${enemy.name} defeated` },
           ],
         },
       });
