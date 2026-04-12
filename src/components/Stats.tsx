@@ -1,13 +1,19 @@
 import { useGame } from "@/context/GameContext";
+import { player } from "@/datasheets/player";
 
 export const Stats = () => {
   const { state } = useGame();
 
   return (
     <div className="stats">
-      <div className="stats__cell stats__cell--1">
+      <div
+        className="stats__cell stats__cell--1"
+        style={{
+          background: `linear-gradient(90deg,#2d2d2d 0%, #2d2d2d ${(100 * state.player.wounds) / player.totalWounds}%, transparent ${(100 * state.player.wounds) / player.totalWounds}%)`,
+        }}
+      >
         <p>
-          Health:{" "}
+          HP:{" "}
           <span
             style={{
               color:
@@ -23,14 +29,22 @@ export const Stats = () => {
           / {state.player.totalWounds}
         </p>
       </div>
-      <div className="stats__cell stats__cell--2">
+      <div
+        className="stats__cell stats__cell--2"
+        style={{
+          background: `linear-gradient(90deg,#2d2d2d 0%, #2d2d2d ${(100 * state.rooms) / 20}%, transparent ${(100 * state.rooms) / 20}%)`,
+        }}
+      >
+        <p>Lamps lit: {state.rooms || 0} / 20</p>
+      </div>
+      <div className="stats__cell stats__cell--3">
         <p>
           Toughness:{" "}
           <span
             style={{
               color:
                 state.player.toughness > state.player.totalToughness
-                  ? "green"
+                  ? "#78a878"
                   : "inherit",
             }}
           >
@@ -38,17 +52,27 @@ export const Stats = () => {
           </span>
         </p>
       </div>
-      <div className="stats__cell stats__cell--3">
-        <p>Lamps lit: {state.rooms || 0}</p>
-      </div>
-      <div className="stats__cell stats__cell--4">
+
+      <div className="stats__cell stats__cell--4"></div>
+
+      <div className="stats__cell stats__cell--5">
         <p>
           Damage Mod:
-          {state.player.damageModifier === 0
-            ? " -"
-            : `+ ${state.player.damageModifier}`}
+          {state.player.damageModifier === 0 ? (
+            " -"
+          ) : (
+            <span
+              style={{
+                color: "#78a878",
+              }}
+            >
+              {` `}+{state.player.damageModifier}
+            </span>
+          )}
         </p>
       </div>
+
+      <div className="stats__cell stats__cell--6"></div>
     </div>
   );
 };

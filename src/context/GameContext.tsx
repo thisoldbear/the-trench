@@ -157,7 +157,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       return {
         ...state,
         activeStep: action.payload.activeStep,
-        messages: action.payload.messages ? [...action.payload.messages] : [],
+        messages: [...state.messages, ...(action.payload.messages || [])],
         rooms: action.payload.rooms
           ? state.rooms + action.payload.rooms
           : state.rooms,
@@ -261,6 +261,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
           ...state.player,
           equippedWeapon: action.payload.weaponId,
         },
+        messages: [...state.messages, ...(action.payload.messages || [])],
       };
     }
 
@@ -283,8 +284,8 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         player: {
           ...state.player,
-          weapons: [...state.player.weapons].reduce(
-            (acc: Weapon[], curr: Weapon) => {
+          weapons: [...state.player.weapons]
+            .reduce((acc: Weapon[], curr: Weapon) => {
               if (curr.id === state.player.equippedWeapon && curr.ammo > 0) {
                 return [
                   ...acc,
@@ -296,9 +297,8 @@ function gameReducer(state: GameState, action: GameAction): GameState {
               } else {
                 return [...acc, curr];
               }
-            },
-            [],
-          ),
+            }, [])
+            .filter((weapon) => weapon.ammo > 0),
         },
         messages: [...state.messages, ...(action.payload.messages || [])],
       };
@@ -311,6 +311,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
           ...state.player,
           equipment: [...state.player.equipment, action.payload.equipment],
         },
+        messages: [...state.messages, ...(action.payload.messages || [])],
       };
     }
 
@@ -321,6 +322,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
           ...state.player,
           equipment: action.payload.equipment,
         },
+        messages: [...state.messages, ...(action.payload.messages || [])],
       };
     }
     case "weapon_add": {
@@ -330,6 +332,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
           ...state.player,
           weapons: [...state.player.weapons, action.payload.weapon],
         },
+        messages: [...state.messages, ...(action.payload.messages || [])],
       };
     }
 
@@ -340,6 +343,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
           ...state.player,
           weapons: action.payload.weapon,
         },
+        messages: [...state.messages, ...(action.payload.messages || [])],
       };
     }
 

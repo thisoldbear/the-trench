@@ -67,18 +67,20 @@ export function fightLoop(
         },
       });
 
-      dispatch({
-        type: "player_damage_remove",
-        payload: {
-          damageModifier: 0,
-          messages: [
-            {
-              id: crypto.randomUUID(),
-              text: `Damage modifier removed`,
-            },
-          ],
-        },
-      });
+      if (player.damageModifier > 0) {
+        dispatch({
+          type: "player_damage_remove",
+          payload: {
+            damageModifier: 0,
+            messages: [
+              {
+                id: crypto.randomUUID(),
+                text: `Damage modifier removed`,
+              },
+            ],
+          },
+        });
+      }
 
       resolveWeaponAmmo(weapon, dispatch);
 
@@ -92,11 +94,7 @@ export function fightLoop(
         messages: [
           {
             id: crypto.randomUUID(),
-            text: `You rolled a ${playerRolled}. ${enemy.name} took ${damage} damage (${player.damageModifier ? `${damage} + ${player.damageModifier} modifier` : ``})`,
-          },
-          {
-            id: crypto.randomUUID(),
-            text: `${enemy.name} took ${damage} damage`,
+            text: `You rolled a ${playerRolled}. ${enemy.name} took ${damage} damage ${player.damageModifier ? `(${damage} + ${player.damageModifier} modifier)` : ``}`,
           },
         ],
       },

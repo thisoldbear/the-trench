@@ -8,18 +8,18 @@ export function rollOnDecisionTable() {
   const firstDice = rollDice(20);
   const secondDice = rollDice(20);
 
-  // Trench
-  if (firstDice <= 6) {
-    return rooms[0];
-  }
-
   // Chapel
-  if (firstDice <= 7) {
+  if (firstDice <= 2) {
     return rooms[1];
   }
 
-  // Booty
+  // Trench
   if (firstDice <= 8) {
+    return rooms[0];
+  }
+
+  // Booty
+  if (firstDice <= 12) {
     if (secondDice <= 10) {
       return chests[0];
     }

@@ -8,6 +8,75 @@ import { rollOnChestTable } from "@/utils/chest";
 import { Message } from "../components/Message";
 import { useAdvanceStep } from "../hooks/useAdvanceStep";
 
+const ChestItem = ({ item }: { item: Equipment | Weapon }) => {
+  const { dispatch } = useGame();
+
+  const [taken, setTaken] = useState(false);
+
+  return (
+    <li key={item.id} className="chest-item">
+      <div>
+        <div className="inventory__cell-title">{item.name}</div>
+        {item._type === "equipment" && <p>{item.description}</p>}
+        {item._type !== "equipment" && (
+          <div className="inventory__cell-grid">
+            <div className="inventory__cell-grid-cell--1">
+              Ammo:{" "}
+              {item.limited && item.ammo === 1 ? `[x1]` : `[x${item.ammo}]`}
+            </div>
+            <div className="inventory__cell-grid-cell--2">
+              Strength: {item.strength}
+            </div>
+            <div className="inventory__cell-grid-cell--3">
+              Damage: D{item.damage}{" "}
+              {item.damageModifier ? `+${item.damageModifier}` : ""}
+            </div>
+          </div>
+        )}
+      </div>
+      <div>
+        <button
+          className="btn btn--cta unifrakturcook-bold"
+          disabled={taken}
+          onClick={() => {
+            setTaken(true);
+
+            if (item._type !== "equipment") {
+              dispatch({
+                type: "weapon_add",
+                payload: {
+                  weapon: item,
+                  messages: [
+                    {
+                      id: crypto.randomUUID(),
+                      text: `Added ${item.name}`,
+                    },
+                  ],
+                },
+              });
+            } else {
+              dispatch({
+                type: "equipment_add",
+                payload: {
+                  equipment: item,
+                  messages: [
+                    {
+                      id: crypto.randomUUID(),
+                      text: `Added ${item.name}`,
+                    },
+                  ],
+                },
+              });
+            }
+          }}
+        >
+          Take
+        </button>
+      </div>
+    </li>
+  );
+};
+
 export const ChestStep = ({ chest }: { chest: Chest }) => {
   const { dispatch } = useGame();
   const advanceStep = useAdvanceStep();
@@ -22,95 +91,42 @@ export const ChestStep = ({ chest }: { chest: Chest }) => {
 
   return (
     <div className="chest">
-      <h1 className="unifrakturcook-bold">{chest.name}</h1>
+      <h1 className="chest__title unifrakturcook-bold">{chest.name}</h1>
       <p>{chest.description}</p>
       {chestOpened && foundEqupment.length === 0 && (
         <ul className="chest__list">
           <li>Nothing found</li>
         </ul>
       )}
+      {/* Equipment */}
       {foundEqupment.filter((equipment) => equipment._type === "equipment")
         .length > 0 && (
         <>
-          <h2>Equipment</h2>
           <ul className="chest__list">
             {foundEqupment
               .filter((equipment) => equipment._type === "equipment")
               .map((equipment) => {
-                return (
-                  <li key={equipment.id}>
-                    <div>
-                      <strong>{equipment.name}</strong> <br />{" "}
-                      {equipment.description}
-                    </div>
-                    <div>
-                      <button
-                        className="btn btn--cta unifrakturcook-bold"
-                        disabled={
-                          player.equipment.length >= player.totalEquipment
-                        }
-                        onClick={() => {
-                          dispatch({
-                            type: "equipment_add",
-                            payload: {
-                              equipment: equipment,
-                              messages: [
-                                {
-                                  id: crypto.randomUUID(),
-                                  text: `Added ${equipment.name}`,
-                                },
-                              ],
-                            },
-                          });
-                        }}
-                      >
-                        Take
-                      </button>
-                    </div>
-                  </li>
-                );
+                return <ChestItem item={equipment} />;
               })}
           </ul>
         </>
       )}
+      {/* Weapons */}
       {foundEqupment.filter((equipment) => equipment._type !== "equipment")
         .length > 0 && (
         <>
-          <h2>Equipment</h2>
           <ul className="chest__list">
             {foundEqupment
               .filter((weapon) => weapon._type !== "equipment")
               .map((weapon) => {
-                return (
-                  <li key={weapon.id}>
-                    {weapon.name} - {weapon.description}
-                    <button
-                      disabled={
-                        player.equipment.length >= player.totalEquipment
-                      }
-                      onClick={() => {
-                        dispatch({
-                          type: "weapon_add",
-                          payload: {
-                            weapon: weapon,
-                            messages: [
-                              {
-                                id: crypto.randomUUID(),
-                                text: `Added ${weapon.name}`,
-                              },
-                            ],
-                          },
-                        });
-                      }}
-                    >
-                      Take
-                    </button>
-                  </li>
-                );
+                return <ChestItem item={weapon} />;
               })}
           </ul>
         </>
       )}
+
+      <Message />
+
       <div className="btn-group">
         <button
           className="btn btn--cta unifrakturcook-bold"
@@ -135,7 +151,6 @@ export const ChestStep = ({ chest }: { chest: Chest }) => {
           Continue
         </button>
       </div>
-      <Message />
     </div>
   );
 };

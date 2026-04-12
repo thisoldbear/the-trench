@@ -11,15 +11,15 @@ export const TrapStep = ({ trap }: { trap: Trap }) => {
 
   return (
     <div>
-      <h1>{trap.name}</h1>
+      <h1 className="unifrakturcook-bold">{trap.name}</h1>
       <p>{trap.description}</p>
+      <Message />
       <button
         className="btn btn--cta unifrakturcook-bold"
         onClick={() => advanceStep()}
       >
         Continue
       </button>
-      <Message />
     </div>
   );
 };

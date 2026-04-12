@@ -52,7 +52,7 @@ const ActiveStep = () => {
             messages: [
               {
                 id: crypto.randomUUID(),
-                text: `Trap dealt ${trapDamage} wounds.`,
+                text: `${activeStep.name} dealt ${trapDamage} wounds.`,
               },
             ],
           },
@@ -62,7 +62,16 @@ const ActiveStep = () => {
   }, [activeStep]);
 
   if (state.gameOver) {
-    return <h1 className="app__title unifrakturcook-bold">Game Over</h1>;
+    return (
+      <div>
+        <Stats />
+        <h1 className="game-over unifrakturcook-bold">You Died</h1>
+        <p>
+          A valiant effort. Let us pray other brave individuals will continue to
+          keep the lamps lit each night.
+        </p>
+      </div>
+    );
   }
 
   if (activeStep?._type === "room") {
@@ -106,10 +115,13 @@ const ActiveStep = () => {
   }
 
   return (
-    <div className="start">
+    <div className="start germania-one-regular">
       <p>After the horrors of the day, darkness falls.</p>
-      <p>To ward off the terror, the lamps must be lit.</p>
+      <p>To ward off the terror, prayers are made and lamps are lit.</p>
       <p>And every night... they come.</p>
+      <p>
+        Light <u>20</u> lamps to see out the night.
+      </p>
       <button
         className="btn btn--cta unifrakturcook-bold"
         onClick={() => {

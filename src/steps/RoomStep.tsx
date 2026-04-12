@@ -14,22 +14,24 @@ export const RoomStep = ({ room }: { room: Room }) => {
       <p>{room.description}</p>
       <Message />
       <div className="btn-group">
-        <button
-          className="btn btn--cta unifrakturcook-bold"
-          onClick={() =>
-            advanceStep({
-              rooms: 1,
-              messages: [
-                {
-                  id: crypto.randomUUID(),
-                  text: `Lit the lamp`,
-                },
-              ],
-            })
-          }
-        >
-          Light the lamp
-        </button>
+        {room.name === "Dark Trench" && (
+          <button
+            className="btn btn--cta unifrakturcook-bold"
+            onClick={() =>
+              advanceStep({
+                rooms: 1,
+                messages: [
+                  {
+                    id: crypto.randomUUID(),
+                    text: `Lit the lamp`,
+                  },
+                ],
+              })
+            }
+          >
+            Light the lamp
+          </button>
+        )}
         <button
           className="btn btn--cta unifrakturcook-bold"
           onClick={() => {

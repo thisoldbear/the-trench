@@ -14,23 +14,30 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
 
   return (
     <div>
-      <h1>{enemy.name}</h1>
+      <h1 className="unifrakturcook-bold">{enemy.name}</h1>
       <p>
-        {enemy.wounds} / {enemy.totalWounds}
+        HP:{" "}
+        <span
+          style={{
+            color: enemy.wounds < enemy.totalWounds / 2 ? "#b9818e" : "inherit",
+          }}
+        >
+          {enemy.wounds}
+        </span>{" "}
+        / {enemy.totalWounds}
       </p>
 
       {equippedWeapon && (
-        <p>Player: {hitOn(equippedWeapon.strength, enemy.toughness)}+ to hit</p>
+        <p>
+          You need {hitOn(equippedWeapon.strength, enemy.toughness)}+ on a D6 to
+          hit.
+        </p>
       )}
-
-      <p>
-        {enemy.name}: {hitOn(enemy.strength, state.player.toughness)}+ to hit
-      </p>
 
       <Message />
 
       {enemy.wounds > 0 ? (
-        <div className="button-group">
+        <div className="btn-group">
           <button
             className="btn btn--cta unifrakturcook-bold"
             onClick={() => fightLoop(state.player, enemy, dispatch)}
@@ -52,7 +59,9 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
                   },
                 });
 
+                // Move on
                 advanceStep({
+                  rooms: 1,
                   messages: [
                     {
                       id: crypto.randomUUID(),

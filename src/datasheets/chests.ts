@@ -1,7 +1,7 @@
 export const chests = [
   {
     _type: "chest",
-    name: "Disgarded Field Medic Bag",
+    name: "Medic Bag",
     id: "medic-bag",
     description: "Vital medicine may lie inside...",
   },

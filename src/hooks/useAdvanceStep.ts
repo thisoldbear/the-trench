@@ -35,12 +35,11 @@ export function useAdvanceStep() {
         activeStep,
         ...opts,
         messages: [
+          ...(opts?.messages || []),
           {
             id: crypto.randomUUID(),
             text: `${prefix(activeStep)} ${activeStep.name}`,
           },
-
-          ...(opts?.messages || []),
         ],
       },
     });

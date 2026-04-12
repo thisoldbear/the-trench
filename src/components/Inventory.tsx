@@ -7,7 +7,7 @@ export const Inventory = () => {
   return (
     <div className="inventory">
       <h2 className="inventory__title unifrakturcook-bold">Inventory</h2>
-      <p>Click to equip/use</p>
+      <p>Tap to equip/use</p>
       <div className="inventory__grid">
         {state.player.weapons.map((weapon) => (
           <div

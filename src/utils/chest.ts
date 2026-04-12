@@ -29,16 +29,16 @@ export function rollOnChestTable(chest: Chest, dispatch: Dispatch<GameAction>) {
 
   if (chest.id === "medic-bag") {
     // Empty
-    if (diceResult <= 10) {
+    if (diceResult <= 1) {
       return [];
     }
 
-    if (diceResult <= 16) {
+    if (diceResult <= 14) {
       // Bandage
       return [equipment[0]!];
     }
 
-    if (diceResult <= 20) {
+    if (diceResult <= 19) {
       // Morphine
       return [equipment[1]!];
     }
@@ -46,11 +46,11 @@ export function rollOnChestTable(chest: Chest, dispatch: Dispatch<GameAction>) {
 
   if (chest.id === "corpse") {
     // Empty
-    if (diceResult <= 10) {
+    if (diceResult <= 1) {
       return [];
     }
 
-    if (diceResult <= 15) {
+    if (diceResult <= 14) {
       return [weapons[Math.floor(Math.random() * weapons.length)]!];
     }
 
@@ -58,6 +58,7 @@ export function rollOnChestTable(chest: Chest, dispatch: Dispatch<GameAction>) {
       // Gin
       return [equipment[2]!];
     }
+
     if (diceResult <= 20) {
       // Hip flask
       return [equipment[3]!];
