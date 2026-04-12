@@ -19,8 +19,6 @@ const ActiveStep = () => {
   const { activeStep } = state;
   const advanceStep = useAdvanceStep();
 
-  console.log(state.player);
-
   useEffect(() => {
     if (activeStep?._type === "room" && activeStep.name === "Chapel") {
       dispatch({

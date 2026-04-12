@@ -11,6 +11,7 @@ export type Player = {
   toughness: number;
   totalToughness: number;
   damageModifier: number;
+  hitModifier: number;
 };
 
 export const player = {
@@ -23,4 +24,5 @@ export const player = {
   toughness: 3,
   totalToughness: 3,
   damageModifier: 0,
+  hitModifier: 0,
 } satisfies Player;

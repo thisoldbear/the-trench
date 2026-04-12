@@ -9,10 +9,14 @@ export function applyEquipmentEffect(
     wounds: number;
     toughness: number;
     damageModifier: number;
+    hitModifier: number;
   },
   dispatch: Dispatch<GameAction>,
 ) {
-  if (equipment.id === "morphine" && playerState.toughness <= player.totalToughness + 3) {
+  if (
+    equipment.id === "morphine" &&
+    playerState.toughness <= player.totalToughness + 3
+  ) {
     dispatch({
       type: "player_toughness_add",
       payload: {
@@ -36,6 +40,21 @@ export function applyEquipmentEffect(
           {
             id: crypto.randomUUID(),
             text: `Bandage restored 3 health.`,
+          },
+        ],
+      },
+    });
+  }
+
+  if (equipment.id === "cigarettes") {
+    dispatch({
+      type: "player_hit_modifier_add",
+      payload: {
+        hitModifier: playerState.hitModifier + 1,
+        messages: [
+          {
+            id: crypto.randomUUID(),
+            text: `Cigarettes added ${playerState.hitModifier + 1} to hit results for a short while`,
           },
         ],
       },

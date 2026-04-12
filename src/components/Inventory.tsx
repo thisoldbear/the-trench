@@ -64,6 +64,7 @@ export const Inventory = () => {
                     wounds: state.player.wounds,
                     toughness: state.player.toughness,
                     damageModifier: state.player.damageModifier,
+                    hitModifier: state.player.hitModifier,
                   },
                   dispatch,
                 );

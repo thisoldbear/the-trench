@@ -60,16 +60,6 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
                     },
                   });
 
-                  // Move on
-                  advanceStep({
-                    messages: [
-                      {
-                        id: crypto.randomUUID(),
-                        text: `Rolled D3: Retreat dealt ${retreatDamage} damage`,
-                      },
-                    ],
-                  });
-
                   if (state.player.damageModifier > 0) {
                     dispatch({
                       type: "player_damage_remove",
@@ -84,6 +74,30 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
                       },
                     });
                   }
+
+                  if (state.player.hitModifier > 0) {
+                    dispatch({
+                      type: "player_hit_modifier_remove",
+                      payload: {
+                        messages: [
+                          {
+                            id: crypto.randomUUID(),
+                            text: `Cigarettes wore off`,
+                          },
+                        ],
+                      },
+                    });
+                  }
+
+                  // Move on
+                  advanceStep({
+                    messages: [
+                      {
+                        id: crypto.randomUUID(),
+                        text: `Rolled D3: Retreat dealt ${retreatDamage} damage`,
+                      },
+                    ],
+                  });
                 } else {
                   dispatch({
                     type: "player_wounded",

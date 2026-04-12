@@ -76,7 +76,22 @@ export const Stats = () => {
         </p>
       </div>
 
-      <div className="stats__cell stats__cell--6"></div>
+      <div className="stats__cell stats__cell--6">
+        <p>
+          Hit Mod:
+          {state.player.hitModifier === 0 ? (
+            " -"
+          ) : (
+            <span
+              style={{
+                color: "#78a878",
+              }}
+            >
+              {` `}+{state.player.hitModifier}
+            </span>
+          )}
+        </p>
+      </div>
     </div>
   );
 };

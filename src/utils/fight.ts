@@ -42,12 +42,16 @@ export function fightLoop(
     (weapon) => weapon.uuid === player.equippedWeapon,
   );
 
+  console.log("FIGHt");
+
   if (!weapon) {
     return;
   }
 
-  const playerRolled = rollDice(6);
+  const playerRolled = rollDice(6) + player.hitModifier;
   const playerHit = playerRolled >= hitOn(weapon.strength, enemy.toughness);
+
+  console.log(rollDice(6) + player.hitModifier);
 
   if (playerHit) {
     const damage = rollDice(weapon.damage) + weapon.damageModifier;
@@ -76,6 +80,20 @@ export function fightLoop(
               {
                 id: crypto.randomUUID(),
                 text: `Damage modifier removed`,
+              },
+            ],
+          },
+        });
+      }
+
+      if (player.hitModifier > 0) {
+        dispatch({
+          type: "player_hit_modifier_remove",
+          payload: {
+            messages: [
+              {
+                id: crypto.randomUUID(),
+                text: `Cigarettes +1 to hit rolls wore off`,
               },
             ],
           },

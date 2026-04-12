@@ -28,8 +28,6 @@ export function useAdvanceStep() {
       }
     };
 
-    console.log(opts);
-
     dispatch({
       type: "active_step",
       payload: {

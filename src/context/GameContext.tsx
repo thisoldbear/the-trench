@@ -66,6 +66,19 @@ export type GameAction =
       };
     }
   | {
+      type: "player_hit_modifier_add";
+      payload: {
+        hitModifier: number;
+        messages?: GameState["messages"];
+      };
+    }
+  | {
+      type: "player_hit_modifier_remove";
+      payload: {
+        messages?: GameState["messages"];
+      };
+    }
+  | {
       type: "player_damage_add";
       payload: {
         damageModifier: number;
@@ -161,8 +174,6 @@ const initialState: GameState = {
   enemiesKilled: 0,
 };
 
-console.log(initialState);
-
 function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case "active_step":
@@ -199,6 +210,26 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         player: {
           ...state.player,
           toughness: action.payload.toughness,
+        },
+        messages: [...state.messages, ...(action.payload.messages || [])],
+      };
+
+    case "player_hit_modifier_add":
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          hitModifier: action.payload.hitModifier,
+        },
+        messages: [...state.messages, ...(action.payload.messages || [])],
+      };
+
+    case "player_hit_modifier_remove":
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          hitModifier: 0,
         },
         messages: [...state.messages, ...(action.payload.messages || [])],
       };
