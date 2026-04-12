@@ -119,7 +119,7 @@ h1 {
   padding: 10px;
 }
 
-.messages li:not(:nth-child(1)):not(:nth-child(2)) {
+.messages li:not(:nth-child(1)) {
   opacity: 0.5;
 }
 
