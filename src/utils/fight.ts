@@ -42,16 +42,12 @@ export function fightLoop(
     (weapon) => weapon.uuid === player.equippedWeapon,
   );
 
-  console.log("FIGHt");
-
   if (!weapon) {
     return;
   }
 
   const playerRolled = rollDice(6) + player.hitModifier;
   const playerHit = playerRolled >= hitOn(weapon.strength, enemy.toughness);
-
-  console.log(rollDice(6) + player.hitModifier);
 
   if (playerHit) {
     const damage = rollDice(weapon.damage) + weapon.damageModifier;
