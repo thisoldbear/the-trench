@@ -49,7 +49,7 @@ const ChestItem = ({ item }: { item: Equipment | Weapon }) => {
                   messages: [
                     {
                       id: crypto.randomUUID(),
-                      text: `Added ${item.name}`,
+                      text: `Added ${item.name} to inventory`,
                     },
                   ],
                 },
@@ -62,7 +62,7 @@ const ChestItem = ({ item }: { item: Equipment | Weapon }) => {
                   messages: [
                     {
                       id: crypto.randomUUID(),
-                      text: `Added ${item.name}`,
+                      text: `Added ${item.name}  to inventory`,
                     },
                   ],
                 },

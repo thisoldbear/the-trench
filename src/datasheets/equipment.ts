@@ -9,20 +9,21 @@ export const equipment = [
     _type: "equipment",
     name: "Morphine",
     id: "morphine",
-    description: "Adds +2 to toughness. Decreased by succesful enemy hits.",
+    description:
+      "Adds +2 to toughness. Decreased by succesful enemy hits. Uses [x1].",
   },
   {
     _type: "equipment",
     name: "Cigarettes",
     id: "cigarettes",
-    description: "Adds +1 to roll results for a short while.",
+    description: "Adds +1 to roll results for a short while. Uses [x1].",
   },
   {
     _type: "equipment",
     name: "Hip Flask",
     id: "hip-flask",
     description:
-      "Flask containing gin. Adds +1 to toughness and +2 to damage rolls for a short while.",
+      "Flask containing gin. Adds +1 to toughness and +2 to damage rolls for a short while. Uses [x1].",
   },
 ] as const;
 
