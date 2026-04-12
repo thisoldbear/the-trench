@@ -33,6 +33,7 @@ export function useAdvanceStep() {
       type: "active_step",
       payload: {
         activeStep,
+        ...opts,
         messages: [
           ...(opts?.messages || []),
           {
@@ -40,7 +41,6 @@ export function useAdvanceStep() {
             text: `${prefix(activeStep)} ${activeStep.name}`,
           },
         ],
-        ...opts,
       },
     });
   };
