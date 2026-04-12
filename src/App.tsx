@@ -18,12 +18,8 @@ const ActiveStep = () => {
   const { state, dispatch } = useGame();
   const { activeStep } = state;
   const advanceStep = useAdvanceStep();
-  const lastStepRef = useRef(activeStep);
 
   useEffect(() => {
-    if (activeStep === lastStepRef.current) return;
-    lastStepRef.current = activeStep;
-
     if (activeStep?._type === "room" && activeStep.name === "Chapel") {
       dispatch({
         type: "player_restored",
@@ -80,11 +76,13 @@ const ActiveStep = () => {
   }
 
   if (activeStep?._type === "enemy") {
-    <>
-      <Stats />
-      <EnemyStep enemy={activeStep as Enemy} />
-      <Inventory />
-    </>;
+    return (
+      <>
+        <Stats />
+        <EnemyStep enemy={activeStep as Enemy} />
+        <Inventory />
+      </>
+    );
   }
 
   if (activeStep?._type === "trap") {
@@ -114,7 +112,9 @@ const ActiveStep = () => {
       <p>And every night... they come.</p>
       <button
         className="btn btn--cta unifrakturcook-bold"
-        onClick={() => advanceStep()}
+        onClick={() => {
+          advanceStep();
+        }}
       >
         Enter The Trench
       </button>
