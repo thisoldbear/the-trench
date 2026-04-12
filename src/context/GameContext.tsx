@@ -23,6 +23,7 @@ export type GameState = {
     text: string;
   }[];
   gameOver: boolean;
+  enemiesKilled: number;
 };
 
 export type GameAction =
@@ -149,6 +150,7 @@ const initialState: GameState = {
   activeStep: null,
   gameOver: false,
   messages: [],
+  enemiesKilled: 0,
 };
 
 function gameReducer(state: GameState, action: GameAction): GameState {
@@ -249,6 +251,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
             wounds: action.payload.wounds,
           },
           messages: [...state.messages, ...(action.payload.messages || [])],
+          enemiesKilled: state.enemiesKilled + 1,
         };
       }
       return state;
