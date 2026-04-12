@@ -2,6 +2,8 @@ import type { Enemy } from "@/datasheets/enemies";
 import { useGame } from "@/context/GameContext";
 import { fightLoop, hitOn } from "@/utils/fight";
 import { rollDice } from "@/utils/rollDice";
+import { removeTemporaryModifiers } from "@/utils/modifiers";
+import { createMessage } from "@/utils/messages";
 import { Message } from "../components/Message";
 import { useAdvanceStep } from "../hooks/useAdvanceStep";
 
@@ -60,42 +62,13 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
                     },
                   });
 
-                  if (state.player.damageModifier > 0) {
-                    dispatch({
-                      type: "player_damage_remove",
-                      payload: {
-                        damageModifier: 0,
-                        messages: [
-                          {
-                            id: crypto.randomUUID(),
-                            text: `Damage modifier removed`,
-                          },
-                        ],
-                      },
-                    });
-                  }
+                  removeTemporaryModifiers(state.player, dispatch);
 
-                  if (state.player.hitModifier > 0) {
-                    dispatch({
-                      type: "player_hit_modifier_remove",
-                      payload: {
-                        messages: [
-                          {
-                            id: crypto.randomUUID(),
-                            text: `Cigarettes wore off`,
-                          },
-                        ],
-                      },
-                    });
-                  }
-
-                  // Move on
                   advanceStep({
                     messages: [
-                      {
-                        id: crypto.randomUUID(),
-                        text: `Rolled D3: Retreat dealt ${retreatDamage} damage`,
-                      },
+                      createMessage(
+                        `Rolled D3: Retreat dealt ${retreatDamage} damage`,
+                      ),
                     ],
                   });
                 } else {

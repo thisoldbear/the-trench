@@ -4,6 +4,8 @@ import type { Dispatch } from "react";
 import type { GameAction } from "@/context/GameContext";
 import type { Weapon } from "@/datasheets/weapons";
 import type { Player } from "@/datasheets/player";
+import { removeTemporaryModifiers, decrementDamageModifier } from "./modifiers";
+import { createMessage } from "./messages";
 
 export function hitOn(attackerStrength: number, defenderToughness: number) {
   let hitOn = 3;
@@ -58,44 +60,11 @@ export function fightLoop(
         type: "enemy_defeated",
         payload: {
           wounds: 0,
-          messages: [
-            {
-              id: crypto.randomUUID(),
-              text: `${enemy.name} was defeated`,
-            },
-          ],
+          messages: [createMessage(`${enemy.name} was defeated`)],
         },
       });
 
-      if (player.damageModifier > 0) {
-        dispatch({
-          type: "player_damage_remove",
-          payload: {
-            damageModifier: 0,
-            messages: [
-              {
-                id: crypto.randomUUID(),
-                text: `Damage modifier removed`,
-              },
-            ],
-          },
-        });
-      }
-
-      if (player.hitModifier > 0) {
-        dispatch({
-          type: "player_hit_modifier_remove",
-          payload: {
-            messages: [
-              {
-                id: crypto.randomUUID(),
-                text: `Cigarettes +1 to hit rolls wore off`,
-              },
-            ],
-          },
-        });
-      }
-
+      removeTemporaryModifiers(player, dispatch);
       resolveWeaponAmmo(weapon, dispatch);
 
       return; // EXIT from fightLoop
@@ -114,31 +83,13 @@ export function fightLoop(
       },
     });
 
-    if (player.damageModifier > 0) {
-      dispatch({
-        type: "player_damage_remove",
-        payload: {
-          damageModifier: player.damageModifier - 1,
-          messages: [
-            {
-              id: crypto.randomUUID(),
-              text: `Damage bonus dropped to ${player.damageModifier - 1}`,
-            },
-          ],
-        },
-      });
-    }
+    decrementDamageModifier(player.damageModifier, dispatch);
   } else {
     dispatch({
       type: "enemy_wounded",
       payload: {
         wounds: enemy.wounds,
-        messages: [
-          {
-            id: crypto.randomUUID(),
-            text: `You rolled a ${playerRolled} (miss)`,
-          },
-        ],
+        messages: [createMessage(`You rolled a ${playerRolled} (miss)`)],
       },
     });
   }
@@ -162,11 +113,8 @@ export function fightLoop(
       payload: {
         wounds: playerWounds,
         messages: [
-          {
-            id: crypto.randomUUID(),
-            text: `${enemy.name} rolled a ${enemyRolled}`,
-          },
-          { id: crypto.randomUUID(), text: `You took ${damage} damage` },
+          createMessage(`${enemy.name} rolled a ${enemyRolled}`),
+          createMessage(`You took ${damage} damage`),
         ],
       },
     });
@@ -176,12 +124,7 @@ export function fightLoop(
         type: "player_toughness_remove",
         payload: {
           toughness: player.toughness - 1,
-          messages: [
-            {
-              id: crypto.randomUUID(),
-              text: `Toughness decreased`,
-            },
-          ],
+          messages: [createMessage(`Toughness decreased`)],
         },
       });
     }
@@ -190,12 +133,7 @@ export function fightLoop(
       type: "player_wounded",
       payload: {
         wounds: player.wounds,
-        messages: [
-          {
-            id: crypto.randomUUID(),
-            text: `${enemy.name} rolled a ${enemyRolled} (miss)`,
-          },
-        ],
+        messages: [createMessage(`${enemy.name} rolled a ${enemyRolled} (miss)`)],
       },
     });
   }

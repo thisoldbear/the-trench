@@ -3,6 +3,8 @@ import { Message } from "../components/Message";
 import { useAdvanceStep } from "../hooks/useAdvanceStep";
 import { useGame } from "@/context/GameContext";
 import { rollDice } from "@/utils/rollDice";
+import { removeTemporaryModifiers } from "@/utils/modifiers";
+import { createMessage } from "@/utils/messages";
 
 export const RoomStep = ({ room }: { room: Room }) => {
   const { state, dispatch } = useGame();
@@ -45,29 +47,11 @@ export const RoomStep = ({ room }: { room: Room }) => {
                 },
               });
 
-              advanceStep({
-                messages: [
-                  {
-                    id: crypto.randomUUID(),
-                    text: `Rolled D3: Dealt ${retreatDamage} damage`,
-                  },
-                ],
-              });
+              removeTemporaryModifiers(state.player, dispatch);
 
-              if (state.player.damageModifier > 0) {
-                dispatch({
-                  type: "player_damage_remove",
-                  payload: {
-                    damageModifier: 0,
-                    messages: [
-                      {
-                        id: crypto.randomUUID(),
-                        text: `Damage modifier removed`,
-                      },
-                    ],
-                  },
-                });
-              }
+              advanceStep({
+                messages: [createMessage(`Rolled D3: Dealt ${retreatDamage} damage`)],
+              });
             } else {
               dispatch({
                 type: "player_wounded",
