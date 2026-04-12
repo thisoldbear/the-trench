@@ -184,6 +184,13 @@ export function App() {
         <div className="app__container">
           <ActiveStep />
         </div>
+        <div className="footer">
+          <p>
+            Inspired by{" "}
+            <a href="https://darkfort.caffeine.computer">Dark Fort</a>
+          </p>
+          <p>Version: Beta</p>
+        </div>
       </div>
     </GameProvider>
   );
