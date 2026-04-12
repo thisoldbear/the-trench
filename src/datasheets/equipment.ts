@@ -10,7 +10,7 @@ export const equipment = [
     name: "Morphine",
     id: "morphine",
     description:
-      "Adds +2 to toughness. Decreased by succesful enemy hits. Uses [x1].",
+      "Adds +2 to toughness. Decreased by successful enemy hits. Uses [x1].",
   },
   {
     _type: "equipment",
