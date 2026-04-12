@@ -10,7 +10,7 @@ export const RoomStep = ({ room }: { room: Room }) => {
 
   return (
     <div>
-      <h1 className="unifrakturcook-bold">{room.name}</h1>
+      <h2 className="unifrakturcook-bold">{room.name}</h2>
       <p>{room.description}</p>
       <Message />
       <div className="btn-group">

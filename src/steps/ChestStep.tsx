@@ -91,7 +91,7 @@ export const ChestStep = ({ chest }: { chest: Chest }) => {
 
   return (
     <div className="chest">
-      <h1 className="chest__title unifrakturcook-bold">{chest.name}</h1>
+      <h2 className="chest__title unifrakturcook-bold">{chest.name}</h2>
       <p>{chest.description}</p>
       {chestOpened && foundEqupment.length === 0 && (
         <ul className="chest__list">

@@ -14,7 +14,7 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
 
   return (
     <div>
-      <h1 className="unifrakturcook-bold">{enemy.name}</h1>
+      <h2 className="unifrakturcook-bold">{enemy.name}</h2>
       <p>
         HP:{" "}
         <span
