@@ -113,7 +113,7 @@ const ActiveStep = () => {
     return (
       <>
         <Stats />
-        <RoomStep room={activeStep as Room} />
+        <RoomStep key={state.activeStepUuid} room={activeStep as Room} />
         <Inventory />
       </>
     );
@@ -123,7 +123,7 @@ const ActiveStep = () => {
     return (
       <>
         <Stats />
-        <EnemyStep enemy={activeStep as Enemy} />
+        <EnemyStep key={state.activeStepUuid} enemy={activeStep as Enemy} />
         <Inventory />
       </>
     );
@@ -133,7 +133,7 @@ const ActiveStep = () => {
     return (
       <>
         <Stats />
-        <TrapStep trap={activeStep as Trap} />
+        <TrapStep key={state.activeStepUuid} trap={activeStep as Trap} />
         <Inventory />
       </>
     );
@@ -143,7 +143,7 @@ const ActiveStep = () => {
     return (
       <>
         <Stats />
-        <ChestStep chest={activeStep as Chest} />
+        <ChestStep key={state.activeStepUuid} chest={activeStep as Chest} />
         <Inventory />
       </>
     );

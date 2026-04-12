@@ -20,6 +20,7 @@ export type GameState = {
   player: Player;
   rooms: number;
   activeStep: null | Room | Enemy | Trap | Chest;
+  activeStepUuid: string | null;
   messages: {
     id: string;
     text: string;
@@ -169,6 +170,7 @@ const initialState: GameState = {
   },
   rooms: 0,
   activeStep: null,
+  activeStepUuid: null,
   gameOver: false,
   messages: [],
   enemiesKilled: 0,
@@ -180,6 +182,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       return {
         ...state,
         activeStep: action.payload.activeStep,
+        activeStepUuid: crypto.randomUUID(),
         messages: [...state.messages, ...(action.payload.messages || [])],
         rooms: action.payload.rooms ?? state.rooms,
       };
