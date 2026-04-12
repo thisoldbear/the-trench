@@ -150,22 +150,29 @@ const ActiveStep = () => {
   }
 
   return (
-    <div className="start germania-one-regular">
-      <p>After the horrors of the day, darkness falls.</p>
-      <p>To ward off the terror, prayers are made and lamps are lit.</p>
-      <p>And every night... they come.</p>
-      <p>
-        Light <u>{LAMP_TARGET}</u> lamps to see out the night.
-      </p>
-      <button
-        className="btn btn--cta unifrakturcook-bold"
-        onClick={() => {
-          advanceStep();
-        }}
-      >
-        Enter The Trench
-      </button>
-    </div>
+    <>
+      <Stats />
+      <div className="start germania-one-regular">
+        <h2 className="unifrakturcook-bold">Darkness Falls</h2>
+        <p>
+          After the horrors of the day, darkness falls once more on The Trench.
+        </p>
+        <p>To ward off the terror, prayers are made and lamps are lit.</p>
+        <p>And every night... they come.</p>
+        <p>
+          Light <u>{LAMP_TARGET}</u> lamps to see out the night.
+        </p>
+        <button
+          className="btn btn--cta unifrakturcook-bold"
+          onClick={() => {
+            advanceStep();
+          }}
+        >
+          Enter The Trench
+        </button>
+      </div>
+      <Inventory />
+    </>
   );
 };
 
