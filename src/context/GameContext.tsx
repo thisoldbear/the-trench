@@ -14,7 +14,7 @@ import {
   type ReactNode,
 } from "react";
 
-export const LAMP_TARGET = 20;
+export const LAMP_TARGET = 13;
 
 export type GameState = {
   player: Player;
