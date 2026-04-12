@@ -62,7 +62,6 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
 
                   // Move on
                   advanceStep({
-                    rooms: 1,
                     messages: [
                       {
                         id: crypto.randomUUID(),

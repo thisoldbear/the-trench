@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { GameProvider, useGame } from "./context/GameContext";
+import { GameProvider, LAMP_TARGET, useGame } from "./context/GameContext";
 import type { Enemy } from "./datasheets/enemies";
 import type { Room } from "./datasheets/rooms";
 import type { Trap } from "./datasheets/traps";
@@ -61,6 +61,30 @@ const ActiveStep = () => {
     }
   }, [activeStep]);
 
+  if (state.rooms >= LAMP_TARGET) {
+    return (
+      <div className="game-end">
+        <Stats />
+        <h1 className="game-end__title unifrakturcook-bold">
+          The Night Passes
+        </h1>
+        <p>Another long night has passed in The Trench.</p>
+        <p>Rest, while you can... darkness is already descending.</p>
+
+        <button
+          className="btn btn--cta unifrakturcook-bold"
+          onClick={() =>
+            dispatch({
+              type: "restart",
+            })
+          }
+        >
+          Rise, once more
+        </button>
+      </div>
+    );
+  }
+
   if (state.gameOver) {
     return (
       <div className="game-over">
@@ -79,7 +103,7 @@ const ActiveStep = () => {
             })
           }
         >
-          Rise, once more
+          Try again
         </button>
       </div>
     );
@@ -131,7 +155,7 @@ const ActiveStep = () => {
       <p>To ward off the terror, prayers are made and lamps are lit.</p>
       <p>And every night... they come.</p>
       <p>
-        Light <u>20</u> lamps to see out the night.
+        Light <u>{LAMP_TARGET}</u> lamps to see out the night.
       </p>
       <button
         className="btn btn--cta unifrakturcook-bold"

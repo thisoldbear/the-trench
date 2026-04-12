@@ -19,7 +19,7 @@ export const RoomStep = ({ room }: { room: Room }) => {
             className="btn btn--cta unifrakturcook-bold"
             onClick={() =>
               advanceStep({
-                rooms: 1,
+                rooms: state.rooms + 1,
                 messages: [
                   {
                     id: crypto.randomUUID(),

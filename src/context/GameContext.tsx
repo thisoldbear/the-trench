@@ -14,9 +14,11 @@ import {
   type ReactNode,
 } from "react";
 
+export const LAMP_TARGET = 20;
+
 export type GameState = {
   player: Player;
-  rooms: any;
+  rooms: number;
   activeStep: null | Room | Enemy | Trap | Chest;
   messages: {
     id: string;
@@ -139,7 +141,8 @@ export type GameAction =
       };
     }
   | { type: "restart" }
-  | { type: "game_over" };
+  | { type: "game_over" }
+  | { type: "game_end" };
 
 const initialState: GameState = {
   player: {
@@ -147,7 +150,7 @@ const initialState: GameState = {
     weapons: weaponsLoadout(),
     equipment: equipmentLoadout(),
   },
-  rooms: null,
+  rooms: 0,
   activeStep: null,
   gameOver: false,
   messages: [],
@@ -161,9 +164,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         activeStep: action.payload.activeStep,
         messages: [...state.messages, ...(action.payload.messages || [])],
-        rooms: action.payload.rooms
-          ? state.rooms + action.payload.rooms
-          : state.rooms,
+        rooms: action.payload.rooms ?? state.rooms,
       };
 
     case "player_wounded":
@@ -360,6 +361,8 @@ function gameReducer(state: GameState, action: GameAction): GameState {
           wounds: 0,
         },
       };
+    case "game_end":
+      return state;
 
     case "restart":
       return {

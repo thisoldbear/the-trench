@@ -28,12 +28,13 @@ export function useAdvanceStep() {
       }
     };
 
+    console.log(opts);
+
     dispatch({
       type: "active_step",
       payload: {
         // TODO: Fix !
         activeStep,
-        ...opts,
         messages: [
           ...(opts?.messages || []),
           {
@@ -41,6 +42,7 @@ export function useAdvanceStep() {
             text: `${prefix(activeStep)} ${activeStep.name}`,
           },
         ],
+        ...opts,
       },
     });
   };

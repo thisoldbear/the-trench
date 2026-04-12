@@ -1,4 +1,4 @@
-import { useGame } from "@/context/GameContext";
+import { LAMP_TARGET, useGame } from "@/context/GameContext";
 import { player } from "@/datasheets/player";
 
 export const Stats = () => {
@@ -32,10 +32,12 @@ export const Stats = () => {
       <div
         className="stats__cell stats__cell--2"
         style={{
-          background: `linear-gradient(90deg,#2d2d2d 0%, #2d2d2d ${(100 * state.rooms) / 20}%, transparent ${(100 * state.rooms) / 20}%)`,
+          background: `linear-gradient(90deg,#2d2d2d 0%, #2d2d2d ${(100 * state.rooms) / LAMP_TARGET}%, transparent ${(100 * state.rooms) / LAMP_TARGET}%)`,
         }}
       >
-        <p>Lamps lit: {state.rooms || 0} / 20</p>
+        <p>
+          Lamps lit: {state.rooms || 0} / {LAMP_TARGET}
+        </p>
       </div>
       <div className="stats__cell stats__cell--3">
         <p>
