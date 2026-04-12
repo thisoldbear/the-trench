@@ -9,7 +9,7 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
   const { state, dispatch } = useGame();
   const advanceStep = useAdvanceStep();
   const equippedWeapon = state.player.weapons.find(
-    (w) => w.id === state.player.equippedWeapon,
+    (w) => w.uuid === state.player.equippedWeapon,
   );
 
   return (

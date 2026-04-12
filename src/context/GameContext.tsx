@@ -96,7 +96,7 @@ export type GameAction =
   | {
       type: "equipped_weapon_add";
       payload: {
-        weaponId: Weapon["id"];
+        weaponId: Weapon["uuid"];
         messages?: GameState["messages"];
       };
     }
@@ -144,11 +144,15 @@ export type GameAction =
   | { type: "game_over" }
   | { type: "game_end" };
 
+const initialWeapons = weaponsLoadout();
+const initialEquipment = equipmentLoadout();
+
 const initialState: GameState = {
   player: {
     ...player,
-    weapons: weaponsLoadout(),
-    equipment: equipmentLoadout(),
+    weapons: initialWeapons,
+    equipment: initialEquipment,
+    equippedWeapon: initialWeapons[0]?.uuid,
   },
   rooms: 0,
   activeStep: null,
@@ -156,6 +160,8 @@ const initialState: GameState = {
   messages: [],
   enemiesKilled: 0,
 };
+
+console.log(initialState);
 
 function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
@@ -264,7 +270,11 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         player: {
           ...state.player,
-          equippedWeapon: action.payload.weaponId,
+          ...(action.payload.weaponId
+            ? {
+                equippedWeapon: action.payload.weaponId,
+              }
+            : {}),
         },
         messages: [...state.messages, ...(action.payload.messages || [])],
       };
@@ -276,7 +286,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         player: {
           ...state.player,
           weapons: [...state.player.weapons].filter(
-            (weapon) => weapon.id !== state.player.equippedWeapon,
+            (weapon) => weapon.uuid !== state.player.equippedWeapon,
           ),
           equippedWeapon: null,
         },
@@ -291,7 +301,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
           ...state.player,
           weapons: [...state.player.weapons]
             .reduce((acc: Weapon[], curr: Weapon) => {
-              if (curr.id === state.player.equippedWeapon && curr.ammo > 0) {
+              if (curr.uuid === state.player.equippedWeapon && curr.ammo > 0) {
                 return [
                   ...acc,
                   {
@@ -314,7 +324,13 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         player: {
           ...state.player,
-          equipment: [...state.player.equipment, action.payload.equipment],
+          equipment: [
+            ...state.player.equipment,
+            {
+              ...action.payload.equipment,
+              uuid: crypto.randomUUID(),
+            },
+          ],
         },
         messages: [...state.messages, ...(action.payload.messages || [])],
       };
@@ -330,12 +346,16 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         messages: [...state.messages, ...(action.payload.messages || [])],
       };
     }
+
     case "weapon_add": {
       return {
         ...state,
         player: {
           ...state.player,
-          weapons: [...state.player.weapons, action.payload.weapon],
+          weapons: [
+            ...state.player.weapons,
+            { ...action.payload.weapon, uuid: crypto.randomUUID() },
+          ],
         },
         messages: [...state.messages, ...(action.payload.messages || [])],
       };

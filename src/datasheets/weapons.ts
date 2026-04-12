@@ -2,7 +2,7 @@ export const weapons = [
   {
     _type: "gun",
     damage: 6,
-    damageModifier: 1,
+    damageModifier: 0,
     name: "Pistol",
     description: "Standard issue.",
     id: "pistol",
@@ -10,6 +10,7 @@ export const weapons = [
     strength: 3,
     limited: true,
     ammo: 15,
+    uuid: "",
   },
   {
     _type: "melee",
@@ -22,6 +23,7 @@ export const weapons = [
     strength: 3,
     limited: false,
     ammo: 99,
+    uuid: "",
   },
   {
     _type: "melee",
@@ -34,6 +36,7 @@ export const weapons = [
     strength: 3,
     limited: false,
     ammo: 99,
+    uuid: "",
   },
   {
     _type: "gun",
@@ -46,6 +49,7 @@ export const weapons = [
     strength: 4,
     limited: true,
     ammo: 15,
+    uuid: "",
   },
   {
     _type: "gun",
@@ -58,6 +62,7 @@ export const weapons = [
     strength: 4,
     limited: true,
     ammo: 6,
+    uuid: "",
   },
   {
     _type: "explosive",
@@ -70,6 +75,7 @@ export const weapons = [
     strength: 5,
     limited: true,
     ammo: 1,
+    uuid: "",
   },
   {
     _type: "explosive",
@@ -82,6 +88,7 @@ export const weapons = [
     strength: 4,
     limited: true,
     ammo: 1,
+    uuid: "",
   },
   {
     _type: "melee",
@@ -94,9 +101,11 @@ export const weapons = [
     strength: 4,
     limited: true,
     ammo: 6,
+    uuid: "",
   },
 ] as const;
 
-export type Weapon = Omit<(typeof weapons)[number], "ammo"> & {
+export type Weapon = Omit<(typeof weapons)[number], "ammo" | "uuid"> & {
   ammo: number;
+  uuid?: string;
 };

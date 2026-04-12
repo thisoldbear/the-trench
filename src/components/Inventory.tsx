@@ -11,8 +11,8 @@ export const Inventory = () => {
       <div className="inventory__grid">
         {state.player.weapons.map((weapon) => (
           <div
-            className={`inventory__cell ${weapon.id === state.player.equippedWeapon ? "inventory__cell--equipped" : ""}`}
-            key={weapon.name}
+            className={`inventory__cell ${weapon.uuid === state.player.equippedWeapon ? "inventory__cell--equipped" : ""}`}
+            key={weapon.uuid}
           >
             <button
               className="special-elite-regular"
@@ -20,20 +20,25 @@ export const Inventory = () => {
               onClick={() => {
                 dispatch({
                   type: "equipped_weapon_add",
-                  payload: { weaponId: weapon.id },
+                  payload: { weaponId: weapon.uuid },
                 });
               }}
             >
               <div className="inventory__cell-title">
-                {weapon.name}{" "}
-                {weapon.id === state.player.equippedWeapon ? "[Equipped]" : ""}
+                {weapon.name}
+                {` `}
+                {weapon.uuid === state.player.equippedWeapon
+                  ? "[Equipped]"
+                  : ""}
               </div>
               <div className="inventory__cell-grid">
                 <div className="inventory__cell-grid-cell--1">
                   Ammo:{" "}
-                  {weapon.limited && weapon.ammo === 1
-                    ? `[x1]`
-                    : `[x${weapon.ammo}]`}
+                  {weapon.limited
+                    ? weapon.ammo === 1
+                      ? `[x1]`
+                      : `[x${weapon.ammo}]`
+                    : "∞"}
                 </div>
                 <div className="inventory__cell-grid-cell--2">
                   Strength: {weapon.strength}
@@ -48,7 +53,7 @@ export const Inventory = () => {
         ))}
 
         {state.player.equipment.map((equipment, index) => (
-          <div className="inventory__cell" key={equipment.id}>
+          <div className="inventory__cell" key={equipment.uuid}>
             <button
               className="special-elite-regular"
               disabled={!state.activeStep}
@@ -67,7 +72,7 @@ export const Inventory = () => {
                   type: "equipment_remove",
                   payload: {
                     equipment: state.player.equipment.filter(
-                      (_, i) => i !== index,
+                      (item) => item.uuid !== equipment.uuid,
                     ),
                     messages: [
                       {

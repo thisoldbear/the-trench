@@ -27,4 +27,6 @@ export const equipment = [
   },
 ] as const;
 
-export type Equipment = (typeof equipment)[number];
+export type Equipment = (typeof equipment)[number] & {
+  uuid?: string;
+};

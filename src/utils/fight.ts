@@ -39,7 +39,7 @@ export function fightLoop(
   if (player.wounds <= 0 || enemy.wounds <= 0) return;
 
   const weapon = player.weapons.find(
-    (weapon) => weapon.id === player.equippedWeapon,
+    (weapon) => weapon.uuid === player.equippedWeapon,
   );
 
   if (!weapon) {

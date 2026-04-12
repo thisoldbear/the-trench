@@ -21,8 +21,7 @@ const ChestItem = ({ item }: { item: Equipment | Weapon }) => {
         {item._type !== "equipment" && (
           <div className="inventory__cell-grid">
             <div className="inventory__cell-grid-cell--1">
-              Ammo:{" "}
-              {item.limited && item.ammo === 1 ? `[x1]` : `[x${item.ammo}]`}
+              Ammo: {item.limited ? `[x${item.ammo}]` : `∞`}
             </div>
             <div className="inventory__cell-grid-cell--2">
               Strength: {item.strength}
