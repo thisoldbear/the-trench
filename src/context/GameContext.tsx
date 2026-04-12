@@ -138,6 +138,7 @@ export type GameAction =
         messages?: GameState["messages"];
       };
     }
+  | { type: "restart" }
   | { type: "game_over" };
 
 const initialState: GameState = {
@@ -358,6 +359,11 @@ function gameReducer(state: GameState, action: GameAction): GameState {
           ...state.player,
           wounds: 0,
         },
+      };
+
+    case "restart":
+      return {
+        ...initialState,
       };
     default:
       return state;

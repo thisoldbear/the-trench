@@ -63,13 +63,24 @@ const ActiveStep = () => {
 
   if (state.gameOver) {
     return (
-      <div>
+      <div className="game-over">
         <Stats />
-        <h1 className="game-over unifrakturcook-bold">You Died</h1>
+        <h1 className="game-over__title unifrakturcook-bold">You Died</h1>
         <p>
           A valiant effort. Let us pray other brave individuals will continue to
           keep the lamps lit each night.
         </p>
+
+        <button
+          className="btn btn--cta unifrakturcook-bold"
+          onClick={() =>
+            dispatch({
+              type: "restart",
+            })
+          }
+        >
+          Rise, once more
+        </button>
       </div>
     );
   }

@@ -241,7 +241,11 @@ h1 {
   justify-content: space-between;
 }
 
-.game-over {
+.game-over button {
+  margin-top: 15px;
+}
+
+.game-over__title {
   margin-top: 30px;
   font-size: 40px;
   color: #b9818e;
