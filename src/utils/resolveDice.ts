@@ -1,10 +1,14 @@
-import { chests } from "../datasheets/chests";
-import { enemies } from "../datasheets/enemies";
-import { rooms } from "../datasheets/rooms";
-import { traps } from "../datasheets/traps";
+import type { Chest } from "@/datasheets/chests";
+import type { Enemy } from "@/datasheets/enemies";
+import type { Room } from "@/datasheets/rooms";
+import type { Trap } from "@/datasheets/traps";
+import { chests } from "@/datasheets/chests";
+import { enemies } from "@/datasheets/enemies";
+import { rooms } from "@/datasheets/rooms";
+import { traps } from "@/datasheets/traps";
 import { rollDice } from "./rollDice";
 
-export function rollOnDecisionTable() {
+export function rollOnDecisionTable(): Room | Enemy | Trap | Chest {
   const firstDice = rollDice(20);
   const secondDice = rollDice(20);
 
@@ -44,11 +48,6 @@ export function rollOnDecisionTable() {
     if (secondDice <= 19) {
       return enemies[3];
     }
-
-    // Ghost
-    // if (secondDice <= 18) {
-    //   return enemies[4];
-    // }
 
     return enemies[4];
   }

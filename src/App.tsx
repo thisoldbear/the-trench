@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { GameProvider, LAMP_TARGET, useGame } from "./context/GameContext";
 import type { Enemy } from "./datasheets/enemies";
 import type { Room } from "./datasheets/rooms";

@@ -13,7 +13,7 @@ export function useAdvanceStep() {
   }) => {
     const activeStep = rollOnDecisionTable()!;
 
-    const prefix = (activeStep: Room | Enemy | Trap | Chest) => {
+    const prefix = (activeStep: Room | Enemy | Trap | Chest): string => {
       if (activeStep._type === "enemy") {
         return "Encountered: ";
       }
@@ -26,12 +26,12 @@ export function useAdvanceStep() {
       if (activeStep._type === "trap") {
         return "Trap: ";
       }
+      return "";
     };
 
     dispatch({
       type: "active_step",
       payload: {
-        // TODO: Fix !
         activeStep,
         messages: [
           ...(opts?.messages || []),
