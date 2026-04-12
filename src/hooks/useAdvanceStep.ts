@@ -15,13 +15,13 @@ export function useAdvanceStep() {
 
     const prefix = (activeStep: Room | Enemy | Trap | Chest) => {
       if (activeStep._type === "enemy") {
-        return "Encountered";
+        return "Encountered: ";
       }
       if (activeStep._type === "room") {
-        return "Entered";
+        return "Entered: ";
       }
       if (activeStep._type === "chest") {
-        return "Found";
+        return "Found: ";
       }
       if (activeStep._type === "trap") {
         return "Trap: ";
