@@ -70,7 +70,7 @@ const ChestItem = ({ item }: { item: Equipment | Weapon }) => {
             }
           }}
         >
-          Take
+          Add
         </button>
       </div>
     </li>

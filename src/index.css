@@ -137,6 +137,10 @@ h1 {
   justify-content: space-between;
 }
 
+.btn-group button:only-child {
+  margin-left: auto;
+}
+
 .btn--cta {
   font-size: 24px;
   background: transparent;
@@ -246,7 +250,7 @@ h1 {
 }
 
 .game-over__title {
-  margin-top: 30px;
+  margin-top: 10px;
   font-size: 40px;
   color: #b9818e;
 }

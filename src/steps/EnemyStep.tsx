@@ -36,75 +36,77 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
 
       <Message />
 
-      {enemy.wounds > 0 ? (
-        <div className="btn-group">
-          <button
-            className="btn btn--cta unifrakturcook-bold"
-            onClick={() => fightLoop(state.player, enemy, dispatch)}
-            disabled={!equippedWeapon || equippedWeapon.ammo === 0}
-          >
-            Fight
-          </button>
+      <div className="btn-group">
+        {enemy.wounds > 0 ? (
+          <>
+            <button
+              className="btn btn--cta unifrakturcook-bold"
+              onClick={() => fightLoop(state.player, enemy, dispatch)}
+              disabled={!equippedWeapon || equippedWeapon.ammo === 0}
+            >
+              Fight
+            </button>
 
-          <button
-            className="btn btn--cta unifrakturcook-bold"
-            onClick={() => {
-              const retreatDamage = rollDice(3);
+            <button
+              className="btn btn--cta unifrakturcook-bold"
+              onClick={() => {
+                const retreatDamage = rollDice(3);
 
-              if (state.player.wounds - retreatDamage > 0) {
-                dispatch({
-                  type: "player_wounded",
-                  payload: {
-                    wounds: state.player.wounds - retreatDamage,
-                  },
-                });
-
-                // Move on
-                advanceStep({
-                  rooms: 1,
-                  messages: [
-                    {
-                      id: crypto.randomUUID(),
-                      text: `Rolled D3: Retreat dealt ${retreatDamage} damage`,
-                    },
-                  ],
-                });
-
-                if (state.player.damageModifier > 0) {
+                if (state.player.wounds - retreatDamage > 0) {
                   dispatch({
-                    type: "player_damage_remove",
+                    type: "player_wounded",
                     payload: {
-                      damageModifier: 0,
-                      messages: [
-                        {
-                          id: crypto.randomUUID(),
-                          text: `Damage modifier removed`,
-                        },
-                      ],
+                      wounds: state.player.wounds - retreatDamage,
                     },
                   });
-                }
-              } else {
-                dispatch({
-                  type: "player_wounded",
-                  payload: { wounds: 0 },
-                });
 
-                dispatch({ type: "game_over" });
-              }
-            }}
+                  // Move on
+                  advanceStep({
+                    rooms: 1,
+                    messages: [
+                      {
+                        id: crypto.randomUUID(),
+                        text: `Rolled D3: Retreat dealt ${retreatDamage} damage`,
+                      },
+                    ],
+                  });
+
+                  if (state.player.damageModifier > 0) {
+                    dispatch({
+                      type: "player_damage_remove",
+                      payload: {
+                        damageModifier: 0,
+                        messages: [
+                          {
+                            id: crypto.randomUUID(),
+                            text: `Damage modifier removed`,
+                          },
+                        ],
+                      },
+                    });
+                  }
+                } else {
+                  dispatch({
+                    type: "player_wounded",
+                    payload: { wounds: 0 },
+                  });
+
+                  dispatch({ type: "game_over" });
+                }
+              }}
+            >
+              Retreat
+            </button>
+          </>
+        ) : (
+          <button
+            className="btn btn--cta unifrakturcook-bold"
+            onClick={() => advanceStep()}
           >
-            Retreat
+            Continue
           </button>
-        </div>
-      ) : (
-        <button
-          className="btn btn--cta unifrakturcook-bold"
-          onClick={() => advanceStep()}
-        >
-          Continue
-        </button>
-      )}
+        )}
+      </div>
     </div>
   );
 };
