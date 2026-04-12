@@ -5,6 +5,7 @@ import { useGame } from "@/context/GameContext";
 import { rollDice } from "@/utils/rollDice";
 import { removeTemporaryModifiers } from "@/utils/modifiers";
 import { createMessage } from "@/utils/messages";
+import { StepCounter } from "../components/StepCounter";
 
 export const RoomStep = ({ room }: { room: Room }) => {
   const { state, dispatch } = useGame();
@@ -12,7 +13,9 @@ export const RoomStep = ({ room }: { room: Room }) => {
 
   return (
     <div>
-      <h2 className="unifrakturcook-bold">{room.name}</h2>
+      <h2 className="unifrakturcook-bold step-title">
+        {room.name} <StepCounter />
+      </h2>
       <p>{room.description}</p>
       <Message />
       <div className="btn-group">
@@ -50,7 +53,9 @@ export const RoomStep = ({ room }: { room: Room }) => {
               removeTemporaryModifiers(state.player, dispatch);
 
               advanceStep({
-                messages: [createMessage(`Rolled D3: Dealt ${retreatDamage} damage`)],
+                messages: [
+                  createMessage(`Rolled D3: Dealt ${retreatDamage} damage`),
+                ],
               });
             } else {
               dispatch({

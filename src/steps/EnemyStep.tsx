@@ -2,10 +2,9 @@ import type { Enemy } from "@/datasheets/enemies";
 import { useGame } from "@/context/GameContext";
 import { fightLoop, hitOn } from "@/utils/fight";
 import { rollDice } from "@/utils/rollDice";
-import { removeTemporaryModifiers } from "@/utils/modifiers";
-import { createMessage } from "@/utils/messages";
 import { Message } from "../components/Message";
 import { useAdvanceStep } from "../hooks/useAdvanceStep";
+import { StepCounter } from "../components/StepCounter";
 
 export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
   const { state, dispatch } = useGame();
@@ -16,7 +15,9 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
 
   return (
     <div>
-      <h2 className="unifrakturcook-bold">{enemy.name}</h2>
+      <h2 className="unifrakturcook-bold step-title">
+        {enemy.name} <StepCounter />
+      </h2>
       <p>
         HP:{" "}
         <span
@@ -62,13 +63,42 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
                     },
                   });
 
-                  removeTemporaryModifiers(state.player, dispatch);
+                  if (state.player.damageModifier > 0) {
+                    dispatch({
+                      type: "player_damage_remove",
+                      payload: {
+                        damageModifier: 0,
+                        messages: [
+                          {
+                            id: crypto.randomUUID(),
+                            text: `Damage modifier removed`,
+                          },
+                        ],
+                      },
+                    });
+                  }
 
+                  if (state.player.hitModifier > 0) {
+                    dispatch({
+                      type: "player_hit_modifier_remove",
+                      payload: {
+                        messages: [
+                          {
+                            id: crypto.randomUUID(),
+                            text: `Cigarettes +1 to hit rolls wore off`,
+                          },
+                        ],
+                      },
+                    });
+                  }
+
+                  // Move on
                   advanceStep({
                     messages: [
-                      createMessage(
-                        `Rolled D3: Retreat dealt ${retreatDamage} damage`,
-                      ),
+                      {
+                        id: crypto.randomUUID(),
+                        text: `Rolled D3: Retreat dealt ${retreatDamage} damage`,
+                      },
                     ],
                   });
                 } else {

@@ -271,3 +271,8 @@ h1 {
 .footer a {
   color: inherit;
 }
+
+.step-title {
+  display: flex;
+  justify-content: space-between;
+}

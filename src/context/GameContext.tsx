@@ -27,6 +27,7 @@ export type GameState = {
   }[];
   gameOver: boolean;
   enemiesKilled: number;
+  steps: number;
 };
 
 export type GameAction =
@@ -174,6 +175,7 @@ const initialState: GameState = {
   gameOver: false,
   messages: [],
   enemiesKilled: 0,
+  steps: 0,
 };
 
 function gameReducer(state: GameState, action: GameAction): GameState {
@@ -185,6 +187,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         activeStepUuid: crypto.randomUUID(),
         messages: [...state.messages, ...(action.payload.messages || [])],
         rooms: action.payload.rooms ?? state.rooms,
+        steps: state.steps + 1,
       };
 
     case "player_wounded":

@@ -2,11 +2,11 @@ import { useState } from "react";
 import type { Chest } from "@/datasheets/chests";
 import type { Equipment } from "@/datasheets/equipment";
 import type { Weapon } from "@/datasheets/weapons";
-import { player } from "@/datasheets/player";
 import { useGame } from "@/context/GameContext";
 import { rollOnChestTable } from "@/utils/chest";
 import { Message } from "../components/Message";
 import { useAdvanceStep } from "../hooks/useAdvanceStep";
+import { StepCounter } from "../components/StepCounter";
 
 const ChestItem = ({ item }: { item: Equipment | Weapon }) => {
   const { dispatch } = useGame();
@@ -90,7 +90,9 @@ export const ChestStep = ({ chest }: { chest: Chest }) => {
 
   return (
     <div className="chest">
-      <h2 className="chest__title unifrakturcook-bold">{chest.name}</h2>
+      <h2 className="chest__title unifrakturcook-bold step-title">
+        {chest.name} <StepCounter />
+      </h2>
       <p>{chest.description}</p>
       {chestOpened && foundEqupment.length === 0 && (
         <ul className="chest__list">
