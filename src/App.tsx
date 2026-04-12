@@ -66,28 +66,58 @@ const ActiveStep = () => {
   }, [activeStep]);
 
   if (state.gameOver) {
-    return <h1>Game Over</h1>;
+    return <h1 className="app__title unifrakturcook-bold">Game Over</h1>;
   }
 
   if (activeStep?._type === "room") {
-    return <RoomStep room={activeStep as Room} />;
+    return (
+      <>
+        <Stats />
+        <RoomStep room={activeStep as Room} />
+        <Inventory />
+      </>
+    );
   }
 
   if (activeStep?._type === "enemy") {
-    return <EnemyStep enemy={activeStep as Enemy} />;
+    <>
+      <Stats />
+      <EnemyStep enemy={activeStep as Enemy} />
+      <Inventory />
+    </>;
   }
 
   if (activeStep?._type === "trap") {
-    return <TrapStep trap={activeStep as Trap} />;
+    return (
+      <>
+        <Stats />
+        <TrapStep trap={activeStep as Trap} />
+        <Inventory />
+      </>
+    );
   }
 
   if (activeStep?._type === "chest") {
-    return <ChestStep chest={activeStep as Chest} />;
+    return (
+      <>
+        <Stats />
+        <ChestStep chest={activeStep as Chest} />
+        <Inventory />
+      </>
+    );
   }
 
   return (
-    <div>
-      <button onClick={() => advanceStep()}>Enter The Trench</button>
+    <div className="start">
+      <p>After the horrors of the day, darkness falls.</p>
+      <p>To ward off the terror, the lamps must be lit.</p>
+      <p>And every night... they come.</p>
+      <button
+        className="btn btn--cta unifrakturcook-bold"
+        onClick={() => advanceStep()}
+      >
+        Enter The Trench
+      </button>
     </div>
   );
 };
@@ -96,9 +126,10 @@ export function App() {
   return (
     <GameProvider>
       <div className="app">
-        <Stats />
-        <ActiveStep />
-        <Inventory />
+        <h1 className="app__title unifrakturcook-bold">The Trench</h1>
+        <div className="app__container">
+          <ActiveStep />
+        </div>
       </div>
     </GameProvider>
   );

@@ -3,7 +3,7 @@ export const equipment = [
     _type: "equipment",
     name: "Bandage",
     id: "bandage",
-    description: "Restores 3 health.",
+    description: "Restores 3 health. Uses [x1].",
   },
   {
     _type: "equipment",

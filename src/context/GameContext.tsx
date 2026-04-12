@@ -123,6 +123,20 @@ export type GameAction =
         messages?: GameState["messages"];
       };
     }
+  | {
+      type: "weapon_add";
+      payload: {
+        weapon: Weapon;
+        messages?: GameState["messages"];
+      };
+    }
+  | {
+      type: "weapon_remove";
+      payload: {
+        weapon: Weapon[];
+        messages?: GameState["messages"];
+      };
+    }
   | { type: "game_over" };
 
 const initialState: GameState = {
@@ -306,6 +320,25 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         player: {
           ...state.player,
           equipment: action.payload.equipment,
+        },
+      };
+    }
+    case "weapon_add": {
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          weapons: [...state.player.weapons, action.payload.weapon],
+        },
+      };
+    }
+
+    case "weapon_remove": {
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          weapons: action.payload.weapon,
         },
       };
     }

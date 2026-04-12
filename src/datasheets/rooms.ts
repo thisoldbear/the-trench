@@ -2,7 +2,8 @@ export const rooms = [
   {
     _type: "room",
     name: "Trench",
-    description: "A long, narrow trench stretching into the darkness.",
+    description:
+      "A long, narrow trench stretching into the darkness. Light the lamp to ward off the horrors for another night and light the way to safetly, or continue in the darkness and face the consequences.",
   },
   {
     _type: "room",
@@ -12,11 +13,3 @@ export const rooms = [
 ] as const;
 
 export type Room = (typeof rooms)[number];
-
-// export type Room = Omit<
-//   (typeof rooms)[number],
-//   "name" | "description"
-// > & {
-//   name: string;
-//   description: string;
-// };

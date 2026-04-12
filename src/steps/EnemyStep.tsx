@@ -30,8 +30,9 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
       <Message />
 
       {enemy.wounds > 0 ? (
-        <>
+        <div className="button-group">
           <button
+            className="btn btn--cta unifrakturcook-bold"
             onClick={() => fightLoop(state.player, enemy, dispatch)}
             disabled={!equippedWeapon || equippedWeapon.ammo === 0}
           >
@@ -39,6 +40,7 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
           </button>
 
           <button
+            className="btn btn--cta unifrakturcook-bold"
             onClick={() => {
               const retreatDamage = rollDice(3);
 
@@ -85,9 +87,14 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
           >
             Retreat
           </button>
-        </>
+        </div>
       ) : (
-        <button onClick={() => advanceStep()}>Continue</button>
+        <button
+          className="btn btn--cta unifrakturcook-bold"
+          onClick={() => advanceStep()}
+        >
+          Continue
+        </button>
       )}
     </div>
   );
