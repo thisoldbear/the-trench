@@ -159,23 +159,27 @@ export type GameAction =
   | { type: "game_over" }
   | { type: "game_end" };
 
-const initialWeapons = weaponsLoadout();
-const initialEquipment = equipmentLoadout();
+const generateInitialState = () => {
+  const initialWeapons = weaponsLoadout();
+  const initialEquipment = equipmentLoadout();
 
-const initialState: GameState = {
-  player: {
-    ...player,
-    weapons: initialWeapons,
-    equipment: initialEquipment,
-    equippedWeapon: initialWeapons[0]?.uuid,
-  },
-  rooms: 0,
-  activeStep: null,
-  activeStepUuid: null,
-  gameOver: false,
-  messages: [],
-  enemiesKilled: 0,
-  steps: 0,
+  const initialState: GameState = {
+    player: {
+      ...player,
+      weapons: initialWeapons,
+      equipment: initialEquipment,
+      equippedWeapon: initialWeapons[0]?.uuid,
+    },
+    rooms: 0,
+    activeStep: null,
+    activeStepUuid: null,
+    gameOver: false,
+    messages: [],
+    enemiesKilled: 0,
+    steps: 0,
+  };
+
+  return initialState;
 };
 
 function gameReducer(state: GameState, action: GameAction): GameState {
@@ -423,7 +427,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
 
     case "restart":
       return {
-        ...initialState,
+        ...generateInitialState(),
       };
     default:
       return state;
@@ -436,7 +440,7 @@ const GameContext = createContext<{
 } | null>(null);
 
 export function GameProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(gameReducer, initialState);
+  const [state, dispatch] = useReducer(gameReducer, generateInitialState());
 
   return (
     <GameContext.Provider value={{ state, dispatch }}>
