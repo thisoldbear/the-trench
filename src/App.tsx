@@ -14,6 +14,7 @@ import { Stats } from "./components/Stats";
 import { Inventory } from "./components/Inventory";
 import { useAdvanceStep } from "./hooks/useAdvanceStep";
 import { Message } from "./components/Message";
+import { Analytics } from "@vercel/analytics/react";
 
 const ActiveStep = () => {
   const { state, dispatch } = useGame();
@@ -193,6 +194,7 @@ export function App() {
           <p>Version: Beta</p>
         </div>
       </div>
+      <Analytics />
     </GameProvider>
   );
 }
