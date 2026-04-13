@@ -13,6 +13,7 @@ import { ChestStep } from "./steps/ChestStep";
 import { Stats } from "./components/Stats";
 import { Inventory } from "./components/Inventory";
 import { useAdvanceStep } from "./hooks/useAdvanceStep";
+import { Message } from "./components/Message";
 
 const ActiveStep = () => {
   const { state, dispatch } = useGame();
@@ -70,7 +71,7 @@ const ActiveStep = () => {
         </h1>
         <p>Another long night has passed in The Trench.</p>
         <p>Rest, while you can... darkness is already descending.</p>
-
+        <Message />
         <button
           className="btn btn--cta unifrakturcook-bold"
           onClick={() =>
@@ -94,7 +95,7 @@ const ActiveStep = () => {
           A valiant effort. Let us pray other brave individuals will continue to
           keep the lamps lit each night.
         </p>
-
+        <Message />
         <button
           className="btn btn--cta unifrakturcook-bold"
           onClick={() =>
