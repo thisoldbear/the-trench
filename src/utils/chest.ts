@@ -49,7 +49,8 @@ export function rollOnChestTable(chest: Chest, dispatch: Dispatch<GameAction>) {
     }
 
     if (diceResult <= 14) {
-      return [weapons[Math.floor(Math.random() * weapons.length)]!];
+      const weaponIndex = rollDice(weapons.length) - 1;
+      return [weapons[weaponIndex]!];
     }
 
     if (diceResult <= 16) {
