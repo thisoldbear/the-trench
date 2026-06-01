@@ -14,7 +14,7 @@ export const RoomStep = ({ room }: { room: Room }) => {
   return (
     <div>
       <h2 className="unifrakturcook-bold step-title">
-        {room.name} <StepCounter />
+        {room.name} <StepCounter stepId={room.id} />
       </h2>
       <p>{room.description}</p>
       <Message />

@@ -17,7 +17,7 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
   return (
     <div>
       <h2 className="unifrakturcook-bold step-title">
-        {enemy.name} <StepCounter />
+        {enemy.name} <StepCounter stepId={enemy.id} />
       </h2>
       <p>
         HP:{" "}
