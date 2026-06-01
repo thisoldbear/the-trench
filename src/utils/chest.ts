@@ -4,6 +4,7 @@ import type { Chest } from "@/datasheets/chests";
 import { equipment } from "@/datasheets/equipment";
 import { weapons } from "@/datasheets/weapons";
 import { rollDice } from "./rollDice";
+import { createMessage } from "./messages";
 
 export function rollOnChestTable(chest: Chest, dispatch: Dispatch<GameAction>) {
   const diceResult = rollDice(20);
@@ -16,10 +17,7 @@ export function rollOnChestTable(chest: Chest, dispatch: Dispatch<GameAction>) {
       payload: {
         wounds: woundRoll,
         messages: [
-          {
-            id: crypto.randomUUID(),
-            text: `${chest.name} was a trap. Received ${woundRoll} wounds.`,
-          },
+          createMessage(`${chest.name} was a trap. Received ${woundRoll} wounds.`),
         ],
       },
     });
