@@ -336,25 +336,32 @@ function gameReducer(state: GameState, action: GameAction): GameState {
     }
 
     case "equipped_weapon_remove_ammo": {
+      const updatedWeapons = [...state.player.weapons]
+        .reduce((acc: Weapon[], curr: Weapon) => {
+          if (curr.uuid === state.player.equippedWeapon && curr.ammo > 0) {
+            return [
+              ...acc,
+              {
+                ...curr,
+                ammo: curr.ammo > 1 ? curr.ammo - 1 : 0,
+              },
+            ];
+          } else {
+            return [...acc, curr];
+          }
+        }, [])
+        .filter((weapon) => weapon.ammo > 0);
+
+      const validEquippedWeapon = updatedWeapons.find(w => w.uuid === state.player.equippedWeapon)?.uuid
+        ?? updatedWeapons[0]?.uuid
+        ?? null;
+
       return {
         ...state,
         player: {
           ...state.player,
-          weapons: [...state.player.weapons]
-            .reduce((acc: Weapon[], curr: Weapon) => {
-              if (curr.uuid === state.player.equippedWeapon && curr.ammo > 0) {
-                return [
-                  ...acc,
-                  {
-                    ...curr,
-                    ammo: curr.ammo > 1 ? curr.ammo - 1 : 0,
-                  },
-                ];
-              } else {
-                return [...acc, curr];
-              }
-            }, [])
-            .filter((weapon) => weapon.ammo > 0),
+          weapons: updatedWeapons,
+          equippedWeapon: validEquippedWeapon,
         },
         messages: [...state.messages, ...(action.payload.messages || [])],
       };
