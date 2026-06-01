@@ -9,9 +9,21 @@ export function APITester() {
     try {
       const form = e.currentTarget;
       const formData = new FormData(form);
-      const endpoint = formData.get("endpoint") as string;
+      const endpoint = formData.get("endpoint") ?? "";
+      const method = formData.get("method") ?? "GET";
+
+      // Validate endpoint is a relative path
+      if (typeof endpoint !== "string" || !endpoint.startsWith("/") || /^[a-z][a-z0-9+.-]*:/i.test(endpoint)) {
+        throw new Error("Invalid endpoint: must be a relative path starting with /");
+      }
+
+      // Validate method is whitelisted
+      const allowedMethods = ["GET", "PUT"];
+      if (typeof method !== "string" || !allowedMethods.includes(method)) {
+        throw new Error("Invalid method: must be GET or PUT");
+      }
+
       const url = new URL(endpoint, location.href);
-      const method = formData.get("method") as string;
       const res = await fetch(url, { method });
 
       const data = await res.json();
