@@ -5,6 +5,7 @@ import { rollDice } from "@/utils/rollDice";
 import { Message } from "../components/Message";
 import { useAdvanceStep } from "../hooks/useAdvanceStep";
 import { StepCounter } from "../components/StepCounter";
+import { removeTemporaryModifiers } from "@/utils/modifiers";
 
 export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
   const { state, dispatch } = useGame();
@@ -63,34 +64,7 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
                     },
                   });
 
-                  if (state.player.damageModifier > 0) {
-                    dispatch({
-                      type: "player_damage_remove",
-                      payload: {
-                        damageModifier: 0,
-                        messages: [
-                          {
-                            id: crypto.randomUUID(),
-                            text: `Damage modifier removed`,
-                          },
-                        ],
-                      },
-                    });
-                  }
-
-                  if (state.player.hitModifier > 0) {
-                    dispatch({
-                      type: "player_hit_modifier_remove",
-                      payload: {
-                        messages: [
-                          {
-                            id: crypto.randomUUID(),
-                            text: `Cigarettes +1 to hit rolls wore off`,
-                          },
-                        ],
-                      },
-                    });
-                  }
+                  removeTemporaryModifiers(state.player, dispatch);
 
                   // Move on
                   advanceStep({
