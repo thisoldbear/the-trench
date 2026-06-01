@@ -14,7 +14,7 @@ export function rollOnChestTable(chest: Chest, dispatch: Dispatch<GameAction>) {
     dispatch({
       type: "player_wounded",
       payload: {
-        wounds: rollDice(3),
+        wounds: woundRoll,
         messages: [
           {
             id: crypto.randomUUID(),
