@@ -9,6 +9,7 @@ import { equipmentLoadout, weaponsLoadout } from "@/utils/loadout";
 import {
   createContext,
   useContext,
+  useMemo,
   useReducer,
   type Dispatch,
   type ReactNode,
@@ -448,9 +449,10 @@ const GameContext = createContext<{
 
 export function GameProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(gameReducer, generateInitialState());
+  const value = useMemo(() => ({ state, dispatch }), [state]);
 
   return (
-    <GameContext.Provider value={{ state, dispatch }}>
+    <GameContext.Provider value={value}>
       {children}
     </GameContext.Provider>
   );
