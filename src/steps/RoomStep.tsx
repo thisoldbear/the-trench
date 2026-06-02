@@ -1,7 +1,7 @@
 import type { Room } from "@/datasheets/rooms";
 import { Message } from "../components/Message";
 import { useAdvanceStep } from "../hooks/useAdvanceStep";
-import { useGame } from "@/context/GameContext";
+import { useGame, LAMP_TARGET } from "@/context/GameContext";
 import { rollDice } from "@/utils/rollDice";
 import { removeTemporaryModifiers } from "@/utils/modifiers";
 import { createMessage } from "@/utils/messages";
@@ -22,17 +22,25 @@ export const RoomStep = ({ room }: { room: Room }) => {
         {room.name === "Dark Trench" && (
           <button
             className="btn btn--cta unifrakturcook-bold"
-            onClick={() =>
-              advanceStep({
-                rooms: state.rooms + 1,
-                messages: [
-                  {
-                    id: crypto.randomUUID(),
-                    text: `Lit the lamp`,
+            onClick={() => {
+              const newRoomCount = state.rooms + 1;
+
+              // If lighting this lamp wins the game, don't advance to next step
+              if (newRoomCount >= LAMP_TARGET) {
+                dispatch({
+                  type: "rooms_increment",
+                  payload: {
+                    rooms: newRoomCount,
+                    messages: [createMessage("Lit the lamp")],
                   },
-                ],
-              })
-            }
+                });
+              } else {
+                advanceStep({
+                  rooms: newRoomCount,
+                  messages: [createMessage("Lit the lamp")],
+                });
+              }
+            }}
           >
             Light the lamp
           </button>

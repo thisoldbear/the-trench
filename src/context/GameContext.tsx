@@ -158,7 +158,14 @@ export type GameAction =
     }
   | { type: "restart" }
   | { type: "game_over" }
-  | { type: "game_end" };
+  | { type: "game_end" }
+  | {
+      type: "rooms_increment";
+      payload: {
+        rooms: number;
+        messages?: GameState["messages"];
+      };
+    };
 
 const generateInitialState = () => {
   const initialWeapons = weaponsLoadout();
@@ -432,6 +439,13 @@ function gameReducer(state: GameState, action: GameAction): GameState {
       };
     case "game_end":
       return state;
+
+    case "rooms_increment":
+      return {
+        ...state,
+        rooms: action.payload.rooms,
+        messages: [...state.messages, ...(action.payload.messages || [])],
+      };
 
     case "restart":
       return {
