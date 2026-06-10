@@ -12,9 +12,7 @@ export function hitOn(attackerStrength: number, defenderToughness: number) {
 
   if (attackerStrength === defenderToughness) {
     hitOn = 4;
-  }
-
-  if (attackerStrength && attackerStrength < defenderToughness) {
+  } else if (attackerStrength < defenderToughness) {
     hitOn = 5;
   }
 

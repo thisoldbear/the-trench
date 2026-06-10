@@ -1,15 +1,26 @@
 import { LAMP_TARGET, useGame } from "@/context/GameContext";
 import { player } from "@/datasheets/player";
+import { memo, useMemo } from "react";
 
-export const Stats = () => {
+export const Stats = memo(() => {
   const { state } = useGame();
+
+  const woundsGradient = useMemo(() => {
+    const percent = (100 * state.player.wounds) / player.totalWounds;
+    return `linear-gradient(90deg,#2d2d2d 0%, #2d2d2d ${percent}%, transparent ${percent}%)`;
+  }, [state.player.wounds]);
+
+  const lampsGradient = useMemo(() => {
+    const percent = (100 * state.rooms) / LAMP_TARGET;
+    return `linear-gradient(90deg,#2d2d2d 0%, #2d2d2d ${percent}%, transparent ${percent}%)`;
+  }, [state.rooms]);
 
   return (
     <div className="stats">
       <div
         className="stats__cell stats__cell--1"
         style={{
-          background: `linear-gradient(90deg,#2d2d2d 0%, #2d2d2d ${(100 * state.player.wounds) / player.totalWounds}%, transparent ${(100 * state.player.wounds) / player.totalWounds}%)`,
+          background: woundsGradient,
         }}
       >
         <p>
@@ -32,7 +43,7 @@ export const Stats = () => {
       <div
         className="stats__cell stats__cell--2"
         style={{
-          background: `linear-gradient(90deg,#2d2d2d 0%, #2d2d2d ${(100 * state.rooms) / LAMP_TARGET}%, transparent ${(100 * state.rooms) / LAMP_TARGET}%)`,
+          background: lampsGradient,
         }}
       >
         <p>
@@ -94,4 +105,4 @@ export const Stats = () => {
       </div>
     </div>
   );
-};
+});

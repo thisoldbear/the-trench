@@ -1,7 +1,8 @@
 import { useGame } from "@/context/GameContext";
 import { applyEquipmentEffect } from "@/utils/equipmentEffects";
+import { memo } from "react";
 
-export const Inventory = () => {
+export const Inventory = memo(() => {
   const { state, dispatch } = useGame();
 
   return (
@@ -93,4 +94,4 @@ export const Inventory = () => {
       </div>
     </div>
   );
-};
+});

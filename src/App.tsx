@@ -15,6 +15,7 @@ import { Inventory } from "./components/Inventory";
 import { useAdvanceStep } from "./hooks/useAdvanceStep";
 import { Message } from "./components/Message";
 import { Analytics } from "@vercel/analytics/react";
+import { createMessage } from "./utils/messages";
 
 const ActiveStep = () => {
   const { state, dispatch } = useGame();
@@ -31,13 +32,11 @@ const ActiveStep = () => {
               ? state.player.totalWounds + 2
               : state.player.totalWounds,
           messages: [
-            {
-              id: crypto.randomUUID(),
-              text:
-                state.player.wounds === state.player.totalWounds
-                  ? `You prayed. Blessed with +2 health.`
-                  : `You prayed. Health restored.`,
-            },
+            createMessage(
+              state.player.wounds === state.player.totalWounds
+                ? `You prayed. Blessed with +2 health.`
+                : `You prayed. Health restored.`
+            ),
           ],
         },
       });
@@ -52,10 +51,7 @@ const ActiveStep = () => {
           payload: {
             wounds: state.player.wounds - trapDamage,
             messages: [
-              {
-                id: crypto.randomUUID(),
-                text: `${activeStep.name} dealt ${trapDamage} wounds.`,
-              },
+              createMessage(`${activeStep.name} dealt ${trapDamage} wounds.`),
             ],
           },
         });
@@ -187,9 +183,11 @@ export function App() {
           <ActiveStep />
         </div>
         <div className="footer">
+          <p>Inspired by</p>
           <p>
-            Inspired by{" "}
             <a href="https://darkfort.caffeine.computer">Dark Fort</a>
+            {` `}✜{` `}
+            <a href="https://www.trenchcrusade.com/">Trench Crusade</a>
           </p>
           <p>Version: Beta</p>
         </div>
