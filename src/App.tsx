@@ -183,8 +183,8 @@ export function App() {
           <ActiveStep />
         </div>
         <div className="footer">
+          <p>Inspired by</p>
           <p>
-            Inspired by{" "}
             <a href="https://darkfort.caffeine.computer">Dark Fort</a>
             {` `}✜{` `}
             <a href="https://www.trenchcrusade.com/">Trench Crusade</a>
