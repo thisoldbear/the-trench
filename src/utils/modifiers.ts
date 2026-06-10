@@ -1,5 +1,6 @@
 import type { Dispatch } from "react";
 import type { GameAction } from "@/context/GameContext";
+import { createMessage } from "./messages";
 
 /**
  * Removes all temporary modifiers (damage and hit bonuses) from the player.
@@ -17,12 +18,7 @@ export function removeTemporaryModifiers(
       type: "player_damage_remove",
       payload: {
         damageModifier: 0,
-        messages: [
-          {
-            id: crypto.randomUUID(),
-            text: `Damage modifier removed`,
-          },
-        ],
+        messages: [createMessage("Damage modifier removed")],
       },
     });
   }
@@ -31,12 +27,7 @@ export function removeTemporaryModifiers(
     dispatch({
       type: "player_hit_modifier_remove",
       payload: {
-        messages: [
-          {
-            id: crypto.randomUUID(),
-            text: `Cigarettes +1 to hit rolls wore off`,
-          },
-        ],
+        messages: [createMessage("Cigarettes +1 to hit rolls wore off")],
       },
     });
   }
@@ -55,12 +46,7 @@ export function decrementDamageModifier(
       type: "player_damage_remove",
       payload: {
         damageModifier: currentModifier - 1,
-        messages: [
-          {
-            id: crypto.randomUUID(),
-            text: `Damage bonus dropped to ${currentModifier - 1}`,
-          },
-        ],
+        messages: [createMessage(`Damage bonus dropped to ${currentModifier - 1}`)],
       },
     });
   }

@@ -2,6 +2,7 @@ import type { Dispatch } from "react";
 import type { GameAction } from "@/context/GameContext";
 import type { Equipment } from "@/datasheets/equipment";
 import { player } from "@/datasheets/player";
+import { createMessage } from "./messages";
 
 export function applyEquipmentEffect(
   equipment: Equipment,
@@ -21,12 +22,7 @@ export function applyEquipmentEffect(
       type: "player_toughness_add",
       payload: {
         toughness: playerState.toughness + 3,
-        messages: [
-          {
-            id: crypto.randomUUID(),
-            text: `Toughness increased for a short while`,
-          },
-        ],
+        messages: [createMessage("Toughness increased for a short while")],
       },
     });
   }
@@ -36,12 +32,7 @@ export function applyEquipmentEffect(
       type: "player_restored",
       payload: {
         wounds: playerState.wounds + 3,
-        messages: [
-          {
-            id: crypto.randomUUID(),
-            text: `Bandage restored 3 health.`,
-          },
-        ],
+        messages: [createMessage("Bandage restored 3 health.")],
       },
     });
   }
@@ -52,10 +43,9 @@ export function applyEquipmentEffect(
       payload: {
         hitModifier: playerState.hitModifier + 1,
         messages: [
-          {
-            id: crypto.randomUUID(),
-            text: `Cigarettes added ${playerState.hitModifier + 1} to hit results for a short while`,
-          },
+          createMessage(
+            `Cigarettes added ${playerState.hitModifier + 1} to hit results for a short while`
+          ),
         ],
       },
     });
@@ -67,12 +57,7 @@ export function applyEquipmentEffect(
         type: "player_toughness_add",
         payload: {
           toughness: playerState.toughness + 1,
-          messages: [
-            {
-              id: crypto.randomUUID(),
-              text: `Toughness increased for a short while`,
-            },
-          ],
+          messages: [createMessage("Toughness increased for a short while")],
         },
       });
     }
@@ -82,10 +67,7 @@ export function applyEquipmentEffect(
       payload: {
         damageModifier: playerState.damageModifier + 2,
         messages: [
-          {
-            id: crypto.randomUUID(),
-            text: `Damage results increased by 2 for a short while`,
-          },
+          createMessage("Damage results increased by 2 for a short while"),
         ],
       },
     });

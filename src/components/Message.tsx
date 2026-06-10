@@ -1,12 +1,18 @@
 import { useGame } from "@/context/GameContext";
+import { memo, useMemo } from "react";
 
-export const Message = () => {
+export const Message = memo(() => {
   const { state } = useGame();
 
-  if (state.messages.length > 0) {
+  const reversedMessages = useMemo(
+    () => [...state.messages].reverse(),
+    [state.messages]
+  );
+
+  if (reversedMessages.length > 0) {
     return (
       <ul className="messages">
-        {[...state.messages].reverse().map((message) => (
+        {reversedMessages.map((message) => (
           <li key={message.id}>
             <p>{message.text}</p>
           </li>
@@ -14,4 +20,4 @@ export const Message = () => {
       </ul>
     );
   }
-};
+});

@@ -4,6 +4,7 @@ import type { Chest } from "@/datasheets/chests";
 import { equipment } from "@/datasheets/equipment";
 import { weapons } from "@/datasheets/weapons";
 import { rollDice } from "./rollDice";
+import { createMessage } from "./messages";
 
 export function rollOnChestTable(chest: Chest, dispatch: Dispatch<GameAction>) {
   const diceResult = rollDice(20);
@@ -14,12 +15,9 @@ export function rollOnChestTable(chest: Chest, dispatch: Dispatch<GameAction>) {
     dispatch({
       type: "player_wounded",
       payload: {
-        wounds: rollDice(3),
+        wounds: woundRoll,
         messages: [
-          {
-            id: crypto.randomUUID(),
-            text: `${chest.name} was a trap. Received ${woundRoll} wounds.`,
-          },
+          createMessage(`${chest.name} was a trap. Received ${woundRoll} wounds.`),
         ],
       },
     });
@@ -51,7 +49,8 @@ export function rollOnChestTable(chest: Chest, dispatch: Dispatch<GameAction>) {
     }
 
     if (diceResult <= 14) {
-      return [weapons[Math.floor(Math.random() * weapons.length)]!];
+      const weaponIndex = rollDice(weapons.length) - 1;
+      return [weapons[weaponIndex]!];
     }
 
     if (diceResult <= 16) {

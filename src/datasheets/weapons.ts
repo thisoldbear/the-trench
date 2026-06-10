@@ -107,5 +107,5 @@ export const weapons = [
 
 export type Weapon = Omit<(typeof weapons)[number], "ammo" | "uuid"> & {
   ammo: number;
-  uuid?: string;
+  uuid: string;
 };
