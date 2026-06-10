@@ -186,6 +186,8 @@ export function App() {
           <p>
             Inspired by{" "}
             <a href="https://darkfort.caffeine.computer">Dark Fort</a>
+            {` `}✜{` `}
+            <a href="https://www.trenchcrusade.com/">Trench Crusade</a>
           </p>
           <p>Version: Beta</p>
         </div>
