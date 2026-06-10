@@ -56,7 +56,7 @@ export const Stats = () => {
       </div>
 
       <div className="stats__cell stats__cell--4">
-        Enemies killed: {state.enemiesKilled || 0} / ∞
+        Enemies: {state.enemiesKilled || 0} / ∞
       </div>
 
       <div className="stats__cell stats__cell--5">
