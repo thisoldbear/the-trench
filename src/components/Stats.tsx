@@ -67,7 +67,7 @@ export const Stats = memo(() => {
       </div>
 
       <div className="stats__cell stats__cell--4">
-        Enemies: {state.enemiesKilled || 0} / ∞
+        <p>Enemies: {state.enemiesKilled || 0} / ∞</p>
       </div>
 
       <div className="stats__cell stats__cell--5">
