@@ -19,64 +19,73 @@ export const RoomStep = ({ room }: { room: Room }) => {
       <p>{room.description}</p>
       <Message />
       <div className="btn-group">
-        {room.name === "Dark Trench" && (
-          <button
-            className="btn btn--cta unifrakturcook-bold"
-            onClick={() => {
-              const newRoomCount = state.rooms + 1;
+        {room.name === "Dark Trench" ? (
+          <>
+            <button
+              className="btn btn--cta unifrakturcook-bold"
+              onClick={() => {
+                const newRoomCount = state.rooms + 1;
 
-              // If lighting this lamp wins the game, don't advance to next step
-              if (newRoomCount >= LAMP_TARGET) {
-                dispatch({
-                  type: "rooms_increment",
-                  payload: {
+                // If lighting this lamp wins the game, don't advance to next step
+                if (newRoomCount >= LAMP_TARGET) {
+                  dispatch({
+                    type: "rooms_increment",
+                    payload: {
+                      rooms: newRoomCount,
+                      messages: [createMessage("Lit the lamp")],
+                    },
+                  });
+                } else {
+                  advanceStep({
                     rooms: newRoomCount,
                     messages: [createMessage("Lit the lamp")],
-                  },
-                });
-              } else {
-                advanceStep({
-                  rooms: newRoomCount,
-                  messages: [createMessage("Lit the lamp")],
-                });
-              }
-            }}
+                  });
+                }
+              }}
+            >
+              Light the lamp
+            </button>
+            <button
+              className="btn btn--cta unifrakturcook-bold"
+              onClick={() => {
+                const retreatDamage = rollDice(3);
+
+                if (state.player.wounds - retreatDamage > 0) {
+                  dispatch({
+                    type: "player_wounded",
+                    payload: {
+                      wounds: state.player.wounds - retreatDamage,
+                    },
+                  });
+
+                  removeTemporaryModifiers(state.player, dispatch);
+
+                  advanceStep({
+                    messages: [
+                      createMessage(`Rolled D3: Dealt ${retreatDamage} damage`),
+                    ],
+                  });
+                } else {
+                  dispatch({
+                    type: "player_wounded",
+                    payload: { wounds: 0 },
+                  });
+
+                  dispatch({ type: "game_over" });
+                }
+              }}
+            >
+              Continue
+            </button>
+          </>
+        ) : (
+          <button
+            className="btn btn--cta unifrakturcook-bold"
+            onClick={() => advanceStep()}
           >
-            Light the lamp
+            Pass
           </button>
         )}
-        <button
-          className="btn btn--cta unifrakturcook-bold"
-          onClick={() => {
-            const retreatDamage = rollDice(3);
-
-            if (state.player.wounds - retreatDamage > 0) {
-              dispatch({
-                type: "player_wounded",
-                payload: {
-                  wounds: state.player.wounds - retreatDamage,
-                },
-              });
-
-              removeTemporaryModifiers(state.player, dispatch);
-
-              advanceStep({
-                messages: [
-                  createMessage(`Rolled D3: Dealt ${retreatDamage} damage`),
-                ],
-              });
-            } else {
-              dispatch({
-                type: "player_wounded",
-                payload: { wounds: 0 },
-              });
-
-              dispatch({ type: "game_over" });
-            }
-          }}
-        >
-          Continue
-        </button>
       </div>
     </div>
   );
