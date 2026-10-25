@@ -83,7 +83,7 @@ export const RoomStep = ({ room }: { room: Room }) => {
             className="btn btn--cta unifrakturcook-bold"
             onClick={() => advanceStep()}
           >
-            Pass
+            Continue
           </button>
         )}
       </div>
