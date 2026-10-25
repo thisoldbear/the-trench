@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import pkg from "../package.json";
 import { GameProvider, LAMP_TARGET, useGame } from "./context/GameContext";
 import type { Enemy } from "./datasheets/enemies";
 import type { Room } from "./datasheets/rooms";
@@ -189,7 +190,7 @@ export function App() {
             {` `}✜{` `}
             <a href="https://www.trenchcrusade.com/">Trench Crusade</a>
           </p>
-          <p>Version: Beta</p>
+          <p>Version: {pkg.version}</p>
         </div>
       </div>
       <Analytics />

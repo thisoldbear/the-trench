@@ -22,20 +22,29 @@ describe("rollOnChestTable", () => {
   });
 
   describe("Trap (all chests)", () => {
-    test("dispatches player_wounded and returns empty array when roll is 1", () => {
-      // First roll is the d20 check, second and third rolls are d3 damage
-      // Note: chest.ts has a bug - it calls rollDice(3) twice (line 12 and 19)
-      rollQueue = [1, 2, 2];
-      const result = rollOnChestTable({ ...chests[0] }, dispatch);
+    test("dispatches player_wounded with subtracted wounds and returns empty array when roll is 1", () => {
+      rollQueue = [1, 2];
+      const result = rollOnChestTable({ ...chests[0] }, dispatch, { wounds: 14 });
 
       expect(result).toEqual([]);
       expect(dispatch).toHaveBeenCalledTimes(1);
       expect(dispatch.mock.calls[0]![0]!.type).toBe("player_wounded");
-      expect(dispatch.mock.calls[0]![0]!.payload.wounds).toBe(2);
+      expect(dispatch.mock.calls[0]![0]!.payload.wounds).toBe(12);
       expect(dispatch.mock.calls[0]![0]!.payload.messages).toHaveLength(1);
       expect(dispatch.mock.calls[0]![0]!.payload.messages[0]!.text).toContain(
         "trap",
       );
+    });
+
+    test("dispatches player_wounded with 0 wounds and game_over when trap damage is fatal", () => {
+      rollQueue = [1, 3];
+      const result = rollOnChestTable({ ...chests[0] }, dispatch, { wounds: 2 });
+
+      expect(result).toEqual([]);
+      expect(dispatch).toHaveBeenCalledTimes(2);
+      expect(dispatch.mock.calls[0]![0]!.type).toBe("player_wounded");
+      expect(dispatch.mock.calls[0]![0]!.payload.wounds).toBe(0);
+      expect(dispatch.mock.calls[1]![0]!.type).toBe("game_over");
     });
   });
 

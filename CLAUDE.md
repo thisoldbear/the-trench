@@ -109,3 +109,10 @@ bun --hot ./index.ts
 ```
 
 For more information, read the Bun API docs in `node_modules/bun-types/docs/**.mdx`.
+
+## Versioning
+
+- Update the `version` field in `package.json` on every change (the footer in `src/App.tsx` reads `pkg.version` automatically).
+- Bump the **patch** version (`x.y.Z`) on every change unless explicitly told the change is a feature, in which case bump the **minor** version (`x.Y.0`).
+- Do not create git tags for versions.
+
