@@ -11,7 +11,7 @@ describe("applyEquipmentEffect", () => {
   });
 
   describe("Morphine", () => {
-    test("adds +3 toughness when below max cap", () => {
+    test("adds +2 toughness when below max cap", () => {
       const playerState = {
         wounds: 10,
         toughness: player.totalToughness,
@@ -24,7 +24,7 @@ describe("applyEquipmentEffect", () => {
       expect(dispatch).toHaveBeenCalledTimes(1);
       expect(dispatch.mock.calls[0]![0]!.type).toBe("player_toughness_add");
       expect(dispatch.mock.calls[0]![0]!.payload.toughness).toBe(
-        player.totalToughness + 3,
+        player.totalToughness + 2,
       );
       expect(dispatch.mock.calls[0]![0]!.payload.messages).toHaveLength(1);
       expect(dispatch.mock.calls[0]![0]!.payload.messages[0]!.text).toContain(
@@ -35,7 +35,7 @@ describe("applyEquipmentEffect", () => {
     test("does not dispatch when toughness exceeds max cap", () => {
       const playerState = {
         wounds: 10,
-        toughness: player.totalToughness + 4,
+        toughness: player.totalToughness + 3,
         damageModifier: 0,
         hitModifier: 0,
       };
@@ -48,7 +48,7 @@ describe("applyEquipmentEffect", () => {
     test("adds toughness when exactly at max cap", () => {
       const playerState = {
         wounds: 10,
-        toughness: player.totalToughness + 3,
+        toughness: player.totalToughness + 2,
         damageModifier: 0,
         hitModifier: 0,
       };
@@ -57,7 +57,7 @@ describe("applyEquipmentEffect", () => {
 
       expect(dispatch).toHaveBeenCalledTimes(1);
       expect(dispatch.mock.calls[0]![0]!.payload.toughness).toBe(
-        player.totalToughness + 6,
+        player.totalToughness + 4,
       );
     });
   });

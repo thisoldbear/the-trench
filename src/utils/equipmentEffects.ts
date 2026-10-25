@@ -16,12 +16,12 @@ export function applyEquipmentEffect(
 ) {
   if (
     equipment.id === "morphine" &&
-    playerState.toughness <= player.totalToughness + 3
+    playerState.toughness <= player.totalToughness + 2
   ) {
     dispatch({
       type: "player_toughness_add",
       payload: {
-        toughness: playerState.toughness + 3,
+        toughness: playerState.toughness + 2,
         messages: [createMessage("Toughness increased for a short while")],
       },
     });
