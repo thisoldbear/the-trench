@@ -28,17 +28,8 @@ const ActiveStep = () => {
       dispatch({
         type: "player_restored",
         payload: {
-          wounds:
-            state.player.wounds === state.player.totalWounds
-              ? state.player.totalWounds + 2
-              : state.player.totalWounds,
-          messages: [
-            createMessage(
-              state.player.wounds === state.player.totalWounds
-                ? `You prayed. Blessed with +2 health.`
-                : `You prayed. Health restored.`
-            ),
-          ],
+          wounds: state.player.totalWounds,
+          messages: [createMessage(`You prayed. Health restored.`)],
         },
       });
     } else if (activeStep?._type === "trap") {
