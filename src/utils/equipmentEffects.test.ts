@@ -95,6 +95,22 @@ describe("applyEquipmentEffect", () => {
       expect(dispatch).toHaveBeenCalledTimes(1);
       expect(dispatch.mock.calls[0]![0]!.payload.wounds).toBe(5);
     });
+
+    test("caps restored wounds at player.totalWounds", () => {
+      const playerState = {
+        wounds: 14,
+        toughness: 3,
+        damageModifier: 0,
+        hitModifier: 0,
+      };
+
+      applyEquipmentEffect(equipment[0]!, playerState, dispatch);
+
+      expect(dispatch).toHaveBeenCalledTimes(1);
+      expect(dispatch.mock.calls[0]![0]!.payload.wounds).toBe(
+        player.totalWounds,
+      );
+    });
   });
 
   describe("Cigarettes", () => {

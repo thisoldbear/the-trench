@@ -31,7 +31,7 @@ export function applyEquipmentEffect(
     dispatch({
       type: "player_restored",
       payload: {
-        wounds: playerState.wounds + 3,
+        wounds: Math.min(playerState.wounds + 3, player.totalWounds),
         messages: [createMessage("Bandage restored 3 health.")],
       },
     });
