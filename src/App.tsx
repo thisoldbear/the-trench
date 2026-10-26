@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import pkg from "../package.json";
 import { GameProvider, LAMP_TARGET, useGame } from "./context/GameContext";
 import type { Enemy } from "./datasheets/enemies";
@@ -13,6 +13,7 @@ import { TrapStep } from "./steps/TrapStep";
 import { ChestStep } from "./steps/ChestStep";
 import { Stats } from "./components/Stats";
 import { Inventory } from "./components/Inventory";
+import { Changelog } from "./components/Changelog";
 import { useAdvanceStep } from "./hooks/useAdvanceStep";
 import { Message } from "./components/Message";
 import { Analytics } from "@vercel/analytics/react";
@@ -167,12 +168,31 @@ const ActiveStep = () => {
 };
 
 export function App() {
+  const [pathname, setPathname] = useState(() => window.location.pathname);
+
+  useEffect(() => {
+    const onPopState = () => setPathname(window.location.pathname);
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
+
+  const navigate = (to: string) => {
+    if (window.location.pathname !== to) {
+      window.history.pushState({}, "", to);
+      setPathname(to);
+    }
+  };
+
   return (
     <GameProvider>
       <div className="app">
         <h1 className="app__title unifrakturcook-bold">The Trench</h1>
         <div className="app__container">
-          <ActiveStep />
+          {pathname === "/changelog" ? (
+            <Changelog onBack={() => navigate("/")} />
+          ) : (
+            <ActiveStep />
+          )}
         </div>
         <div className="footer">
           <p>Inspired by</p>
@@ -181,7 +201,18 @@ export function App() {
             {` `}✜{` `}
             <a href="https://www.trenchcrusade.com/">Trench Crusade</a>
           </p>
-          <p>Version: {pkg.version}</p>
+          <p>
+            Version:{" "}
+            <a
+              href="/changelog"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/changelog");
+              }}
+            >
+              {pkg.version}
+            </a>
+          </p>
         </div>
       </div>
       <Analytics />
