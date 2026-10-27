@@ -1,14 +1,12 @@
 import { enemies, type Enemy } from "@/datasheets/enemies";
 import { player } from "@/datasheets/player";
 import { weapons } from "@/datasheets/weapons";
-import { expect, test, mock, describe, beforeEach } from "bun:test";
+import { expect, test, vi, describe, beforeEach } from "vitest";
+import { rollDice } from "./rollDice";
+
+vi.mock("./rollDice");
 
 let rollQueue: number[] = [];
-const mockRollDice = mock((sides: number) => rollQueue.shift() ?? 1);
-
-mock.module("./rollDice", () => ({
-  rollDice: mockRollDice,
-}));
 
 import { hitOn, fightLoop, resolveWeaponAmmo } from "./fight";
 
@@ -67,10 +65,10 @@ const testEnemy = {
 } as Enemy;
 
 describe("resolveWeaponAmmo", () => {
-  let dispatch: ReturnType<typeof mock>;
+  let dispatch: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
-    dispatch = mock(() => {});
+    dispatch = vi.fn();
   });
 
   test("dispatches equipped_weapon_remove_ammo for limited weapons", () => {
@@ -88,12 +86,13 @@ describe("resolveWeaponAmmo", () => {
 });
 
 describe("fightLoop", () => {
-  let dispatch: ReturnType<typeof mock>;
+  let dispatch: ReturnType<typeof vi.fn>;
   let testPlayer: typeof player;
 
   beforeEach(() => {
-    dispatch = mock(() => {});
-    mockRollDice.mockClear();
+    dispatch = vi.fn();
+    vi.mocked(rollDice).mockImplementation(() => rollQueue.shift() ?? 1);
+    vi.mocked(rollDice).mockClear();
     rollQueue = [];
     // Set up player with equipped weapon
     testPlayer = {

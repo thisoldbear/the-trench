@@ -1,14 +1,14 @@
-import { expect, test, mock, describe, beforeEach } from "bun:test";
+import { expect, test, vi, describe, beforeEach } from "vitest";
 import {
   removeTemporaryModifiers,
   decrementDamageModifier,
 } from "./modifiers";
 
 describe("removeTemporaryModifiers", () => {
-  let dispatch: ReturnType<typeof mock>;
+  let dispatch: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
-    dispatch = mock(() => {});
+    dispatch = vi.fn();
   });
 
   test("removes damage modifier when greater than 0", () => {
@@ -65,10 +65,10 @@ describe("removeTemporaryModifiers", () => {
 });
 
 describe("decrementDamageModifier", () => {
-  let dispatch: ReturnType<typeof mock>;
+  let dispatch: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
-    dispatch = mock(() => {});
+    dispatch = vi.fn();
   });
 
   test("decrements modifier from 3 to 2", () => {

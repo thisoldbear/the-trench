@@ -1,23 +1,23 @@
 import { chests } from "@/datasheets/chests";
 import { equipment } from "@/datasheets/equipment";
 import { weapons } from "@/datasheets/weapons";
-import { expect, test, mock, describe, beforeEach } from "bun:test";
+import { expect, test, vi, describe, beforeEach } from "vitest";
+import { rollDice } from "./rollDice";
+
+vi.mock("./rollDice");
 
 let rollQueue: number[] = [];
-const mockRollDice = mock((sides: number) => rollQueue.shift() ?? 1);
 
-mock.module("./rollDice", () => ({
-  rollDice: mockRollDice,
-}));
-
+import type { GameAction } from "@/context/GameContext";
 import { rollOnChestTable } from "./chest";
 
 describe("rollOnChestTable", () => {
-  let dispatch: ReturnType<typeof mock>;
+  let dispatch: ReturnType<typeof vi.fn<(action: GameAction) => void>>;
 
   beforeEach(() => {
-    dispatch = mock(() => {});
-    mockRollDice.mockClear();
+    dispatch = vi.fn();
+    vi.mocked(rollDice).mockImplementation(() => rollQueue.shift() ?? 1);
+    vi.mocked(rollDice).mockClear();
     rollQueue = [];
   });
 

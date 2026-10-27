@@ -5,6 +5,14 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "4.0.0",
+    changes: [
+      "Migrated project to Vite using the React TypeScript template.",
+      "Migrated unit test suite from bun:test to Vitest.",
+      "Removed Bun runtime and bundler dependencies.",
+    ],
+  },
+  {
     version: "0.3.10",
     changes: [
       "Bounded message log history to 50 entries and limited UI rendering to 20 to prevent unbounded memory growth.",

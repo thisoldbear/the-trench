@@ -1,19 +1,18 @@
 import { equipment } from "@/datasheets/equipment";
 import { weapons } from "@/datasheets/weapons";
-import { expect, test, mock, describe, beforeEach } from "bun:test";
+import { expect, test, vi, describe, beforeEach } from "vitest";
+import { rollDice } from "./rollDice";
+
+vi.mock("./rollDice");
 
 let rollQueue: number[] = [];
-const mockRollDice = mock((sides: number) => rollQueue.shift() ?? 1);
-
-mock.module("./rollDice", () => ({
-  rollDice: mockRollDice,
-}));
 
 import { weaponsLoadout, equipmentLoadout } from "./loadout";
 
 describe("weaponsLoadout", () => {
   beforeEach(() => {
-    mockRollDice.mockClear();
+    vi.mocked(rollDice).mockImplementation(() => rollQueue.shift() ?? 1);
+    vi.mocked(rollDice).mockClear();
     rollQueue = [];
   });
 

@@ -5,7 +5,8 @@
 All utility functions now have comprehensive test coverage. Run tests with:
 
 ```bash
-bun test
+npm test
+# or: npx vitest run
 ```
 
 ## Test Files
@@ -75,7 +76,7 @@ expect(dispatch.mock.calls[0]![0]!.type).toBe("player_wounded");
 
 ## Testing Notes
 
-- Uses Bun's built-in test runner (`bun test`)
+- Uses Vitest test runner (`npm test` / `vitest run`)
 - Mock pattern from existing `fight.test.ts` maintained for consistency
 - Statistical tests included for `rollDice` to verify distribution
 - All tests use deterministic mocking via `rollQueue` pattern
