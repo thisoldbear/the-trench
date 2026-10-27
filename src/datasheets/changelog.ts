@@ -5,6 +5,18 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "0.3.1",
+    changes: [
+      "Fleeing with lit lamps extinguishes one without damage; fleeing with no lamps lit deals D3 damage.",
+    ],
+  },
+  {
+    version: "0.3.0",
+    changes: [
+      "Fleeing combat now extinguishes a lamp instead of dealing damage.",
+    ],
+  },
+  {
     version: "0.2.4",
     changes: ["Capped Bandage health restoration at maximum health (15)."],
   },
