@@ -37,6 +37,15 @@ const ActiveStep = () => {
       const trapDamage = rollDice(3);
 
       if (state.player.wounds - trapDamage <= 0) {
+        dispatch({
+          type: "player_wounded",
+          payload: {
+            wounds: 0,
+            messages: [
+              createMessage(`${activeStep.name} dealt ${trapDamage} wounds.`),
+            ],
+          },
+        });
         dispatch({ type: "game_over" });
       } else {
         dispatch({

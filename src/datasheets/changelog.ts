@@ -5,6 +5,12 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "0.3.4",
+    changes: [
+      "Display damage messages on lethal trap and flee damage before game over.",
+    ],
+  },
+  {
     version: "0.3.3",
     changes: [
       "Clear temporary combat modifiers when lighting lamps as documented.",
