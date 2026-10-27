@@ -5,6 +5,12 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "0.3.6",
+    changes: [
+      "Removed unused API template boilerplate and SVG assets.",
+    ],
+  },
+  {
     version: "0.3.5",
     changes: [
       "Fixed missing list keys in ChestStep and resolved typos in chest and trap descriptions.",
