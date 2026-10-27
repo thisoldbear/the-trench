@@ -172,7 +172,6 @@ export function App() {
             <a href="https://www.trenchcrusade.com/">Trench Crusade</a>
           </p>
           <p>
-            Version:{" "}
             <a
               href="/changelog"
               onClick={(e) => {
@@ -181,6 +180,14 @@ export function App() {
               }}
             >
               {pkg.version}
+            </a>
+            {` `}✜{` `}
+            <a
+              href="https://github.com/thisoldbear/the-trench"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GitHub
             </a>
           </p>
         </div>

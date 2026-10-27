@@ -5,6 +5,12 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "4.0.1",
+    changes: [
+      "Removed 'Version: ' label from footer and added link to the GitHub repository.",
+    ],
+  },
+  {
     version: "4.0.0",
     changes: [
       "Migrated project to Vite using the React TypeScript template.",
