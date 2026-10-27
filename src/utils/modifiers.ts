@@ -4,7 +4,7 @@ import { createMessage } from "./messages";
 
 /**
  * Removes all temporary modifiers (damage and hit bonuses) from the player.
- * Called when retreating, lighting lamps, or after combat ends.
+ * Called when fleeing, lighting lamps, or after combat ends.
  */
 export function removeTemporaryModifiers(
   player: {

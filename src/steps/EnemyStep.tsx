@@ -6,6 +6,7 @@ import { Message } from "../components/Message";
 import { useAdvanceStep } from "../hooks/useAdvanceStep";
 import { StepCounter } from "../components/StepCounter";
 import { removeTemporaryModifiers } from "@/utils/modifiers";
+import { createMessage } from "@/utils/messages";
 
 export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
   const { state, dispatch } = useGame();
@@ -54,38 +55,52 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
             <button
               className="btn btn--cta unifrakturcook-bold"
               onClick={() => {
-                const retreatDamage = rollDice(3);
-
-                if (state.player.wounds - retreatDamage > 0) {
-                  dispatch({
-                    type: "player_wounded",
-                    payload: {
-                      wounds: state.player.wounds - retreatDamage,
-                    },
-                  });
+                if (state.rooms > 0) {
+                  const newRoomCount = state.rooms - 1;
 
                   removeTemporaryModifiers(state.player, dispatch);
 
                   // Move on
                   advanceStep({
+                    rooms: newRoomCount,
                     messages: [
-                      {
-                        id: crypto.randomUUID(),
-                        text: `Rolled D3: Retreat dealt ${retreatDamage} damage`,
-                      },
+                      createMessage("Fled from combat. A lamp went out."),
                     ],
                   });
                 } else {
-                  dispatch({
-                    type: "player_wounded",
-                    payload: { wounds: 0 },
-                  });
+                  const fleeDamage = rollDice(3);
 
-                  dispatch({ type: "game_over" });
+                  if (state.player.wounds - fleeDamage > 0) {
+                    dispatch({
+                      type: "player_wounded",
+                      payload: {
+                        wounds: state.player.wounds - fleeDamage,
+                      },
+                    });
+
+                    removeTemporaryModifiers(state.player, dispatch);
+
+                    // Move on
+                    advanceStep({
+                      rooms: 0,
+                      messages: [
+                        createMessage(
+                          `Rolled D3: Fleeing dealt ${fleeDamage} damage`,
+                        ),
+                      ],
+                    });
+                  } else {
+                    dispatch({
+                      type: "player_wounded",
+                      payload: { wounds: 0 },
+                    });
+
+                    dispatch({ type: "game_over" });
+                  }
                 }
               }}
             >
-              Retreat
+              Flee
             </button>
           </>
         ) : (

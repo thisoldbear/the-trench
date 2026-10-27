@@ -167,7 +167,7 @@ export type GameAction =
       };
     };
 
-const generateInitialState = () => {
+export const generateInitialState = () => {
   const initialWeapons = weaponsLoadout();
   const initialEquipment = equipmentLoadout();
 
@@ -190,7 +190,7 @@ const generateInitialState = () => {
   return initialState;
 };
 
-function gameReducer(state: GameState, action: GameAction): GameState {
+export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case "active_step":
       return {
