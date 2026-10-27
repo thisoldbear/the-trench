@@ -2,20 +2,19 @@ import { chests } from "@/datasheets/chests";
 import { enemies } from "@/datasheets/enemies";
 import { rooms } from "@/datasheets/rooms";
 import { traps } from "@/datasheets/traps";
-import { expect, test, mock, describe, beforeEach } from "bun:test";
+import { expect, test, vi, describe, beforeEach } from "vitest";
+import { rollDice } from "./rollDice";
+
+vi.mock("./rollDice");
 
 let rollQueue: number[] = [];
-const mockRollDice = mock((sides: number) => rollQueue.shift() ?? 1);
-
-mock.module("./rollDice", () => ({
-  rollDice: mockRollDice,
-}));
 
 import { rollOnDecisionTable } from "./resolveDice";
 
 describe("rollOnDecisionTable", () => {
   beforeEach(() => {
-    mockRollDice.mockClear();
+    vi.mocked(rollDice).mockImplementation(() => rollQueue.shift() ?? 1);
+    vi.mocked(rollDice).mockClear();
     rollQueue = [];
   });
 

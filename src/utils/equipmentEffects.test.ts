@@ -1,13 +1,13 @@
 import { equipment } from "@/datasheets/equipment";
 import { player } from "@/datasheets/player";
-import { expect, test, mock, describe, beforeEach } from "bun:test";
+import { expect, test, vi, describe, beforeEach } from "vitest";
 import { applyEquipmentEffect } from "./equipmentEffects";
 
 describe("applyEquipmentEffect", () => {
-  let dispatch: ReturnType<typeof mock>;
+  let dispatch: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
-    dispatch = mock(() => {});
+    dispatch = vi.fn();
   });
 
   describe("Morphine", () => {
