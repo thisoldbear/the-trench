@@ -52,7 +52,7 @@ export function useAdvanceStep() {
         },
       });
     } else if (activeStep._type === "trap") {
-      const trapDamage = rollDice(3);
+      const trapDamage = rollDice(activeStep.damage);
 
       if (state.player.wounds - trapDamage <= 0) {
         dispatch({

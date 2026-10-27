@@ -54,7 +54,16 @@ export function rollOnDecisionTable(): Room | Enemy | Trap | Chest {
 
   // Trap
   if (firstDice <= 19) {
-    return traps[0];
+    if (secondDice <= 10) {
+      return traps[0];
+    }
+    if (secondDice <= 15) {
+      return traps[1];
+    }
+    if (secondDice <= 18) {
+      return traps[2];
+    }
+    return traps[3];
   }
 
   // Trench
