@@ -6,7 +6,6 @@ import type { Room } from "./datasheets/rooms";
 import type { Trap } from "./datasheets/traps";
 import type { Chest } from "./datasheets/chests";
 import "./index.css";
-import { rollDice } from "./utils/rollDice";
 import { RoomStep } from "./steps/RoomStep";
 import { EnemyStep } from "./steps/EnemyStep";
 import { TrapStep } from "./steps/TrapStep";
@@ -17,49 +16,11 @@ import { Changelog } from "./components/Changelog";
 import { useAdvanceStep } from "./hooks/useAdvanceStep";
 import { Message } from "./components/Message";
 import { Analytics } from "@vercel/analytics/react";
-import { createMessage } from "./utils/messages";
 
 const ActiveStep = () => {
   const { state, dispatch } = useGame();
   const { activeStep } = state;
   const advanceStep = useAdvanceStep();
-
-  useEffect(() => {
-    if (activeStep?._type === "room" && activeStep.name === "Chapel") {
-      dispatch({
-        type: "player_restored",
-        payload: {
-          wounds: state.player.totalWounds,
-          messages: [createMessage(`You prayed. Health restored.`)],
-        },
-      });
-    } else if (activeStep?._type === "trap") {
-      const trapDamage = rollDice(3);
-
-      if (state.player.wounds - trapDamage <= 0) {
-        dispatch({
-          type: "player_wounded",
-          payload: {
-            wounds: 0,
-            messages: [
-              createMessage(`${activeStep.name} dealt ${trapDamage} wounds.`),
-            ],
-          },
-        });
-        dispatch({ type: "game_over" });
-      } else {
-        dispatch({
-          type: "player_wounded",
-          payload: {
-            wounds: state.player.wounds - trapDamage,
-            messages: [
-              createMessage(`${activeStep.name} dealt ${trapDamage} wounds.`),
-            ],
-          },
-        });
-      }
-    }
-  }, [activeStep]);
 
   if (state.rooms >= LAMP_TARGET) {
     return (

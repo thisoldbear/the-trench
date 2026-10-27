@@ -5,6 +5,12 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "0.3.7",
+    changes: [
+      "Moved step entry side effects from React useEffect to step advance handler to prevent duplicate execution in StrictMode.",
+    ],
+  },
+  {
     version: "0.3.6",
     changes: [
       "Removed unused API template boilerplate and SVG assets.",
