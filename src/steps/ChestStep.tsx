@@ -14,7 +14,7 @@ const ChestItem = ({ item }: { item: Equipment | Weapon }) => {
   const [taken, setTaken] = useState(false);
 
   return (
-    <li key={item.id} className="chest-item">
+    <li className="chest-item">
       <div>
         <div className="inventory__cell-title">{item.name}</div>
         {item._type === "equipment" && <p>{item.description}</p>}
@@ -61,7 +61,7 @@ const ChestItem = ({ item }: { item: Equipment | Weapon }) => {
                   messages: [
                     {
                       id: crypto.randomUUID(),
-                      text: `Added ${item.name}  to inventory`,
+                      text: `Added ${item.name} to inventory`,
                     },
                   ],
                 },
@@ -82,7 +82,7 @@ export const ChestStep = ({ chest }: { chest: Chest }) => {
   const rollForEquipment = (): Equipment[] | Weapon[] | [] =>
     rollOnChestTable(chest, dispatch, state.player);
 
-  const [foundEqupment, setFoundEquipment] = useState<
+  const [foundEquipment, setFoundEquipment] = useState<
     Equipment[] | Weapon[] | []
   >([]);
 
@@ -94,33 +94,38 @@ export const ChestStep = ({ chest }: { chest: Chest }) => {
         {chest.name} <StepCounter stepId={chest.id} />
       </h2>
       <p>{chest.description}</p>
-      {chestOpened && foundEqupment.length === 0 && (
+      {chestOpened && foundEquipment.length === 0 && (
         <ul className="chest__list">
           <li>Nothing found</li>
         </ul>
       )}
       {/* Equipment */}
-      {foundEqupment.filter((equipment) => equipment._type === "equipment")
+      {foundEquipment.filter((equipment) => equipment._type === "equipment")
         .length > 0 && (
         <>
           <ul className="chest__list">
-            {foundEqupment
+            {foundEquipment
               .filter((equipment) => equipment._type === "equipment")
-              .map((equipment) => {
-                return <ChestItem item={equipment} />;
+              .map((equipment, index) => {
+                return (
+                  <ChestItem
+                    key={equipment.id ?? index}
+                    item={equipment}
+                  />
+                );
               })}
           </ul>
         </>
       )}
       {/* Weapons */}
-      {foundEqupment.filter((equipment) => equipment._type !== "equipment")
+      {foundEquipment.filter((equipment) => equipment._type !== "equipment")
         .length > 0 && (
         <>
           <ul className="chest__list">
-            {foundEqupment
+            {foundEquipment
               .filter((weapon) => weapon._type !== "equipment")
-              .map((weapon) => {
-                return <ChestItem item={weapon} />;
+              .map((weapon, index) => {
+                return <ChestItem key={weapon.id ?? index} item={weapon} />;
               })}
           </ul>
         </>

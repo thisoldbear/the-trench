@@ -5,7 +5,7 @@ export const Message = memo(() => {
   const { state } = useGame();
 
   const reversedMessages = useMemo(
-    () => [...state.messages].reverse(),
+    () => [...state.messages].reverse().slice(0, 20),
     [state.messages]
   );
 

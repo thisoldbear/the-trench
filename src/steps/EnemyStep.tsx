@@ -18,7 +18,7 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
   return (
     <div>
       <h2 className="unifrakturcook-bold step-title">
-        {enemy.name} <StepCounter stepId={enemy.id} />
+        {enemy.name} <StepCounter stepId={enemy.name} />
       </h2>
       <p>
         HP:{" "}
@@ -92,7 +92,14 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
                   } else {
                     dispatch({
                       type: "player_wounded",
-                      payload: { wounds: 0 },
+                      payload: {
+                        wounds: 0,
+                        messages: [
+                          createMessage(
+                            `Rolled D3: Fleeing dealt ${fleeDamage} damage`,
+                          ),
+                        ],
+                      },
                     });
 
                     dispatch({ type: "game_over" });

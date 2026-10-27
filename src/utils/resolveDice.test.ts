@@ -118,10 +118,28 @@ describe("rollOnDecisionTable", () => {
   });
 
   describe("Trap (firstDice = 19)", () => {
-    test("returns Barbed Wire trap when firstDice is 19", () => {
-      rollQueue = [19];
+    test("returns Barbed Wire trap when secondDice is <= 10", () => {
+      rollQueue = [19, 10];
       const result = rollOnDecisionTable();
       expect(result).toEqual(traps[0]);
+    });
+
+    test("returns Collapsed Wall trap when secondDice is 11-15", () => {
+      rollQueue = [19, 15];
+      const result = rollOnDecisionTable();
+      expect(result).toEqual(traps[1]);
+    });
+
+    test("returns Gas Cloud trap when secondDice is 16-18", () => {
+      rollQueue = [19, 18];
+      const result = rollOnDecisionTable();
+      expect(result).toEqual(traps[2]);
+    });
+
+    test("returns Unexploded Bomb trap when secondDice is 19-20", () => {
+      rollQueue = [19, 20];
+      const result = rollOnDecisionTable();
+      expect(result).toEqual(traps[3]);
     });
   });
 

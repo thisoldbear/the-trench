@@ -74,4 +74,23 @@ describe("GameContext reducer - lamp and fleeing mechanics", () => {
 
     expect(updatedState.rooms).toBe(5);
   });
+
+  test("messages are capped at MAX_MESSAGES to prevent unbounded growth", () => {
+    const initialState = generateInitialState();
+    let state = initialState;
+
+    for (let i = 0; i < 60; i++) {
+      state = gameReducer(state, {
+        type: "player_wounded",
+        payload: {
+          wounds: 10,
+          messages: [{ id: String(i), text: `Message ${i}` }],
+        },
+      });
+    }
+
+    expect(state.messages.length).toBe(50);
+    expect(state.messages[0]!.text).toBe("Message 10");
+    expect(state.messages[49]!.text).toBe("Message 59");
+  });
 });

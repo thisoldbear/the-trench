@@ -14,7 +14,7 @@ export type Player = {
   hitModifier: number;
 };
 
-export const player = {
+export const player: Player = {
   totalWounds: 15,
   wounds: 15,
   weapons: [weapons[0], weapons[1]],
@@ -25,4 +25,4 @@ export const player = {
   totalToughness: 3,
   damageModifier: 0,
   hitModifier: 0,
-} satisfies Player;
+};

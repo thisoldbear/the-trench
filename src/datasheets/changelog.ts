@@ -5,6 +5,60 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "0.3.10",
+    changes: [
+      "Bounded message log history to 50 entries and limited UI rendering to 20 to prevent unbounded memory growth.",
+    ],
+  },
+  {
+    version: "0.3.9",
+    changes: [
+      "Removed unused reducer actions (equipped_weapon_remove, weapon_remove, game_end).",
+    ],
+  },
+  {
+    version: "0.3.8",
+    changes: [
+      "Enabled all trap variants (Collapsed Wall, Gas Cloud, Unexploded Bomb) and scaled trap damage by trap datasheet values.",
+    ],
+  },
+  {
+    version: "0.3.7",
+    changes: [
+      "Moved step entry side effects from React useEffect to step advance handler to prevent duplicate execution in StrictMode.",
+    ],
+  },
+  {
+    version: "0.3.6",
+    changes: [
+      "Removed unused API template boilerplate and SVG assets.",
+    ],
+  },
+  {
+    version: "0.3.5",
+    changes: [
+      "Fixed missing list keys in ChestStep and resolved typos in chest and trap descriptions.",
+    ],
+  },
+  {
+    version: "0.3.4",
+    changes: [
+      "Display damage messages on lethal trap and flee damage before game over.",
+    ],
+  },
+  {
+    version: "0.3.3",
+    changes: [
+      "Clear temporary combat modifiers when lighting lamps as documented.",
+    ],
+  },
+  {
+    version: "0.3.2",
+    changes: [
+      "Fixed TypeScript compilation errors in GameContext, player types, and step components.",
+    ],
+  },
+  {
     version: "0.3.1",
     changes: [
       "Fleeing with lit lamps extinguishes one without damage; fleeing with no lamps lit deals D3 damage.",
