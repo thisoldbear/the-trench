@@ -5,6 +5,12 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "0.3.9",
+    changes: [
+      "Removed unused reducer actions (equipped_weapon_remove, weapon_remove, game_end).",
+    ],
+  },
+  {
     version: "0.3.8",
     changes: [
       "Enabled all trap variants (Collapsed Wall, Gas Cloud, Unexploded Bomb) and scaled trap damage by trap datasheet values.",
