@@ -153,6 +153,17 @@ export type GameAction =
       };
     };
 
+export const MAX_MESSAGES = 50;
+
+export function appendMessages(
+  existing: GameState["messages"],
+  incoming?: GameState["messages"],
+): GameState["messages"] {
+  if (!incoming || incoming.length === 0) return existing;
+  const combined = [...existing, ...incoming];
+  return combined.length > MAX_MESSAGES ? combined.slice(-MAX_MESSAGES) : combined;
+}
+
 export const generateInitialState = () => {
   const initialWeapons = weaponsLoadout();
   const initialEquipment = equipmentLoadout();
@@ -183,7 +194,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         activeStep: action.payload.activeStep,
         activeStepUuid: crypto.randomUUID(),
-        messages: [...state.messages, ...(action.payload.messages || [])],
+        messages: appendMessages(state.messages, action.payload.messages),
         rooms: action.payload.rooms ?? state.rooms,
         steps: state.steps + 1,
       };
@@ -195,7 +206,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           ...state.player,
           wounds: action.payload.wounds,
         },
-        messages: [...state.messages, ...(action.payload.messages || [])],
+        messages: appendMessages(state.messages, action.payload.messages),
       };
 
     case "player_toughness_add":
@@ -205,7 +216,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           ...state.player,
           toughness: action.payload.toughness,
         },
-        messages: [...state.messages, ...(action.payload.messages || [])],
+        messages: appendMessages(state.messages, action.payload.messages),
       };
 
     case "player_toughness_remove":
@@ -215,7 +226,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           ...state.player,
           toughness: action.payload.toughness,
         },
-        messages: [...state.messages, ...(action.payload.messages || [])],
+        messages: appendMessages(state.messages, action.payload.messages),
       };
 
     case "player_hit_modifier_add":
@@ -225,7 +236,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           ...state.player,
           hitModifier: action.payload.hitModifier,
         },
-        messages: [...state.messages, ...(action.payload.messages || [])],
+        messages: appendMessages(state.messages, action.payload.messages),
       };
 
     case "player_hit_modifier_remove":
@@ -235,7 +246,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           ...state.player,
           hitModifier: 0,
         },
-        messages: [...state.messages, ...(action.payload.messages || [])],
+        messages: appendMessages(state.messages, action.payload.messages),
       };
 
     case "player_damage_add":
@@ -245,7 +256,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           ...state.player,
           damageModifier: action.payload.damageModifier,
         },
-        messages: [...state.messages, ...(action.payload.messages || [])],
+        messages: appendMessages(state.messages, action.payload.messages),
       };
 
     case "player_damage_remove":
@@ -255,7 +266,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           ...state.player,
           damageModifier: action.payload.damageModifier,
         },
-        messages: [...state.messages, ...(action.payload.messages || [])],
+        messages: appendMessages(state.messages, action.payload.messages),
       };
 
     case "player_restored":
@@ -265,7 +276,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           ...state.player,
           wounds: action.payload.wounds,
         },
-        messages: [...state.messages, ...(action.payload.messages || [])],
+        messages: appendMessages(state.messages, action.payload.messages),
       };
 
     case "enemy_wounded": {
@@ -277,7 +288,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
             ...enemy,
             wounds: action.payload.wounds,
           },
-          messages: [...state.messages, ...(action.payload.messages || [])],
+          messages: appendMessages(state.messages, action.payload.messages),
         };
       }
 
@@ -293,7 +304,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
             ...enemy,
             wounds: action.payload.wounds,
           },
-          messages: [...state.messages, ...(action.payload.messages || [])],
+          messages: appendMessages(state.messages, action.payload.messages),
           enemiesKilled: state.enemiesKilled + 1,
         };
       }
@@ -311,7 +322,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
               }
             : {}),
         },
-        messages: [...state.messages, ...(action.payload.messages || [])],
+        messages: appendMessages(state.messages, action.payload.messages),
       };
     }
 
@@ -343,7 +354,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           weapons: updatedWeapons,
           equippedWeapon: validEquippedWeapon,
         },
-        messages: [...state.messages, ...(action.payload.messages || [])],
+        messages: appendMessages(state.messages, action.payload.messages),
       };
     }
 
@@ -360,7 +371,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
             },
           ],
         },
-        messages: [...state.messages, ...(action.payload.messages || [])],
+        messages: appendMessages(state.messages, action.payload.messages),
       };
     }
 
@@ -371,7 +382,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           ...state.player,
           equipment: action.payload.equipment,
         },
-        messages: [...state.messages, ...(action.payload.messages || [])],
+        messages: appendMessages(state.messages, action.payload.messages),
       };
     }
 
@@ -385,7 +396,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
             { ...action.payload.weapon, uuid: crypto.randomUUID() },
           ],
         },
-        messages: [...state.messages, ...(action.payload.messages || [])],
+        messages: appendMessages(state.messages, action.payload.messages),
       };
     }
 
@@ -403,7 +414,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       return {
         ...state,
         rooms: action.payload.rooms,
-        messages: [...state.messages, ...(action.payload.messages || [])],
+        messages: appendMessages(state.messages, action.payload.messages),
       };
 
     case "restart":

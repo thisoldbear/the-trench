@@ -5,6 +5,12 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "0.3.10",
+    changes: [
+      "Bounded message log history to 50 entries and limited UI rendering to 20 to prevent unbounded memory growth.",
+    ],
+  },
+  {
     version: "0.3.9",
     changes: [
       "Removed unused reducer actions (equipped_weapon_remove, weapon_remove, game_end).",
