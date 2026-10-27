@@ -8,7 +8,7 @@ export const traps = [
   {
     _type: "trap",
     name: "Collapsed Wall",
-    description: "A trench supprt gives way.",
+    description: "A trench support gives way.",
     damage: 2,
   },
   {

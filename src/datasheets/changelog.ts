@@ -5,6 +5,12 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "0.3.5",
+    changes: [
+      "Fixed missing list keys in ChestStep and resolved typos in chest and trap descriptions.",
+    ],
+  },
+  {
     version: "0.3.4",
     changes: [
       "Display damage messages on lethal trap and flee damage before game over.",
