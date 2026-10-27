@@ -5,6 +5,12 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "0.3.2",
+    changes: [
+      "Fixed TypeScript compilation errors in GameContext, player types, and step components.",
+    ],
+  },
+  {
     version: "0.3.1",
     changes: [
       "Fleeing with lit lamps extinguishes one without damage; fleeing with no lamps lit deals D3 damage.",

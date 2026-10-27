@@ -9,7 +9,7 @@ export const TrapStep = ({ trap }: { trap: Trap }) => {
   return (
     <div>
       <h2 className="unifrakturcook-bold step-title">
-        {trap.name} <StepCounter stepId={trap.id} />
+        {trap.name} <StepCounter stepId={trap.name} />
       </h2>
       <p>{trap.description}</p>
       <Message />

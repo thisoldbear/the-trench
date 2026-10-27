@@ -96,7 +96,7 @@ describe("rollOnChestTable", () => {
       const result = rollOnChestTable({ ...chests[1] }, dispatch);
 
       expect(result).toHaveLength(1);
-      expect(weapons).toContainEqual(result[0]);
+      expect(weapons as readonly unknown[]).toContainEqual(result[0]);
       expect(dispatch).not.toHaveBeenCalled();
     });
 
@@ -105,7 +105,7 @@ describe("rollOnChestTable", () => {
       const result = rollOnChestTable({ ...chests[1] }, dispatch);
 
       expect(result).toHaveLength(1);
-      expect(weapons).toContainEqual(result[0]);
+      expect(weapons as readonly unknown[]).toContainEqual(result[0]);
       expect(dispatch).not.toHaveBeenCalled();
     });
 

@@ -12,7 +12,7 @@ export const RoomStep = ({ room }: { room: Room }) => {
   return (
     <div>
       <h2 className="unifrakturcook-bold step-title">
-        {room.name} <StepCounter stepId={room.id} />
+        {room.name} <StepCounter stepId={room.name} />
       </h2>
       <p>{room.description}</p>
       <Message />

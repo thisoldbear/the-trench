@@ -176,7 +176,7 @@ export const generateInitialState = () => {
       ...player,
       weapons: initialWeapons,
       equipment: initialEquipment,
-      equippedWeapon: initialWeapons[0]?.uuid,
+      equippedWeapon: initialWeapons[0]?.uuid ?? null,
     },
     rooms: 0,
     activeStep: null,
