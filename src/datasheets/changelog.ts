@@ -5,6 +5,12 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "0.3.3",
+    changes: [
+      "Clear temporary combat modifiers when lighting lamps as documented.",
+    ],
+  },
+  {
     version: "0.3.2",
     changes: [
       "Fixed TypeScript compilation errors in GameContext, player types, and step components.",

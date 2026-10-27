@@ -4,6 +4,7 @@ import { useAdvanceStep } from "../hooks/useAdvanceStep";
 import { useGame, LAMP_TARGET } from "@/context/GameContext";
 import { createMessage } from "@/utils/messages";
 import { StepCounter } from "../components/StepCounter";
+import { removeTemporaryModifiers } from "@/utils/modifiers";
 
 export const RoomStep = ({ room }: { room: Room }) => {
   const { state, dispatch } = useGame();
@@ -22,6 +23,7 @@ export const RoomStep = ({ room }: { room: Room }) => {
             className="btn btn--cta unifrakturcook-bold"
             onClick={() => {
               const newRoomCount = state.rooms + 1;
+              removeTemporaryModifiers(state.player, dispatch);
 
               // If lighting this lamp wins the game, don't advance to next step
               if (newRoomCount >= LAMP_TARGET) {
