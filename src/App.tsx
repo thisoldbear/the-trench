@@ -165,6 +165,7 @@ export function App() {
           )}
         </div>
         <div className="footer">
+          <p>Created by Daniel Williams</p>
           <p>Inspired by</p>
           <p>
             <a href="https://darkfort.caffeine.computer">Dark Fort</a>
