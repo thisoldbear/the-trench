@@ -5,6 +5,13 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "4.1.0",
+    changes: [
+      "Added 'A moment of respite' pause step after lighting each lamp and after every 3 enemy encounters with 10 thematic sentences to slow down encounters.",
+      "Added right arrow indicator to all buttons that advance steps.",
+    ],
+  },
+  {
     version: "4.0.2",
     changes: [
       "Capture dice roll and damage results in message log on lethal attacks in combat (enemy defeated and player killed).",
@@ -51,9 +58,7 @@ export const changelog: ChangelogEntry[] = [
   },
   {
     version: "0.3.6",
-    changes: [
-      "Removed unused API template boilerplate and SVG assets.",
-    ],
+    changes: ["Removed unused API template boilerplate and SVG assets."],
   },
   {
     version: "0.3.5",

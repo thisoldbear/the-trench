@@ -5,11 +5,13 @@ import type { Enemy } from "./datasheets/enemies";
 import type { Room } from "./datasheets/rooms";
 import type { Trap } from "./datasheets/traps";
 import type { Chest } from "./datasheets/chests";
+import type { Pause } from "./datasheets/pause";
 import "./index.css";
 import { RoomStep } from "./steps/RoomStep";
 import { EnemyStep } from "./steps/EnemyStep";
 import { TrapStep } from "./steps/TrapStep";
 import { ChestStep } from "./steps/ChestStep";
+import { PauseStep } from "./steps/PauseStep";
 import { Stats } from "./components/Stats";
 import { Inventory } from "./components/Inventory";
 import { Changelog } from "./components/Changelog";
@@ -110,6 +112,16 @@ const ActiveStep = () => {
     );
   }
 
+  if (activeStep?._type === "pause") {
+    return (
+      <>
+        <Stats />
+        <PauseStep key={state.activeStepUuid} pause={activeStep as Pause} />
+        <Inventory />
+      </>
+    );
+  }
+
   return (
     <>
       <Stats />
@@ -129,7 +141,7 @@ const ActiveStep = () => {
             advanceStep();
           }}
         >
-          Enter The Trench
+          Enter The Trench <span className="btn-arrow">⬰</span>
         </button>
       </div>
       <Inventory />

@@ -134,22 +134,105 @@ describe("useAdvanceStep", () => {
     rollQueue = [6];
     const advanceStep = useAdvanceStep();
     advanceStep({
-      rooms: 2,
-      messages: [createMessage("Lit the lamp")],
+      messages: [createMessage("Some previous message")],
     });
 
     expect(dispatch).toHaveBeenCalledWith({
       type: "active_step",
       payload: {
         activeStep: rooms[0],
-        rooms: 2,
         messages: [
-          expect.objectContaining({ text: "Lit the lamp" }),
+          expect.objectContaining({ text: "Some previous message" }),
           expect.objectContaining({
             text: "You rolled 6. Entered: Dark Trench",
           }),
         ],
       },
+    });
+  });
+
+  describe("pause step behavior", () => {
+    test("triggers a pause step after lighting a lamp and preserves lamp message without dice roll", () => {
+      const advanceStep = useAdvanceStep();
+      advanceStep({
+        rooms: 1,
+        messages: [createMessage("Lit the lamp")],
+      });
+
+      expect(dispatch).toHaveBeenCalledWith({
+        type: "active_step",
+        payload: {
+          activeStep: expect.objectContaining({
+            _type: "pause",
+            name: "A moment of respite",
+          }),
+          rooms: 1,
+          messages: [
+            expect.objectContaining({ text: "Lit the lamp" }),
+          ],
+        },
+      });
+      // Should not have rolled on decision table
+      expect(rollDice).not.toHaveBeenCalled();
+    });
+
+    test("triggers a pause step after 3 enemies have been defeated", () => {
+      vi.mocked(useGame).mockReturnValue({
+        state: {
+          ...generateInitialState(),
+          enemiesDefeatedCount: 3,
+          hasPaused: false,
+        },
+        dispatch,
+      });
+
+      vi.mocked(rollDice).mockClear();
+      const advanceStep = useAdvanceStep();
+      advanceStep();
+
+      expect(dispatch).toHaveBeenCalledWith({
+        type: "active_step",
+        payload: {
+          activeStep: expect.objectContaining({
+            _type: "pause",
+            name: "A moment of respite",
+          }),
+          messages: [],
+        },
+      });
+      expect(rollDice).not.toHaveBeenCalled();
+    });
+
+    test("never triggers a pause step when advancing from a pause step", () => {
+      vi.mocked(useGame).mockReturnValue({
+        state: {
+          ...generateInitialState(),
+          activeStep: {
+            _type: "pause",
+            name: "A moment of respite",
+            description: "Some respite sentence",
+          },
+          enemiesDefeatedCount: 3,
+          hasPaused: true,
+        },
+        dispatch,
+      });
+
+      rollQueue = [4];
+      const advanceStep = useAdvanceStep();
+      advanceStep();
+
+      expect(dispatch).toHaveBeenCalledWith({
+        type: "active_step",
+        payload: {
+          activeStep: rooms[0],
+          messages: [
+            expect.objectContaining({
+              text: "You rolled 4. Entered: Dark Trench",
+            }),
+          ],
+        },
+      });
     });
   });
 });
