@@ -5,6 +5,12 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "4.1.1",
+    changes: [
+      "Ensure action buttons and advance arrows are always vertically centered across devices.",
+    ],
+  },
+  {
     version: "4.1.0",
     changes: [
       "Added 'A moment of respite' pause step after lighting each lamp and after every 3 enemy encounters with 10 thematic sentences to slow down encounters.",

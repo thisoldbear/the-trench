@@ -145,6 +145,10 @@ h1 {
 }
 
 .btn--cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   font-size: 24px;
   background: transparent;
   border: 1px solid #ffffff;
@@ -152,6 +156,7 @@ h1 {
   color: #ffffff;
   width: auto;
   padding: 10px 15px;
+  line-height: 1;
 }
 
 .btn--cta:hover {
@@ -164,9 +169,13 @@ h1 {
 }
 
 .btn-arrow {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   transform: rotate(180deg);
-  translate: 2px 2px;
+  position: relative;
+  top: 2px;
+  line-height: 1;
 }
 
 .inventory button {
