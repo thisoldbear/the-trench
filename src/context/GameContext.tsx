@@ -7,6 +7,7 @@ import type { Trap } from "@/datasheets/traps";
 import type { Pause } from "@/datasheets/pause";
 import { weapons, type Weapon } from "@/datasheets/weapons";
 import { equipmentLoadout, weaponsLoadout } from "@/utils/loadout";
+import { generateRandomSeed, setSeed } from "@/utils/rollDice";
 import {
   createContext,
   useContext,
@@ -32,6 +33,7 @@ export type GameState = {
   enemiesDefeatedCount: number;
   hasPaused: boolean;
   steps: number;
+  seed: number | string;
 };
 
 export type GameAction =
@@ -146,7 +148,12 @@ export type GameAction =
         messages?: GameState["messages"];
       };
     }
-  | { type: "restart" }
+  | {
+      type: "restart";
+      payload?: {
+        seed?: number | string;
+      };
+    }
   | { type: "game_over" }
   | {
       type: "rooms_increment";
@@ -167,7 +174,10 @@ export function appendMessages(
   return combined.length > MAX_MESSAGES ? combined.slice(-MAX_MESSAGES) : combined;
 }
 
-export const generateInitialState = () => {
+export const generateInitialState = (seed?: number | string) => {
+  const activeSeed = seed !== undefined ? seed : generateRandomSeed();
+  setSeed(activeSeed);
+
   const initialWeapons = weaponsLoadout();
   const initialEquipment = equipmentLoadout();
 
@@ -187,6 +197,7 @@ export const generateInitialState = () => {
     enemiesDefeatedCount: 0,
     hasPaused: false,
     steps: 0,
+    seed: activeSeed,
   };
 
   return initialState;
@@ -432,11 +443,20 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
     case "restart":
       return {
-        ...generateInitialState(),
+        ...generateInitialState(action.payload?.seed),
       };
     default:
       return state;
   }
+}
+
+function getInitialSeedFromUrl(): string | undefined {
+  if (typeof window !== "undefined" && window.location?.search) {
+    const params = new URLSearchParams(window.location.search);
+    const seedParam = params.get("seed");
+    if (seedParam) return seedParam;
+  }
+  return undefined;
 }
 
 const GameContext = createContext<{
@@ -444,8 +464,18 @@ const GameContext = createContext<{
   dispatch: Dispatch<GameAction>;
 } | null>(null);
 
-export function GameProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(gameReducer, generateInitialState());
+export function GameProvider({
+  children,
+  initialSeed,
+}: {
+  children: ReactNode;
+  initialSeed?: number | string;
+}) {
+  const [state, dispatch] = useReducer(
+    gameReducer,
+    undefined,
+    () => generateInitialState(initialSeed ?? getInitialSeedFromUrl()),
+  );
   const value = useMemo(() => ({ state, dispatch }), [state]);
 
   return (

@@ -26,4 +26,11 @@ describe("pause datasheet", () => {
       expect(step.description).toBe(pauseSentences[i]);
     }
   });
+
+  test("createPauseStep without arguments selects a random sentence deterministically when seeded", () => {
+    const step = createPauseStep();
+    expect(step._type).toBe("pause");
+    expect(step.name).toBe("A moment of respite");
+    expect(pauseSentences).toContain(step.description);
+  });
 });

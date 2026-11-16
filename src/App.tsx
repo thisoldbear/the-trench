@@ -33,6 +33,7 @@ const ActiveStep = () => {
         </h1>
         <p>Another long night has passed in The Trench.</p>
         <p>Rest, while you can... darkness is already descending.</p>
+        <p style={{ opacity: 0.6, fontSize: "12px" }}>Seed: {state.seed}</p>
         <Message />
         <button
           className="btn btn--cta unifrakturcook-bold"
@@ -57,6 +58,7 @@ const ActiveStep = () => {
           A valiant effort. Let us pray other brave individuals will continue to
           keep the lamps lit each night.
         </p>
+        <p style={{ opacity: 0.6, fontSize: "12px" }}>Seed: {state.seed}</p>
         <Message />
         <button
           className="btn btn--cta unifrakturcook-bold"
@@ -149,6 +151,22 @@ const ActiveStep = () => {
   );
 };
 
+const FooterSeed = () => {
+  const { state } = useGame();
+  return (
+    <p>
+      Seed:{" "}
+      <a
+        href={`?seed=${encodeURIComponent(state.seed)}`}
+        title="Share or replay this seed"
+        style={{ textDecoration: "underline dotted" }}
+      >
+        {state.seed}
+      </a>
+    </p>
+  );
+};
+
 export function App() {
   const [pathname, setPathname] = useState(() => window.location.pathname);
 
@@ -184,6 +202,7 @@ export function App() {
             {` `}✜{` `}
             <a href="https://www.trenchcrusade.com/">Trench Crusade</a>
           </p>
+          <FooterSeed />
           <p>
             <a
               href="/changelog"

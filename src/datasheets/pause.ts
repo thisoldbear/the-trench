@@ -1,3 +1,5 @@
+import { randomInt } from "@/utils/prng";
+
 export const pauseSentences = [
   "The distant guns fall silent for a fleeting heartbeat.",
   "You lean against the muddy trench wall and catch your breath.",
@@ -22,7 +24,7 @@ export function createPauseStep(sentenceIndex?: number): Pause {
     typeof sentenceIndex === "number"
       ? ((sentenceIndex % pauseSentences.length) + pauseSentences.length) %
         pauseSentences.length
-      : Math.floor(Math.random() * pauseSentences.length);
+      : randomInt(0, pauseSentences.length - 1);
 
   return {
     _type: "pause",

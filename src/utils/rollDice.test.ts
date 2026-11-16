@@ -1,5 +1,5 @@
 import { expect, test, describe } from "vitest";
-import { rollDice } from "./rollDice";
+import { rollDice, setSeed, resetPRNG, getSeed, createPRNG } from "./rollDice";
 
 describe("rollDice", () => {
   test("returns a number between 1 and sides (inclusive)", () => {
@@ -73,5 +73,67 @@ describe("rollDice", () => {
       const result = rollDice(10);
       expect(result).toBeLessThanOrEqual(10);
     }
+  });
+
+  test("throws error when sides is less than 1 or not finite", () => {
+    expect(() => rollDice(0)).toThrow("Invalid number of sides");
+    expect(() => rollDice(-5)).toThrow("Invalid number of sides");
+    expect(() => rollDice(NaN)).toThrow("Invalid number of sides");
+    expect(() => rollDice(Infinity)).toThrow("Invalid number of sides");
+  });
+
+  describe("seedable determinism", () => {
+    test("produces the exact same sequence given the same numeric seed", () => {
+      setSeed(42);
+      const sequence1 = Array.from({ length: 20 }, () => rollDice(20));
+
+      setSeed(42);
+      const sequence2 = Array.from({ length: 20 }, () => rollDice(20));
+
+      expect(sequence1).toEqual(sequence2);
+    });
+
+    test("produces the exact same sequence given the same string seed", () => {
+      setSeed("the-dark-trench-2026");
+      const sequence1 = Array.from({ length: 20 }, () => rollDice(6));
+
+      setSeed("the-dark-trench-2026");
+      const sequence2 = Array.from({ length: 20 }, () => rollDice(6));
+
+      expect(sequence1).toEqual(sequence2);
+    });
+
+    test("resetPRNG without arguments resets back to current seed", () => {
+      setSeed(999);
+      const firstRoll = rollDice(100);
+      const secondRoll = rollDice(100);
+
+      resetPRNG();
+      expect(rollDice(100)).toBe(firstRoll);
+      expect(rollDice(100)).toBe(secondRoll);
+    });
+
+    test("different seeds produce different sequences", () => {
+      setSeed(1001);
+      const seq1 = Array.from({ length: 10 }, () => rollDice(20));
+
+      setSeed(2002);
+      const seq2 = Array.from({ length: 10 }, () => rollDice(20));
+
+      expect(seq1).not.toEqual(seq2);
+    });
+
+    test("getSeed returns current seed", () => {
+      setSeed("my-test-seed");
+      expect(getSeed()).toBe("my-test-seed");
+    });
+
+    test("isolated createPRNG instances are independent", () => {
+      const prngA = createPRNG(123);
+      const prngB = createPRNG(123);
+
+      expect(prngA.nextInt(1, 100)).toBe(prngB.nextInt(1, 100));
+      expect(prngA.next()).toBe(prngB.next());
+    });
   });
 });

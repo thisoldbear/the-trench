@@ -5,6 +5,13 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "4.2.0",
+    changes: [
+      "Moved dice rolling and procedural generation to a deterministic, seedable Mulberry32 PRNG.",
+      "Added support for run seeds via URL parameter (?seed=...) and displayed the active run seed in the footer and end screens for replayability and sharing.",
+    ],
+  },
+  {
     version: "4.1.2",
     changes: [
       "Added custom slim dark scrollbars that blend with the theme on desktop browsers.",

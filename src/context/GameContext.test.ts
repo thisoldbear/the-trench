@@ -155,4 +155,25 @@ describe("GameContext reducer - lamp and fleeing mechanics", () => {
       expect(updated.hasPaused).toBe(false);
     });
   });
+
+  describe("seed management", () => {
+    test("initial state has a seed assigned", () => {
+      const state = generateInitialState();
+      expect(state.seed).toBeDefined();
+    });
+
+    test("initial state accepts a custom seed", () => {
+      const state = generateInitialState("custom-seed-42");
+      expect(state.seed).toBe("custom-seed-42");
+    });
+
+    test("restart action preserves custom seed when provided", () => {
+      const state = generateInitialState("old-seed");
+      const restarted = gameReducer(state, {
+        type: "restart",
+        payload: { seed: "new-seed-100" },
+      });
+      expect(restarted.seed).toBe("new-seed-100");
+    });
+  });
 });
