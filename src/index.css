@@ -192,13 +192,10 @@ h1 {
 }
 
 .btn-arrow {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transform: rotate(180deg);
-  position: relative;
-  top: 2px;
-  line-height: 1;
+  display: inline-block;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
 }
 
 .inventory button {

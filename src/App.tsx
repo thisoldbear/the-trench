@@ -17,6 +17,7 @@ import { Inventory } from "./components/Inventory";
 import { Changelog } from "./components/Changelog";
 import { useAdvanceStep } from "./hooks/useAdvanceStep";
 import { Message } from "./components/Message";
+import { AdvanceArrow } from "./components/AdvanceArrow";
 import { Analytics } from "@vercel/analytics/react";
 
 const ActiveStep = () => {
@@ -143,7 +144,7 @@ const ActiveStep = () => {
             advanceStep();
           }}
         >
-          Enter The Trench <span className="btn-arrow">⬰</span>
+          Enter The Trench <AdvanceArrow />
         </button>
       </div>
       <Inventory />

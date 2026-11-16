@@ -7,6 +7,7 @@ import { rollOnChestTable } from "@/utils/chest";
 import { Message } from "../components/Message";
 import { useAdvanceStep } from "../hooks/useAdvanceStep";
 import { StepCounter } from "../components/StepCounter";
+import { AdvanceArrow } from "../components/AdvanceArrow";
 
 const ChestItem = ({ item }: { item: Equipment | Weapon }) => {
   const { dispatch } = useGame();
@@ -151,7 +152,7 @@ export const ChestStep = ({ chest }: { chest: Chest }) => {
             advanceStep();
           }}
         >
-          Continue <span className="btn-arrow">⬰</span>
+          Continue <AdvanceArrow />
         </button>
       </div>
     </div>

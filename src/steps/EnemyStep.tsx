@@ -5,6 +5,7 @@ import { rollDice } from "@/utils/rollDice";
 import { Message } from "../components/Message";
 import { useAdvanceStep } from "../hooks/useAdvanceStep";
 import { StepCounter } from "../components/StepCounter";
+import { AdvanceArrow } from "../components/AdvanceArrow";
 import { removeTemporaryModifiers } from "@/utils/modifiers";
 import { createMessage } from "@/utils/messages";
 
@@ -107,7 +108,7 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
                 }
               }}
             >
-              Flee <span className="btn-arrow">⬰</span>
+              Flee <AdvanceArrow />
             </button>
           </>
         ) : (
@@ -115,7 +116,7 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
             className="btn btn--cta unifrakturcook-bold"
             onClick={() => advanceStep()}
           >
-            Continue <span className="btn-arrow">⬰</span>
+            Continue <AdvanceArrow />
           </button>
         )}
       </div>

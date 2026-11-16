@@ -5,6 +5,12 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "4.2.1",
+    changes: [
+      "Replaced Unicode arrow glyph with an inline vector SVG to guarantee consistent vertical alignment across Android Chrome, iOS, and desktop browsers.",
+    ],
+  },
+  {
     version: "4.2.0",
     changes: [
       "Moved dice rolling and procedural generation to a deterministic, seedable Mulberry32 PRNG.",

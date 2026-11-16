@@ -4,6 +4,7 @@ import { useAdvanceStep } from "../hooks/useAdvanceStep";
 import { useGame, LAMP_TARGET } from "@/context/GameContext";
 import { createMessage } from "@/utils/messages";
 import { StepCounter } from "../components/StepCounter";
+import { AdvanceArrow } from "../components/AdvanceArrow";
 import { removeTemporaryModifiers } from "@/utils/modifiers";
 
 export const RoomStep = ({ room }: { room: Room }) => {
@@ -42,14 +43,14 @@ export const RoomStep = ({ room }: { room: Room }) => {
               }
             }}
           >
-            Light the lamp <span className="btn-arrow">⬰</span>
+            Light the lamp <AdvanceArrow />
           </button>
         ) : (
           <button
             className="btn btn--cta unifrakturcook-bold"
             onClick={() => advanceStep()}
           >
-            Continue <span className="btn-arrow">⬰</span>
+            Continue <AdvanceArrow />
           </button>
         )}
       </div>

@@ -2,6 +2,7 @@ import type { Trap } from "@/datasheets/traps";
 import { Message } from "../components/Message";
 import { useAdvanceStep } from "../hooks/useAdvanceStep";
 import { StepCounter } from "../components/StepCounter";
+import { AdvanceArrow } from "../components/AdvanceArrow";
 
 export const TrapStep = ({ trap }: { trap: Trap }) => {
   const advanceStep = useAdvanceStep();
@@ -18,7 +19,7 @@ export const TrapStep = ({ trap }: { trap: Trap }) => {
           className="btn btn--cta unifrakturcook-bold"
           onClick={() => advanceStep()}
         >
-          Continue <span className="btn-arrow">⬰</span>
+          Continue <AdvanceArrow />
         </button>
       </div>
     </div>
