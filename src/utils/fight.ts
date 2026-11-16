@@ -58,7 +58,12 @@ export function fightLoop(
         type: "enemy_defeated",
         payload: {
           wounds: 0,
-          messages: [createMessage(`${enemy.name} was defeated`)],
+          messages: [
+            createMessage(
+              `You rolled a ${playerRolled}. ${enemy.name} took ${damage} damage ${player.damageModifier ? `(${damage} + ${player.damageModifier} modifier)` : ``}`,
+            ),
+            createMessage(`${enemy.name} was defeated`),
+          ],
         },
       });
 
@@ -73,10 +78,9 @@ export function fightLoop(
       payload: {
         wounds: enemyWounds,
         messages: [
-          {
-            id: crypto.randomUUID(),
-            text: `You rolled a ${playerRolled}. ${enemy.name} took ${damage} damage ${player.damageModifier ? `(${damage} + ${player.damageModifier} modifier)` : ``}`,
-          },
+          createMessage(
+            `You rolled a ${playerRolled}. ${enemy.name} took ${damage} damage ${player.damageModifier ? `(${damage} + ${player.damageModifier} modifier)` : ``}`,
+          ),
         ],
       },
     });
@@ -102,6 +106,16 @@ export function fightLoop(
     const playerWounds = player.wounds - damage;
 
     if (playerWounds <= 0) {
+      dispatch({
+        type: "player_wounded",
+        payload: {
+          wounds: 0,
+          messages: [
+            createMessage(`${enemy.name} rolled a ${enemyRolled}`),
+            createMessage(`You took ${damage} damage`),
+          ],
+        },
+      });
       dispatch({ type: "game_over" });
       return;
     }

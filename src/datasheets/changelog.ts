@@ -5,6 +5,13 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "4.0.2",
+    changes: [
+      "Capture dice roll and damage results in message log on lethal attacks in combat (enemy defeated and player killed).",
+      "Include dice roll results when advancing steps so it is clear what was rolled to reach each encounter (e.g., 'You rolled 13 then 2. Encountered: Zombie Soldier').",
+    ],
+  },
+  {
     version: "4.0.1",
     changes: [
       "Removed 'Version: ' label from footer and added link to the GitHub repository.",

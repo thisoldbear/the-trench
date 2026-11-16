@@ -9,7 +9,7 @@ vi.mock("./rollDice");
 
 let rollQueue: number[] = [];
 
-import { rollOnDecisionTable } from "./resolveDice";
+import { rollOnDecisionTable, resolveDecisionTable } from "./resolveDice";
 
 describe("rollOnDecisionTable", () => {
   beforeEach(() => {
@@ -148,5 +148,49 @@ describe("rollOnDecisionTable", () => {
       const result = rollOnDecisionTable();
       expect(result).toEqual(rooms[0]);
     });
+  });
+});
+
+describe("resolveDecisionTable", () => {
+  beforeEach(() => {
+    vi.mocked(rollDice).mockImplementation(() => rollQueue.shift() ?? 1);
+    vi.mocked(rollDice).mockClear();
+    rollQueue = [];
+  });
+
+  test("returns Chapel with single roll when firstDice is 1", () => {
+    rollQueue = [1];
+    const result = resolveDecisionTable();
+    expect(result).toEqual({ step: rooms[1], rolls: [1] });
+  });
+
+  test("returns Dark Trench with single roll when firstDice is 5", () => {
+    rollQueue = [5];
+    const result = resolveDecisionTable();
+    expect(result).toEqual({ step: rooms[0], rolls: [5] });
+  });
+
+  test("returns Booty with two rolls when firstDice is 9 and secondDice is 2", () => {
+    rollQueue = [9, 2];
+    const result = resolveDecisionTable();
+    expect(result).toEqual({ step: chests[0], rolls: [9, 2] });
+  });
+
+  test("returns Enemy with two rolls when firstDice is 15 and secondDice is 14", () => {
+    rollQueue = [15, 14];
+    const result = resolveDecisionTable();
+    expect(result).toEqual({ step: enemies[0], rolls: [15, 14] });
+  });
+
+  test("returns Trap with two rolls when firstDice is 19 and secondDice is 10", () => {
+    rollQueue = [19, 10];
+    const result = resolveDecisionTable();
+    expect(result).toEqual({ step: traps[0], rolls: [19, 10] });
+  });
+
+  test("returns Dark Trench with single roll when firstDice is 20", () => {
+    rollQueue = [20];
+    const result = resolveDecisionTable();
+    expect(result).toEqual({ step: rooms[0], rolls: [20] });
   });
 });

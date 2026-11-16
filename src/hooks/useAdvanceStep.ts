@@ -3,7 +3,7 @@ import type { Chest } from "@/datasheets/chests";
 import type { Enemy } from "@/datasheets/enemies";
 import type { Room } from "@/datasheets/rooms";
 import type { Trap } from "@/datasheets/traps";
-import { rollOnDecisionTable } from "@/utils/resolveDice";
+import { resolveDecisionTable } from "@/utils/resolveDice";
 import { createMessage } from "@/utils/messages";
 import { rollDice } from "@/utils/rollDice";
 
@@ -13,7 +13,7 @@ export function useAdvanceStep() {
     rooms?: number;
     messages?: { id: string; text: string }[];
   }) => {
-    const activeStep = rollOnDecisionTable()!;
+    const { step: activeStep, rolls } = resolveDecisionTable();
 
     const prefix = (activeStep: Room | Enemy | Trap | Chest): string => {
       if (activeStep._type === "enemy") {
@@ -31,6 +31,8 @@ export function useAdvanceStep() {
       return "";
     };
 
+    const rollText = rolls.join(" then ");
+
     dispatch({
       type: "active_step",
       payload: {
@@ -38,7 +40,7 @@ export function useAdvanceStep() {
         ...opts,
         messages: [
           ...(opts?.messages || []),
-          createMessage(`${prefix(activeStep)} ${activeStep.name}`),
+          createMessage(`You rolled ${rollText}. ${prefix(activeStep)}${activeStep.name}`),
         ],
       },
     });

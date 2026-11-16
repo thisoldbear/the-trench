@@ -128,7 +128,16 @@ describe("fightLoop", () => {
     expect(dispatch).toHaveBeenCalledTimes(2);
     expect(dispatch.mock.calls[0]![0]!.type).toBe("enemy_defeated");
     expect(dispatch.mock.calls[0]![0]!.payload.wounds).toBe(0);
-    expect(dispatch.mock.calls[0]![0]!.payload.messages).toHaveLength(1);
+    expect(dispatch.mock.calls[0]![0]!.payload.messages).toHaveLength(2);
+    expect(dispatch.mock.calls[0]![0]!.payload.messages[0]!.text).toContain(
+      "You rolled a 6",
+    );
+    expect(dispatch.mock.calls[0]![0]!.payload.messages[0]!.text).toContain(
+      "took 6 damage",
+    );
+    expect(dispatch.mock.calls[0]![0]!.payload.messages[1]!.text).toBe(
+      "Swarm of Rats was defeated",
+    );
     expect(dispatch.mock.calls[1]![0]!.type).toBe(
       "equipped_weapon_remove_ammo",
     );
@@ -188,12 +197,42 @@ describe("fightLoop", () => {
     rollQueue = [1, 6, 3];
     fightLoop({ ...testPlayer, wounds: 2 }, { ...testEnemy }, dispatch);
 
-    expect(dispatch).toHaveBeenCalledTimes(3);
+    expect(dispatch).toHaveBeenCalledTimes(4);
     expect(dispatch.mock.calls[0]![0]!.type).toBe("enemy_wounded");
     expect(dispatch.mock.calls[1]![0]!.type).toBe(
       "equipped_weapon_remove_ammo",
     );
-    expect(dispatch.mock.calls[2]![0]!.type).toBe("game_over");
+    expect(dispatch.mock.calls[2]![0]!.type).toBe("player_wounded");
+    expect(dispatch.mock.calls[2]![0]!.payload.wounds).toBe(0);
+    expect(dispatch.mock.calls[2]![0]!.payload.messages).toHaveLength(2);
+    expect(dispatch.mock.calls[2]![0]!.payload.messages[0]!.text).toBe(
+      "Swarm of Rats rolled a 6",
+    );
+    expect(dispatch.mock.calls[2]![0]!.payload.messages[1]!.text).toBe(
+      "You took 3 damage",
+    );
+    expect(dispatch.mock.calls[3]![0]!.type).toBe("game_over");
+  });
+
+  test("dispatches enemy_defeated with damage modifier message when enemy is killed with damage bonus", () => {
+    // Player rolls 5 (hit, needs 3+), damage 2 → 2+0 + 2 (modifier) = 4 kills 4hp enemy
+    rollQueue = [5, 2];
+    fightLoop(
+      { ...testPlayer, damageModifier: 2 },
+      { ...testEnemy },
+      dispatch,
+    );
+
+    expect(dispatch).toHaveBeenCalledTimes(3); // enemy_defeated, player_damage_remove, equipped_weapon_remove_ammo
+    expect(dispatch.mock.calls[0]![0]!.type).toBe("enemy_defeated");
+    expect(dispatch.mock.calls[0]![0]!.payload.wounds).toBe(0);
+    expect(dispatch.mock.calls[0]![0]!.payload.messages).toHaveLength(2);
+    expect(dispatch.mock.calls[0]![0]!.payload.messages[0]!.text).toBe(
+      "You rolled a 5. Swarm of Rats took 2 damage (2 + 2 modifier)",
+    );
+    expect(dispatch.mock.calls[0]![0]!.payload.messages[1]!.text).toBe(
+      "Swarm of Rats was defeated",
+    );
   });
 
   test("skips ammo removal with non-limited weapon", () => {

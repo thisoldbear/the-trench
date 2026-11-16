@@ -8,64 +8,75 @@ import { rooms } from "@/datasheets/rooms";
 import { traps } from "@/datasheets/traps";
 import { rollDice } from "./rollDice";
 
-export function rollOnDecisionTable(): Room | Enemy | Trap | Chest {
+export type DecisionResult = {
+  step: Room | Enemy | Trap | Chest;
+  rolls: number[];
+};
+
+export function resolveDecisionTable(): DecisionResult {
   const firstDice = rollDice(20);
-  const secondDice = rollDice(20);
 
   // Chapel
   if (firstDice <= 2) {
-    return rooms[1];
+    return { step: rooms[1], rolls: [firstDice] };
   }
 
   // Trench
   if (firstDice <= 8) {
-    return rooms[0];
+    return { step: rooms[0], rolls: [firstDice] };
   }
 
   // Booty
   if (firstDice <= 12) {
+    const secondDice = rollDice(20);
     if (secondDice <= 10) {
-      return chests[0];
+      return { step: chests[0], rolls: [firstDice, secondDice] };
     }
 
-    return chests[1];
+    return { step: chests[1], rolls: [firstDice, secondDice] };
   }
 
   // Enemies
   if (firstDice <= 18) {
+    const secondDice = rollDice(20);
     if (secondDice <= 14) {
-      return enemies[0];
+      return { step: enemies[0], rolls: [firstDice, secondDice] };
     }
 
     if (secondDice <= 15) {
-      return enemies[1];
+      return { step: enemies[1], rolls: [firstDice, secondDice] };
     }
 
     if (secondDice <= 16) {
-      return enemies[2];
+      return { step: enemies[2], rolls: [firstDice, secondDice] };
     }
 
     if (secondDice <= 19) {
-      return enemies[3];
+      return { step: enemies[3], rolls: [firstDice, secondDice] };
     }
 
-    return enemies[4];
+    return { step: enemies[4], rolls: [firstDice, secondDice] };
   }
 
   // Trap
   if (firstDice <= 19) {
+    const secondDice = rollDice(20);
     if (secondDice <= 10) {
-      return traps[0];
+      return { step: traps[0], rolls: [firstDice, secondDice] };
     }
     if (secondDice <= 15) {
-      return traps[1];
+      return { step: traps[1], rolls: [firstDice, secondDice] };
     }
     if (secondDice <= 18) {
-      return traps[2];
+      return { step: traps[2], rolls: [firstDice, secondDice] };
     }
-    return traps[3];
+    return { step: traps[3], rolls: [firstDice, secondDice] };
   }
 
   // Trench
-  return rooms[0];
+  return { step: rooms[0], rolls: [firstDice] };
+}
+
+export function rollOnDecisionTable(): Room | Enemy | Trap | Chest {
+  return resolveDecisionTable().step;
 }
