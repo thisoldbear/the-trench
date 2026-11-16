@@ -51,11 +51,11 @@ describe("weaponsLoadout", () => {
   });
 
   test("wraps around with modulo when dice roll is 6", () => {
-    rollQueue = [6]; // (6-1) % 7 = 5 → weapons[6] (Flare Gun)
+    rollQueue = [6]; // (6-1) % 6 = 5 → weapons[6] (Barbed Wire Bat)
     const result = weaponsLoadout();
 
     expect(result).toHaveLength(2);
-    expect(result[1]!.id).toBe("flare-gun");
+    expect(result[1]!.id).toBe("barbed-wire-bat");
   });
 
   test("each weapon has a unique UUID", () => {

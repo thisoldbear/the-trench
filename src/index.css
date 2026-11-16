@@ -333,3 +333,341 @@ h1 {
 .changelog__entry li {
   padding: 4px 0;
 }
+
+/* Print Edition & Tabletop Rules */
+.print-page {
+  background-color: #ffffff;
+  color: #1a1a1a;
+  border: 2px solid #2b2b2b;
+  padding: 24px;
+  box-sizing: border-box;
+  border-radius: 2px;
+}
+
+.print-page__toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.print-page .btn,
+.btn--print {
+  color: #000000;
+  border: 1px solid #000000;
+  background: transparent;
+}
+
+.print-page .btn:hover,
+.btn--print:hover {
+  background: transparent;
+  color: #000000;
+  border-color: #000000;
+}
+
+.print-page__footer {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.print-header {
+  text-align: center;
+  border-bottom: 2px dashed #2b2b2b;
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+}
+
+.print-title {
+  font-size: 34px;
+  margin: 0 0 4px 0;
+  color: #111111;
+}
+
+.print-subtitle {
+  font-size: 18px;
+  margin: 0 0 10px 0;
+  color: #333333;
+}
+
+.print-tagline {
+  font-size: 14px;
+  line-height: 1.4;
+  max-width: 580px;
+  margin: 0 auto;
+  color: #333333;
+}
+
+.print-section {
+  margin-bottom: 28px;
+}
+
+.section-title {
+  font-size: 22px;
+  margin: 0 0 12px 0;
+  border-bottom: 1px solid #1a1a1a;
+  padding-bottom: 4px;
+  color: #111111;
+}
+
+.sub-title {
+  font-size: 16px;
+  margin: 16px 0 6px 0;
+  color: #111111;
+}
+
+.print-list {
+  margin: 6px 0 12px 0;
+  padding-left: 20px;
+  font-size: 14px;
+  color: #1a1a1a;
+}
+
+.print-list li {
+  padding: 3px 0;
+}
+
+.print-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0 16px 0;
+  font-size: 13px;
+  border: 1px solid #1a1a1a;
+}
+
+.print-table th,
+.print-table td {
+  border: 1px solid #333333;
+  padding: 6px 8px;
+  text-align: left;
+  vertical-align: top;
+  color: #1a1a1a;
+}
+
+.print-table th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+.hit-matrix-box {
+  margin: 12px 0;
+  padding: 10px;
+  background-color: #f7f7f7;
+  border: 1px dashed #444444;
+}
+
+.hit-matrix-table {
+  margin: 8px 0 0 0;
+}
+
+/* Scorecard / Character Sheet */
+.scorecard-section {
+  border: 2px solid #1a1a1a;
+  padding: 16px;
+  margin-top: 24px;
+  background-color: #fafafa;
+}
+
+.scorecard-title {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+
+.tracker-block {
+  margin: 14px 0;
+}
+
+.tracker-block__label {
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #111111;
+}
+
+.lamp-boxes {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.lamp-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  border: 1px solid #444;
+  padding: 4px 8px;
+  background: #ffffff;
+}
+
+.lamp-box__num {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.box-square {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #111111;
+  background: #ffffff;
+  vertical-align: middle;
+}
+
+.wound-boxes {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.wound-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.wound-cell__num {
+  font-size: 11px;
+}
+
+.tracker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.tracker-grid__cell {
+  border: 1px solid #444444;
+  padding: 8px;
+  background: #ffffff;
+  text-align: center;
+  font-size: 13px;
+}
+
+.stat-fill-box {
+  font-size: 13px;
+  margin-top: 4px;
+  font-weight: bold;
+}
+
+.ammo-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 6px 0;
+  font-size: 13px;
+}
+
+.ammo-name {
+  min-width: 140px;
+}
+
+.ammo-boxes {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.equipment-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+.equipment-slot {
+  border-bottom: 1px dashed #666666;
+  padding: 4px 0;
+}
+
+.respite-tallies {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+.respite-group {
+  border: 1px solid #666666;
+  padding: 6px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.notes-box {
+  margin-top: 6px;
+  border: 1px solid #444444;
+  background: #ffffff;
+  padding: 10px;
+}
+
+.notes-line {
+  border-bottom: 1px dashed #888888;
+  height: 24px;
+}
+
+/* Print Media Styles */
+@media print {
+  body,
+  html,
+  #root {
+    background: #ffffff !important;
+    color: #000000 !important;
+    height: auto !important;
+    width: 100% !important;
+    display: block !important;
+  }
+
+  .app {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .app__container {
+    padding: 0 !important;
+  }
+
+  .no-print,
+  .app__title,
+  .footer {
+    display: none !important;
+  }
+
+  .print-page {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .scorecard-section {
+    background-color: #ffffff !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .print-section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  table,
+  tr,
+  td,
+  th {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

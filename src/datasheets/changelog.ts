@@ -5,6 +5,31 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "4.4.0",
+    changes: [
+      "Streamlined dice across the entire game engine to strictly d20 and d6 (with d3 as d6 halved).",
+      "Removed Flare Gun so all secondary starting weapons and corpse weapon drops map 1-to-1 to a clean 1d6 roll (1: Knife, 2: Sword, 3: Rifle, 4: Shotgun, 5: Grenade, 6: Barbed Wire Bat).",
+      "Updated physical tabletop rules and charts to require only 1x d20 and 1x d6.",
+    ],
+  },
+  {
+    version: "4.3.1",
+    changes: [
+      "Removed emoji icon from the print button and updated buttons on the print page to have black text and black border with no hover background.",
+      "Corrected the physical print edition goal to 13 lamps (matching LAMP_TARGET) across the rules and scorecard tracker.",
+      "Removed the enemies vanquished and respite tracking section from the print scorecard so players can pause at will.",
+      "Aligned equipment and starting loadout on the print page with game logic (starting with 1 Bandage and removing the artificial 2-item bag limit).",
+      "Audited tabletop print rules against game engine: corrected corpse loot table (rolls 15–16 award Cigarettes, fallen weapons roll 1d8), added combat Flee action, and documented exact modifier/ammo consumption mechanics.",
+    ],
+  },
+  {
+    version: "4.3.0",
+    changes: [
+      "Added physical print edition page (/print) explaining how to play the game on tabletop with full rules, encounter/loot/hazard charts, monster tables, and a printable scorecard/character sheet.",
+      "Added 'Print Version' link to the footer with print-friendly formatting (dark text on light background) and one-click print button.",
+    ],
+  },
+  {
     version: "4.2.1",
     changes: [
       "Replaced Unicode arrow glyph with an inline vector SVG to guarantee consistent vertical alignment across Android Chrome, iOS, and desktop browsers.",

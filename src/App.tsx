@@ -15,6 +15,7 @@ import { PauseStep } from "./steps/PauseStep";
 import { Stats } from "./components/Stats";
 import { Inventory } from "./components/Inventory";
 import { Changelog } from "./components/Changelog";
+import { PrintVersion } from "./components/PrintVersion";
 import { useAdvanceStep } from "./hooks/useAdvanceStep";
 import { Message } from "./components/Message";
 import { AdvanceArrow } from "./components/AdvanceArrow";
@@ -191,6 +192,8 @@ export function App() {
         <div className="app__container">
           {pathname === "/changelog" ? (
             <Changelog onBack={() => navigate("/")} />
+          ) : pathname === "/print" ? (
+            <PrintVersion onBack={() => navigate("/")} />
           ) : (
             <ActiveStep />
           )}
@@ -221,6 +224,17 @@ export function App() {
               rel="noopener noreferrer"
             >
               GitHub
+            </a>
+          </p>
+          <p>
+            <a
+              href="/print"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/print");
+              }}
+            >
+              Print Version
             </a>
           </p>
         </div>

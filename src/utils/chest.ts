@@ -69,8 +69,9 @@ export function rollOnChestTable(
     }
 
     if (diceResult <= 14) {
-      const weaponIndex = rollDice(weapons.length) - 1;
-      return [weapons[weaponIndex]!];
+      const [, ...lootableWeapons] = weapons;
+      const weaponIndex = rollDice(lootableWeapons.length) - 1;
+      return [lootableWeapons[weaponIndex]!];
     }
 
     if (diceResult <= 16) {
