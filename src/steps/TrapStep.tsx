@@ -18,7 +18,7 @@ export const TrapStep = ({ trap }: { trap: Trap }) => {
           className="btn btn--cta unifrakturcook-bold"
           onClick={() => advanceStep()}
         >
-          Continue
+          Continue <span className="btn-arrow">⬰</span>
         </button>
       </div>
     </div>

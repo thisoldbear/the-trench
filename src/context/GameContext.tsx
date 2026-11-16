@@ -4,6 +4,7 @@ import type { Equipment } from "@/datasheets/equipment";
 import { player, type Player } from "@/datasheets/player";
 import type { Room } from "@/datasheets/rooms";
 import type { Trap } from "@/datasheets/traps";
+import type { Pause } from "@/datasheets/pause";
 import { weapons, type Weapon } from "@/datasheets/weapons";
 import { equipmentLoadout, weaponsLoadout } from "@/utils/loadout";
 import {
@@ -20,7 +21,7 @@ export const LAMP_TARGET = 13;
 export type GameState = {
   player: Player;
   rooms: number;
-  activeStep: null | Room | Enemy | Trap | Chest;
+  activeStep: null | Room | Enemy | Trap | Chest | Pause;
   activeStepUuid: string | null;
   messages: {
     id: string;
@@ -28,6 +29,8 @@ export type GameState = {
   }[];
   gameOver: boolean;
   enemiesKilled: number;
+  enemiesDefeatedCount: number;
+  hasPaused: boolean;
   steps: number;
 };
 
@@ -181,6 +184,8 @@ export const generateInitialState = () => {
     gameOver: false,
     messages: [],
     enemiesKilled: 0,
+    enemiesDefeatedCount: 0,
+    hasPaused: false,
     steps: 0,
   };
 
@@ -189,7 +194,11 @@ export const generateInitialState = () => {
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
-    case "active_step":
+    case "active_step": {
+      const isEnemy = action.payload.activeStep?._type === "enemy";
+      const isPause = action.payload.activeStep?._type === "pause";
+      const resetEnemyCount = isEnemy && state.hasPaused;
+
       return {
         ...state,
         activeStep: action.payload.activeStep,
@@ -197,7 +206,10 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         messages: appendMessages(state.messages, action.payload.messages),
         rooms: action.payload.rooms ?? state.rooms,
         steps: state.steps + 1,
+        hasPaused: isPause ? true : resetEnemyCount ? false : state.hasPaused,
+        enemiesDefeatedCount: resetEnemyCount ? 0 : state.enemiesDefeatedCount,
       };
+    }
 
     case "player_wounded":
       return {
@@ -306,6 +318,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           },
           messages: appendMessages(state.messages, action.payload.messages),
           enemiesKilled: state.enemiesKilled + 1,
+          enemiesDefeatedCount: state.enemiesDefeatedCount + 1,
         };
       }
       return state;

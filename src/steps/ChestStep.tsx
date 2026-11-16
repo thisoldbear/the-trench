@@ -108,10 +108,7 @@ export const ChestStep = ({ chest }: { chest: Chest }) => {
               .filter((equipment) => equipment._type === "equipment")
               .map((equipment, index) => {
                 return (
-                  <ChestItem
-                    key={equipment.id ?? index}
-                    item={equipment}
-                  />
+                  <ChestItem key={equipment.id ?? index} item={equipment} />
                 );
               })}
           </ul>
@@ -154,7 +151,7 @@ export const ChestStep = ({ chest }: { chest: Chest }) => {
             advanceStep();
           }}
         >
-          Continue
+          Continue <span className="btn-arrow">⬰</span>
         </button>
       </div>
     </div>

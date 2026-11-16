@@ -107,7 +107,7 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
                 }
               }}
             >
-              Flee
+              Flee <span className="btn-arrow">⬰</span>
             </button>
           </>
         ) : (
@@ -115,7 +115,7 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
             className="btn btn--cta unifrakturcook-bold"
             onClick={() => advanceStep()}
           >
-            Continue
+            Continue <span className="btn-arrow">⬰</span>
           </button>
         )}
       </div>

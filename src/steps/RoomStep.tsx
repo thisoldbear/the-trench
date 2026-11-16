@@ -42,14 +42,14 @@ export const RoomStep = ({ room }: { room: Room }) => {
               }
             }}
           >
-            Light the lamp
+            Light the lamp <span className="btn-arrow">⬰</span>
           </button>
         ) : (
           <button
             className="btn btn--cta unifrakturcook-bold"
             onClick={() => advanceStep()}
           >
-            Continue
+            Continue <span className="btn-arrow">⬰</span>
           </button>
         )}
       </div>

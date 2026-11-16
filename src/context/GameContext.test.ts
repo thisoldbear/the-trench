@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { gameReducer, generateInitialState } from "./GameContext";
 import { enemies } from "@/datasheets/enemies";
+import { createPauseStep } from "@/datasheets/pause";
 
 describe("GameContext reducer - lamp and fleeing mechanics", () => {
   test("initial state starts with 0 rooms lit", () => {
@@ -92,5 +93,66 @@ describe("GameContext reducer - lamp and fleeing mechanics", () => {
     expect(state.messages.length).toBe(50);
     expect(state.messages[0]!.text).toBe("Message 10");
     expect(state.messages[49]!.text).toBe("Message 59");
+  });
+
+  describe("pause step and enemy count tracking", () => {
+    test("initial state starts with enemiesDefeatedCount 0 and hasPaused false", () => {
+      const state = generateInitialState();
+      expect(state.enemiesDefeatedCount).toBe(0);
+      expect(state.hasPaused).toBe(false);
+    });
+
+    test("active_step with pause step sets hasPaused to true", () => {
+      const state = generateInitialState();
+      const pauseStep = createPauseStep(0);
+      const updated = gameReducer(state, {
+        type: "active_step",
+        payload: { activeStep: pauseStep },
+      });
+      expect(updated.hasPaused).toBe(true);
+      expect(updated.activeStep).toEqual(pauseStep);
+    });
+
+    test("enemy_defeated increments enemiesDefeatedCount", () => {
+      const state = {
+        ...generateInitialState(),
+        activeStep: enemies[0]!,
+        enemiesDefeatedCount: 1,
+      };
+      const updated = gameReducer(state, {
+        type: "enemy_defeated",
+        payload: { wounds: 0 },
+      });
+      expect(updated.enemiesDefeatedCount).toBe(2);
+      expect(updated.enemiesKilled).toBe(1);
+    });
+
+    test("first enemy encounter after pause step resets enemiesDefeatedCount and clears hasPaused", () => {
+      const state = {
+        ...generateInitialState(),
+        hasPaused: true,
+        enemiesDefeatedCount: 3,
+      };
+      const updated = gameReducer(state, {
+        type: "active_step",
+        payload: { activeStep: enemies[0]! },
+      });
+      expect(updated.enemiesDefeatedCount).toBe(0);
+      expect(updated.hasPaused).toBe(false);
+    });
+
+    test("enemy encounter without prior pause step preserves enemiesDefeatedCount", () => {
+      const state = {
+        ...generateInitialState(),
+        hasPaused: false,
+        enemiesDefeatedCount: 2,
+      };
+      const updated = gameReducer(state, {
+        type: "active_step",
+        payload: { activeStep: enemies[0]! },
+      });
+      expect(updated.enemiesDefeatedCount).toBe(2);
+      expect(updated.hasPaused).toBe(false);
+    });
   });
 });
