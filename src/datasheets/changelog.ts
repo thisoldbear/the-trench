@@ -5,6 +5,12 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "4.1.2",
+    changes: [
+      "Added custom slim dark scrollbars that blend with the theme on desktop browsers.",
+    ],
+  },
+  {
     version: "4.1.1",
     changes: [
       "Ensure action buttons and advance arrows are always vertically centered across devices.",

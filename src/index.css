@@ -6,6 +6,30 @@
   background-color: #242424;
 }
 
+/* Custom dark scrollbar for desktop & modern browsers */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a #1a1a1a;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4a4a4a;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6a6a6a;
+}
+
 .unifrakturcook-bold {
   font-family: "UnifrakturCook", cursive;
   font-weight: 700;
@@ -107,8 +131,7 @@ h1 {
 .messages {
   text-align: left;
   background: #242424;
-  max-height: 150px;
-  overflow-y: scroll;
+  overflow-y: auto;
   border: 1px solid #e3e3e3;
   min-height: 140px;
   max-height: 140px;
