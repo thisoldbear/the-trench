@@ -4,6 +4,7 @@ import type { Equipment } from "@/datasheets/equipment";
 import type { Weapon } from "@/datasheets/weapons";
 import { useGame } from "@/context/GameContext";
 import { rollOnChestTable } from "@/utils/chest";
+import { createMessage } from "@/utils/messages";
 import { Message } from "../components/Message";
 import { useAdvanceStep } from "../hooks/useAdvanceStep";
 import { StepCounter } from "../components/StepCounter";
@@ -46,12 +47,7 @@ const ChestItem = ({ item }: { item: Equipment | Weapon }) => {
                 type: "weapon_add",
                 payload: {
                   weapon: item,
-                  messages: [
-                    {
-                      id: crypto.randomUUID(),
-                      text: `Added ${item.name} to inventory`,
-                    },
-                  ],
+                  messages: [createMessage(`Added ${item.name} to inventory`)],
                 },
               });
             } else {
@@ -59,12 +55,7 @@ const ChestItem = ({ item }: { item: Equipment | Weapon }) => {
                 type: "equipment_add",
                 payload: {
                   equipment: item,
-                  messages: [
-                    {
-                      id: crypto.randomUUID(),
-                      text: `Added ${item.name} to inventory`,
-                    },
-                  ],
+                  messages: [createMessage(`Added ${item.name} to inventory`)],
                 },
               });
             }
@@ -81,7 +72,11 @@ export const ChestStep = ({ chest }: { chest: Chest }) => {
   const { state, dispatch } = useGame();
   const advanceStep = useAdvanceStep();
   const rollForEquipment = (): Equipment[] | Weapon[] | [] =>
-    rollOnChestTable(chest, dispatch, state.player);
+    rollOnChestTable(chest, dispatch, state.player, {
+      night: state.night,
+      perks: state.perks,
+      lastStandUsed: state.lastStandUsedThisNight,
+    });
 
   const [foundEquipment, setFoundEquipment] = useState<
     Equipment[] | Weapon[] | []

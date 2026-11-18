@@ -1,14 +1,25 @@
 import { LAMP_TARGET, useGame } from "@/context/GameContext";
-import { player } from "@/datasheets/player";
-import { memo, useMemo } from "react";
+import { getPerkById } from "@/datasheets/perks";
+import { memo, useMemo, useState } from "react";
 
 export const Stats = memo(() => {
   const { state } = useGame();
+  const [activePerkId, setActivePerkId] = useState<string | null>(null);
+
+  const activePerk = useMemo(
+    () => (activePerkId ? getPerkById(activePerkId) : null),
+    [activePerkId],
+  );
 
   const woundsGradient = useMemo(() => {
-    const percent = (100 * state.player.wounds) / player.totalWounds;
+    const percent = (100 * state.player.wounds) / state.player.totalWounds;
     return `linear-gradient(90deg,#2d2d2d 0%, #2d2d2d ${percent}%, transparent ${percent}%)`;
-  }, [state.player.wounds]);
+  }, [state.player.wounds, state.player.totalWounds]);
+
+  const nightsGradient = useMemo(() => {
+    const percent = (100 * (state.night || 1)) / 5;
+    return `linear-gradient(90deg,#2d2d2d 0%, #2d2d2d ${percent}%, transparent ${percent}%)`;
+  }, [state.night]);
 
   const lampsGradient = useMemo(() => {
     const percent = (100 * state.rooms) / LAMP_TARGET;
@@ -43,12 +54,10 @@ export const Stats = memo(() => {
       <div
         className="stats__cell stats__cell--2"
         style={{
-          background: lampsGradient,
+          background: nightsGradient,
         }}
       >
-        <p>
-          Lamps lit: {state.rooms || 0} / {LAMP_TARGET}
-        </p>
+        <p>Night: {state.night || 1} / 5</p>
       </div>
       <div className="stats__cell stats__cell--3">
         <p>
@@ -66,8 +75,13 @@ export const Stats = memo(() => {
         </p>
       </div>
 
-      <div className="stats__cell stats__cell--4">
-        <p>Enemies: {state.enemiesKilled || 0} / ∞</p>
+      <div
+        className="stats__cell stats__cell--4"
+        style={{
+          background: lampsGradient,
+        }}
+      >
+        <p>Lamps lit: {state.rooms || 0} / {LAMP_TARGET}</p>
       </div>
 
       <div className="stats__cell stats__cell--5">
@@ -76,11 +90,7 @@ export const Stats = memo(() => {
           {state.player.damageModifier === 0 ? (
             " -"
           ) : (
-            <span
-              style={{
-                color: "#78a878",
-              }}
-            >
+            <span className="stats__mod-val--positive">
               {` `}+{state.player.damageModifier}
             </span>
           )}
@@ -93,16 +103,53 @@ export const Stats = memo(() => {
           {state.player.hitModifier === 0 ? (
             " -"
           ) : (
-            <span
-              style={{
-                color: "#78a878",
-              }}
-            >
+            <span className="stats__mod-val--positive">
               {` `}+{state.player.hitModifier}
             </span>
           )}
         </p>
       </div>
+
+      {state.perks && state.perks.length > 0 && (
+        <div className="stats__perks">
+          <div className="stats__perks-list">
+            <span className="stats__perks-label">
+              Perks:
+            </span>
+            <div className="stats__perks-badges">
+              {state.perks.map((pId) => {
+                const perk = getPerkById(pId);
+                const isActive = activePerkId === pId;
+                return (
+                  <button
+                    key={pId}
+                    type="button"
+                    title={perk?.description}
+                    onClick={() =>
+                      setActivePerkId((current) => (current === pId ? null : pId))
+                    }
+                    className={`stats__perk-badge ${isActive ? "stats__perk-badge--active" : ""}`}
+                  >
+                    [{perk?.code ?? pId}] {perk?.name ?? pId}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {activePerk && (
+            <div className="stats__perk-detail">
+              <strong className="stats__perk-detail-title">
+                [{activePerk.code}] {activePerk.name}:
+              </strong>{" "}
+              <span>{activePerk.description}</span>{" "}
+              <em className="stats__perk-detail-flavor">
+                &ldquo;{activePerk.flavor}&rdquo;
+              </em>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 });

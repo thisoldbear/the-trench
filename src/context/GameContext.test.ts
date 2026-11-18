@@ -176,4 +176,154 @@ describe("GameContext reducer - lamp and fleeing mechanics", () => {
       expect(restarted.seed).toBe("new-seed-100");
     });
   });
+
+  describe("fight_on_another_night", () => {
+    test("sets night to 2, increases base toughness by 1, and raises HP to 20", () => {
+      const state = { ...generateInitialState(), rooms: 13 };
+      expect(state.night).toBe(1);
+      expect(state.rooms).toBe(13);
+      expect(state.player.toughness).toBe(3);
+      expect(state.player.totalToughness).toBe(3);
+      expect(state.player.totalWounds).toBe(15);
+
+      const nextState = gameReducer(state, {
+        type: "fight_on_another_night",
+      });
+
+      expect(nextState.night).toBe(2);
+      expect(nextState.rooms).toBe(0);
+      expect(nextState.player.totalToughness).toBe(4);
+      expect(nextState.player.toughness).toBe(4);
+      expect(nextState.player.totalWounds).toBe(20);
+      expect(nextState.player.wounds).toBe(20);
+      expect(nextState.messages.length).toBeGreaterThan(0);
+      expect(nextState.messages[0]!.text).toContain("fight on for Night 2");
+    });
+
+    test("sets activeStep when payload contains activeStep", () => {
+      const state = generateInitialState();
+      const nextState = gameReducer(state, {
+        type: "fight_on_another_night",
+        payload: {
+          activeStep: enemies[0]!,
+        },
+      });
+
+      expect(nextState.activeStep).toEqual(enemies[0]);
+      expect(nextState.activeStepUuid).toBeDefined();
+      expect(nextState.steps).toBe(1);
+    });
+
+    test("resets lastStandUsedThisNight and replenishes pistol if player has munitions-crate perk", () => {
+      const state = {
+        ...generateInitialState(),
+        lastStandUsedThisNight: true,
+        perks: ["munitions-crate"],
+        player: {
+          ...generateInitialState().player,
+          weapons: [{ ...generateInitialState().player.weapons[0]!, ammo: 2 }],
+        },
+      };
+
+      const nextState = gameReducer(state, {
+        type: "fight_on_another_night",
+      });
+
+      expect(nextState.lastStandUsedThisNight).toBe(false);
+      const pistol = nextState.player.weapons.find((w) => w.id === "pistol");
+      expect(pistol?.ammo).toBe(15);
+    });
+  });
+
+  describe("perks reducer actions", () => {
+    test("perk_select with ironclad increases toughness and totalToughness", () => {
+      const state = generateInitialState();
+      const nextState = gameReducer(state, {
+        type: "perk_select",
+        payload: { perkId: "ironclad" },
+      });
+
+      expect(nextState.perks).toContain("ironclad");
+      expect(nextState.player.totalToughness).toBe(state.player.totalToughness + 1);
+      expect(nextState.player.toughness).toBe(state.player.toughness + 1);
+    });
+
+    test("perk_select with sharpshooter increases hitModifier", () => {
+      const state = generateInitialState();
+      const nextState = gameReducer(state, {
+        type: "perk_select",
+        payload: { perkId: "sharpshooter" },
+      });
+
+      expect(nextState.perks).toContain("sharpshooter");
+      expect(nextState.player.hitModifier).toBe(state.player.hitModifier + 1);
+    });
+
+    test("perk_select with munitions-crate grants +15 pistol ammo immediately", () => {
+      const state = generateInitialState();
+      const nextState = gameReducer(state, {
+        type: "perk_select",
+        payload: { perkId: "munitions-crate" },
+      });
+
+      expect(nextState.perks).toContain("munitions-crate");
+      const pistol = nextState.player.weapons.find((w) => w.id === "pistol");
+      expect(pistol?.ammo).toBe(30);
+    });
+
+    test("last_stand_used sets lastStandUsedThisNight and leaves player at 1 HP", () => {
+      const state = {
+        ...generateInitialState(),
+        perks: ["last-stand"],
+        lastStandUsedThisNight: false,
+        player: { ...generateInitialState().player, wounds: 10 },
+      };
+
+      const nextState = gameReducer(state, {
+        type: "last_stand_used",
+      });
+
+      expect(nextState.lastStandUsedThisNight).toBe(true);
+      expect(nextState.player.wounds).toBe(1);
+    });
+
+    test("equipped_weapon_remove_ammo retains empty weapon in inventory with 0 ammo", () => {
+      const initial = generateInitialState();
+      const pistolUuid = initial.player.weapons[0]!.uuid;
+      const stateWith1Ammo = {
+        ...initial,
+        player: {
+          ...initial.player,
+          equippedWeapon: pistolUuid,
+          weapons: [{ ...initial.player.weapons[0]!, ammo: 1 }],
+        },
+      };
+
+      const nextState = gameReducer(stateWith1Ammo, {
+        type: "equipped_weapon_remove_ammo",
+      });
+
+      const pistol = nextState.player.weapons.find((w) => w.uuid === pistolUuid);
+      expect(pistol).toBeDefined();
+      expect(pistol?.ammo).toBe(0);
+    });
+
+    test("player_hit_modifier_remove restores hitModifier to totalHitModifier", () => {
+      const initial = generateInitialState();
+      const stateWithBuff = {
+        ...initial,
+        player: {
+          ...initial.player,
+          totalHitModifier: 1, // Sharpshooter perk
+          hitModifier: 2, // Sharpshooter + Cigarettes
+        },
+      };
+
+      const nextState = gameReducer(stateWithBuff, {
+        type: "player_hit_modifier_remove",
+      });
+
+      expect(nextState.player.hitModifier).toBe(1);
+    });
+  });
 });

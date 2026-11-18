@@ -16,7 +16,7 @@ export const equipment = [
     _type: "equipment",
     name: "Cigarettes",
     id: "cigarettes",
-    description: "Adds +1 to roll results for a short while. Uses [x1].",
+    description: "Adds +1 to hit rolls for a short while. Uses [x1].",
   },
   {
     _type: "equipment",
@@ -24,6 +24,19 @@ export const equipment = [
     id: "hip-flask",
     description:
       "Flask containing gin. Adds +1 to toughness and +2 to damage rolls for a short while. Uses [x1].",
+  },
+  {
+    _type: "equipment",
+    name: "First Aid Kit",
+    id: "first-aid-kit",
+    description: "Restores 6 health. Uses [x1].",
+  },
+  {
+    _type: "equipment",
+    name: "Adrenaline Shot",
+    id: "adrenaline-shot",
+    description:
+      "Surge of raw courage. Adds +2 to hit rolls and +2 to damage rolls for a short while. Uses [x1].",
   },
 ] as const;
 

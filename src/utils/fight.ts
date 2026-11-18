@@ -31,10 +31,16 @@ export function resolveWeaponAmmo(
   }
 }
 
+export type FightOptions = {
+  perks?: string[];
+  lastStandUsed?: boolean;
+};
+
 export function fightLoop(
   player: Player,
   enemy: Enemy,
   dispatch: Dispatch<GameAction>,
+  options?: FightOptions,
 ) {
   if (player.wounds <= 0 || enemy.wounds <= 0) return;
 
@@ -50,8 +56,19 @@ export function fightLoop(
   const playerHit = playerRolled >= hitOn(weapon.strength, enemy.toughness);
 
   if (playerHit) {
-    const damage = rollDice(weapon.damage) + weapon.damageModifier;
-    const enemyWounds = enemy.wounds - damage - player.damageModifier;
+    const meleeBonus =
+      options?.perks?.includes("bayonet-vigor") && weapon._type === "melee"
+        ? 2
+        : 0;
+    const surgeBonus =
+      options?.perks?.includes("adrenaline-surge") &&
+      enemy.wounds === enemy.totalWounds
+        ? 2
+        : 0;
+    const damage =
+      rollDice(weapon.damage) + weapon.damageModifier + meleeBonus + surgeBonus;
+    const totalDamage = damage + player.damageModifier;
+    const enemyWounds = enemy.wounds - totalDamage;
 
     if (enemyWounds <= 0) {
       dispatch({
@@ -60,7 +77,7 @@ export function fightLoop(
           wounds: 0,
           messages: [
             createMessage(
-              `You rolled a ${playerRolled}. ${enemy.name} took ${damage} damage ${player.damageModifier ? `(${damage} + ${player.damageModifier} modifier)` : ``}`,
+              `You rolled a ${playerRolled}. ${enemy.name} took ${totalDamage} damage${player.damageModifier ? ` (${damage} + ${player.damageModifier} modifier)` : ""}`,
             ),
             createMessage(`${enemy.name} was defeated`),
           ],
@@ -79,7 +96,7 @@ export function fightLoop(
         wounds: enemyWounds,
         messages: [
           createMessage(
-            `You rolled a ${playerRolled}. ${enemy.name} took ${damage} damage ${player.damageModifier ? `(${damage} + ${player.damageModifier} modifier)` : ``}`,
+            `You rolled a ${playerRolled}. ${enemy.name} took ${totalDamage} damage${player.damageModifier ? ` (${damage} + ${player.damageModifier} modifier)` : ""}`,
           ),
         ],
       },
@@ -106,6 +123,20 @@ export function fightLoop(
     const playerWounds = player.wounds - damage;
 
     if (playerWounds <= 0) {
+      if (options?.perks?.includes("last-stand") && !options?.lastStandUsed) {
+        dispatch({
+          type: "last_stand_used",
+          payload: {
+            messages: [
+              createMessage(`${enemy.name} rolled a ${enemyRolled}`),
+              createMessage(`You took ${damage} damage`),
+              createMessage("Last Stand! Defied death and survived at 1 HP."),
+            ],
+          },
+        });
+        return;
+      }
+
       dispatch({
         type: "player_wounded",
         payload: {

@@ -7,8 +7,8 @@ export const enemies = [
     notes: "",
     strength: 3,
     toughness: 3,
-    wounds: 6,
-    totalWounds: 6,
+    wounds: 5,
+    totalWounds: 5,
   },
   {
     _type: "enemy",
@@ -32,17 +32,6 @@ export const enemies = [
     wounds: 4,
     totalWounds: 4,
   },
-  // {
-  //   _type: "enemy",
-  //   damage: 3,
-  //   damageModifier: 0,
-  //   name: "Spectral Soldier",
-  //   notes: "Unlim wounds - Run away (take d3 damage) Removes modifiers",
-  //   strength: 3,
-  //   toughness: 3,
-  //   wounds: 0,
-  //   totalWounds: 0,
-  // },
   {
     _type: "enemy",
     damage: 3,
@@ -51,8 +40,8 @@ export const enemies = [
     notes: "",
     strength: 5,
     toughness: 5,
-    wounds: 8,
-    totalWounds: 8,
+    wounds: 7,
+    totalWounds: 7,
   },
   {
     _type: "enemy",
@@ -62,11 +51,134 @@ export const enemies = [
     notes: "",
     strength: 4,
     toughness: 5,
-    wounds: 12,
-    totalWounds: 12,
+    wounds: 10,
+    totalWounds: 10,
   },
 ] as const;
 
-export type Enemy = Omit<(typeof enemies)[number], "wounds"> & {
-  wounds: number;
-};
+export const enemiesNight2 = [
+  {
+    _type: "enemy",
+    damage: 3,
+    damageModifier: 1,
+    name: "Gas Ghoul",
+    notes: "Corpse bloated with mustard gas. Emits a choking rattle.",
+    strength: 4,
+    toughness: 4,
+    wounds: 6,
+    totalWounds: 6,
+  },
+  {
+    _type: "enemy",
+    damage: 3,
+    damageModifier: 1,
+    name: "War Hound",
+    notes: "Armored patrol hound driven mad by shell shock.",
+    strength: 4,
+    toughness: 3,
+    wounds: 5,
+    totalWounds: 5,
+  },
+  {
+    _type: "enemy",
+    damage: 6,
+    damageModifier: 0,
+    name: "Corrupted Stormtrooper",
+    notes: "Relentless shock troop clad in rusted trench plate.",
+    strength: 4,
+    toughness: 4,
+    wounds: 7,
+    totalWounds: 7,
+  },
+  {
+    _type: "enemy",
+    damage: 6,
+    damageModifier: 1,
+    name: "Possessed Officer",
+    notes: "Former commander warped by dark trench incantations.",
+    strength: 5,
+    toughness: 5,
+    wounds: 8,
+    totalWounds: 8,
+  },
+  {
+    _type: "enemy",
+    damage: 6,
+    damageModifier: 2,
+    name: "Golgotha Behemoth",
+    notes: "Monstrous fusion of barbed wire, dead soldiers, and tank armor.",
+    strength: 6,
+    toughness: 6,
+    wounds: 13,
+    totalWounds: 13,
+  },
+] as const;
+
+export const enemiesNight3 = [
+  {
+    _type: "enemy",
+    damage: 3,
+    damageModifier: 2,
+    name: "Ironclad Abomination",
+    notes: "Shambling engine of flesh, bone, and mortar plating.",
+    strength: 5,
+    toughness: 5,
+    wounds: 7,
+    totalWounds: 7,
+  },
+  {
+    _type: "enemy",
+    damage: 3,
+    damageModifier: 2,
+    name: "Dreadstalker Hound",
+    notes: "Skeletal hound roaming the dark no man's land.",
+    strength: 5,
+    toughness: 4,
+    wounds: 6,
+    totalWounds: 6,
+  },
+  {
+    _type: "enemy",
+    damage: 6,
+    damageModifier: 1,
+    name: "Flamethrower Fiend",
+    notes: "Blistered shocktrooper dragging a sputtering fuel projector.",
+    strength: 5,
+    toughness: 5,
+    wounds: 8,
+    totalWounds: 8,
+  },
+  {
+    _type: "enemy",
+    damage: 6,
+    damageModifier: 2,
+    name: "Trench Archon",
+    notes: "Eldritch entity wrapped in a blackened general's greatcoat.",
+    strength: 6,
+    toughness: 6,
+    wounds: 11,
+    totalWounds: 11,
+  },
+  {
+    _type: "enemy",
+    damage: 6,
+    damageModifier: 3,
+    name: "The Trench Sovereign",
+    notes: "The primordial god of mud, blood, and rusted wire. The final horror.",
+    strength: 7,
+    toughness: 7,
+    wounds: 15,
+    totalWounds: 15,
+  },
+] as const;
+
+export type Enemy =
+  | (Omit<(typeof enemies)[number], "wounds"> & {
+      wounds: number;
+    })
+  | (Omit<(typeof enemiesNight2)[number], "wounds"> & {
+      wounds: number;
+    })
+  | (Omit<(typeof enemiesNight3)[number], "wounds"> & {
+      wounds: number;
+    });

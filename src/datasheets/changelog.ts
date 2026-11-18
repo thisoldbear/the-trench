@@ -5,6 +5,29 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "5.0.0",
+    changes: [
+      "5-Night Campaign: Survive 13 lamps per night across 5 escalating nights to reach The End.",
+      "Dawn Perks: 8 unlockable survival perks chosen at dawn between nights.",
+      "Tiered Monsters & Loot: Added Tier 2 and Tier 3 Apex Horrors, deadlier hazards, and high-tier chest drops.",
+      "Tabletop & Print Alignment: Synchronized physical manual and scorecard for strictly 1x d20 and 1x d6.",
+      "HUD & UI Overhaul: Dedicated lamp and night trackers, interactive perk badges, and pure BEM styling.",
+      "Balance & Polish: Tuned monster HP across all tiers and audited combat, hazard, and modifier logging.",
+    ],
+  },
+  {
+    version: "4.4.1",
+    changes: [
+      "Added 'Fight on for another night' continuation option after lighting 13 lamps: players can now advance into subsequent nights with a persistent Nights counter (resetting to 0/13 lamps per night).",
+      "Granted +1 base Toughness (increasing from 3 to 4) and raised maximum health to 20 (fully restored) upon entering Night 2.",
+      "Added a second table of deadlier enemies for Night 2+ encounters: Gas Ghoul, War Hound, Corrupted Stormtrooper, Possessed Officer, and Golgotha Behemoth.",
+      "Increased Night 2+ difficulty: trench hazards deal +1 damage, and sprung chest traps deal 1d3+1 damage.",
+      "Added cool high-tier equipment items in chests: First Aid Kit (restores 6 health) and Adrenaline Shot (+2 to hit and +2 damage).",
+      "Displayed 'Nights: {number}' in the stats HUD alongside the clean 13-lamp tracker for every night.",
+      "Updated tabletop physical print manual and scorecard with Night 2 monsters (Table III B), Nights tracker, and 20-wound health ledger.",
+    ],
+  },
+  {
     version: "4.4.0",
     changes: [
       "Streamlined dice across the entire game engine to strictly d20 and d6 (with d3 as d6 halved).",

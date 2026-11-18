@@ -1,21 +1,15 @@
-import { rollDice } from "@/utils/rollDice";
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 
 const symbols = ["☨", "✛", "⛨", "✜", "✠", "✙"];
 
 export const StepCounter = ({ stepId }: { stepId?: string | null } = {}) => {
-  const prevRef = useRef<string | null>(null);
   const symbol = useMemo(() => {
-    let newIndex = rollDice(symbols.length) - 1;
-    let newSymbol = symbols[newIndex]!;
-
-    while (newSymbol === prevRef.current && symbols.length > 1) {
-      newIndex = rollDice(symbols.length) - 1;
-      newSymbol = symbols[newIndex]!;
+    if (!stepId) return symbols[0]!;
+    let hash = 0;
+    for (let i = 0; i < stepId.length; i++) {
+      hash = (hash * 31 + stepId.charCodeAt(i)) >>> 0;
     }
-
-    prevRef.current = newSymbol;
-    return newSymbol;
+    return symbols[hash % symbols.length]!;
   }, [stepId]);
 
   return <span>{symbol}</span>;

@@ -63,9 +63,12 @@ export const Inventory = memo(() => {
                   equipment,
                   {
                     wounds: state.player.wounds,
+                    totalWounds: state.player.totalWounds,
                     toughness: state.player.toughness,
+                    totalToughness: state.player.totalToughness,
                     damageModifier: state.player.damageModifier,
                     hitModifier: state.player.hitModifier,
+                    healBonus: state.perks?.includes("combat-medic") ? 3 : 0,
                   },
                   dispatch,
                 );

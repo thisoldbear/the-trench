@@ -12,14 +12,30 @@ export function useAdvanceStep() {
   const { state, dispatch } = useGame();
   return (opts?: {
     rooms?: number;
+    playerWounds?: number;
     messages?: { id: string; text: string }[];
     lampLit?: boolean;
+    fightOn?: boolean;
+    night?: number;
   }) => {
+    const isFightOn = Boolean(
+      opts?.fightOn || (opts?.night !== undefined && opts.night > state.night),
+    );
+    const nextNight = opts?.night ?? state.night + 1;
+    const currentNight = isFightOn ? nextNight : (opts?.night ?? state.night);
+    const isNightTwoOrMore = currentNight >= 2;
+    const playerTotalWounds =
+      isFightOn && state.night === 1 ? 20 : state.player.totalWounds;
+    let playerCurrentWounds = isFightOn
+      ? playerTotalWounds
+      : (opts?.playerWounds ?? state.player.wounds);
+
     const isCurrentPause = state.activeStep?._type === "pause";
     const lampLit = Boolean(
       opts?.lampLit || (opts?.rooms !== undefined && opts.rooms > state.rooms),
     );
     const shouldPause =
+      !isFightOn &&
       !isCurrentPause &&
       (lampLit || (state.enemiesDefeatedCount >= 3 && !state.hasPaused));
 
@@ -36,7 +52,10 @@ export function useAdvanceStep() {
       return;
     }
 
-    const { step: activeStep, rolls } = resolveDecisionTable();
+    const { step: activeStep, rolls, tables } = resolveDecisionTable({
+      rooms: isFightOn ? 0 : (opts?.rooms ?? state.rooms),
+      night: currentNight,
+    });
 
     const prefix = (activeStep: Room | Enemy | Trap | Chest): string => {
       if (activeStep._type === "enemy") {
@@ -54,39 +73,93 @@ export function useAdvanceStep() {
       return "";
     };
 
-    const rollText = rolls.join(" then ");
+    const rollDescription =
+      rolls.length === 1
+        ? `You rolled ${rolls[0]} on ${tables[0]}`
+        : `You rolled ${rolls[0]} on ${tables[0]} then ${rolls[1]} on ${tables[1]}`;
 
-    dispatch({
-      type: "active_step",
-      payload: {
-        activeStep,
-        ...opts,
-        messages: [
-          ...(opts?.messages || []),
-          createMessage(`You rolled ${rollText}. ${prefix(activeStep)}${activeStep.name}`),
-        ],
-      },
-    });
+    const stepMessage = createMessage(
+      `${rollDescription}. ${prefix(activeStep)}${activeStep.name}`,
+    );
+
+    const stepMessages = [...(opts?.messages || []), stepMessage];
+
+    if (isFightOn) {
+      dispatch({
+        type: "fight_on_another_night",
+        payload: {
+          activeStep,
+          messages: stepMessages,
+        },
+      });
+    } else {
+      dispatch({
+        type: "active_step",
+        payload: {
+          activeStep,
+          ...opts,
+          messages: stepMessages,
+        },
+      });
+    }
 
     if (activeStep._type === "room" && activeStep.name === "Chapel") {
+      const isNight5 = currentNight >= 5;
+      const rollAmount = isNight5 ? rollDice(3) : 0;
+      const restoredWounds = isNight5
+        ? Math.min(playerCurrentWounds + rollAmount, playerTotalWounds)
+        : playerTotalWounds;
+      const chapelMessage = isNight5
+        ? `You prayed in the desecrated chapel. Health restored by ${rollAmount} (diminished sanctuary).`
+        : "You prayed. Health restored.";
+
       dispatch({
         type: "player_restored",
         payload: {
-          wounds: state.player.totalWounds,
-          messages: [createMessage("You prayed. Health restored.")],
+          wounds: restoredWounds,
+          messages: [createMessage(chapelMessage)],
         },
       });
     } else if (activeStep._type === "trap") {
-      const trapDamage = rollDice(activeStep.damage);
+      const trapBonus = currentNight >= 4 ? 2 : currentNight >= 2 ? 1 : 0;
+      const hasTrenchArmor = state.perks?.includes("trench-armor");
+      const baseDamage = rollDice(activeStep.damage);
+      const romanNumerals = ["", "I", "II", "III", "IV", "V"];
+      const nightRoman = romanNumerals[currentNight] || `${currentNight}`;
 
-      if (state.player.wounds - trapDamage <= 0) {
+      const trapDamage = Math.max(
+        1,
+        baseDamage + trapBonus - (hasTrenchArmor ? 1 : 0),
+      );
+
+      let damageMessage = `${activeStep.name} dealt ${trapDamage} wounds.`;
+      if (trapBonus > 0 && hasTrenchArmor) {
+        damageMessage = `${activeStep.name} dealt ${trapDamage} wounds (${baseDamage} + ${trapBonus} Night ${nightRoman} hazard - 1 Trench Armor). (Trench Armor reduced damage by 1)`;
+      } else if (trapBonus > 0) {
+        damageMessage = `${activeStep.name} dealt ${trapDamage} wounds (${baseDamage} + ${trapBonus} Night ${nightRoman} hazard).`;
+      } else if (hasTrenchArmor) {
+        damageMessage = `${activeStep.name} dealt ${trapDamage} wounds (${baseDamage} - 1 Trench Armor). (Trench Armor reduced damage by 1)`;
+      }
+
+      if (playerCurrentWounds - trapDamage <= 0) {
+        if (state.perks?.includes("last-stand") && !state.lastStandUsedThisNight) {
+          dispatch({
+            type: "last_stand_used",
+            payload: {
+              messages: [
+                createMessage(damageMessage),
+                createMessage("Last Stand! Defied death and survived at 1 HP."),
+              ],
+            },
+          });
+          return;
+        }
+
         dispatch({
           type: "player_wounded",
           payload: {
             wounds: 0,
-            messages: [
-              createMessage(`${activeStep.name} dealt ${trapDamage} wounds.`),
-            ],
+            messages: [createMessage(damageMessage)],
           },
         });
         dispatch({ type: "game_over" });
@@ -94,10 +167,8 @@ export function useAdvanceStep() {
         dispatch({
           type: "player_wounded",
           payload: {
-            wounds: state.player.wounds - trapDamage,
-            messages: [
-              createMessage(`${activeStep.name} dealt ${trapDamage} wounds.`),
-            ],
+            wounds: playerCurrentWounds - trapDamage,
+            messages: [createMessage(damageMessage)],
           },
         });
       }

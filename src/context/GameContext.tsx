@@ -8,6 +8,7 @@ import type { Pause } from "@/datasheets/pause";
 import { weapons, type Weapon } from "@/datasheets/weapons";
 import { equipmentLoadout, weaponsLoadout } from "@/utils/loadout";
 import { generateRandomSeed, setSeed } from "@/utils/rollDice";
+import { createMessage } from "@/utils/messages";
 import {
   createContext,
   useContext,
@@ -34,6 +35,9 @@ export type GameState = {
   hasPaused: boolean;
   steps: number;
   seed: number | string;
+  night: number;
+  perks: string[];
+  lastStandUsedThisNight: boolean;
 };
 
 export type GameAction =
@@ -161,6 +165,27 @@ export type GameAction =
         rooms: number;
         messages?: GameState["messages"];
       };
+    }
+  | {
+      type: "fight_on_another_night";
+      payload?: {
+        activeStep?: GameState["activeStep"];
+        messages?: GameState["messages"];
+        perkId?: string;
+      };
+    }
+  | {
+      type: "perk_select";
+      payload: {
+        perkId: string;
+        messages?: GameState["messages"];
+      };
+    }
+  | {
+      type: "last_stand_used";
+      payload?: {
+        messages?: GameState["messages"];
+      };
     };
 
 export const MAX_MESSAGES = 50;
@@ -198,6 +223,9 @@ export const generateInitialState = (seed?: number | string) => {
     hasPaused: false,
     steps: 0,
     seed: activeSeed,
+    night: 1,
+    perks: [],
+    lastStandUsedThisNight: false,
   };
 
   return initialState;
@@ -267,9 +295,9 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         player: {
           ...state.player,
-          hitModifier: 0,
+          hitModifier: state.player.totalHitModifier ?? 0,
         },
-        messages: appendMessages(state.messages, action.payload.messages),
+        messages: appendMessages(state.messages, action.payload?.messages),
       };
 
     case "player_damage_add":
@@ -351,25 +379,21 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     }
 
     case "equipped_weapon_remove_ammo": {
-      const updatedWeapons = [...state.player.weapons]
-        .reduce((acc: Weapon[], curr: Weapon) => {
-          if (curr.uuid === state.player.equippedWeapon && curr.ammo > 0) {
-            return [
-              ...acc,
-              {
-                ...curr,
-                ammo: curr.ammo > 1 ? curr.ammo - 1 : 0,
-              },
-            ];
-          } else {
-            return [...acc, curr];
-          }
-        }, [])
-        .filter((weapon) => weapon.ammo > 0);
+      const updatedWeapons = [...state.player.weapons].map((curr: Weapon) => {
+        if (curr.uuid === state.player.equippedWeapon && curr.ammo > 0) {
+          return {
+            ...curr,
+            ammo: curr.ammo > 1 ? curr.ammo - 1 : 0,
+          };
+        }
+        return curr;
+      });
 
-      const validEquippedWeapon = updatedWeapons.find(w => w.uuid === state.player.equippedWeapon)?.uuid
-        ?? updatedWeapons[0]?.uuid
-        ?? null;
+      const equipped = updatedWeapons.find((w) => w.uuid === state.player.equippedWeapon);
+      const validEquippedWeapon =
+        equipped && (equipped.ammo > 0 || !equipped.limited)
+          ? equipped.uuid
+          : updatedWeapons.find((w) => w.ammo > 0 || !w.limited)?.uuid ?? null;
 
       return {
         ...state,
@@ -378,7 +402,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           weapons: updatedWeapons,
           equippedWeapon: validEquippedWeapon,
         },
-        messages: appendMessages(state.messages, action.payload.messages),
+        messages: appendMessages(state.messages, action.payload?.messages),
       };
     }
 
@@ -440,6 +464,112 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         rooms: action.payload.rooms,
         messages: appendMessages(state.messages, action.payload.messages),
       };
+
+    case "fight_on_another_night": {
+      const nextNight = state.night + 1;
+      const isFirstNightClear = state.night === 1;
+      const newToughness = isFirstNightClear
+        ? state.player.totalToughness + 1
+        : state.player.totalToughness;
+      const newTotalWounds = isFirstNightClear ? 20 : state.player.totalWounds;
+      const newWounds = isFirstNightClear ? 20 : state.player.totalWounds;
+      const isEnemy = action.payload?.activeStep?._type === "enemy";
+      const isPause = action.payload?.activeStep?._type === "pause";
+      const resetEnemyCount = isEnemy && state.hasPaused;
+
+      // Munitions Crate reload perk
+      const hasMunitions = state.perks.includes("munitions-crate");
+      const updatedWeapons = hasMunitions
+        ? state.player.weapons.some((w) => w.id === "pistol")
+          ? state.player.weapons.map((w) =>
+              w.id === "pistol" ? { ...w, ammo: Math.max(w.ammo, 15) } : w,
+            )
+          : [
+              ...state.player.weapons,
+              { ...weapons[0]!, ammo: 15, uuid: crypto.randomUUID() },
+            ]
+        : state.player.weapons;
+
+      return {
+        ...state,
+        night: nextNight,
+        rooms: 0,
+        lastStandUsedThisNight: false,
+        player: {
+          ...state.player,
+          weapons: updatedWeapons,
+          totalToughness: newToughness,
+          toughness: isFirstNightClear
+            ? Math.max(state.player.toughness + 1, newToughness)
+            : state.player.toughness,
+          totalWounds: newTotalWounds,
+          wounds: newWounds,
+        },
+        ...(action.payload?.activeStep
+          ? {
+              activeStep: action.payload.activeStep,
+              activeStepUuid: crypto.randomUUID(),
+              steps: state.steps + 1,
+              hasPaused: isPause ? true : resetEnemyCount ? false : state.hasPaused,
+              enemiesDefeatedCount: resetEnemyCount ? 0 : state.enemiesDefeatedCount,
+            }
+          : {}),
+        messages: appendMessages(
+          state.messages,
+          action.payload?.messages ?? [
+            createMessage(
+              `You steel your nerves to fight on for Night ${nextNight}${isFirstNightClear ? " (+1 Toughness, Max HP increased to 20)" : ""}.`,
+            ),
+          ],
+        ),
+      };
+    }
+
+    case "perk_select": {
+      const perkId = action.payload.perkId;
+      if (state.perks.includes(perkId)) return state;
+
+      const updatedPlayer = { ...state.player };
+      if (perkId === "ironclad") {
+        updatedPlayer.totalToughness += 1;
+        updatedPlayer.toughness += 1;
+      } else if (perkId === "sharpshooter") {
+        updatedPlayer.totalHitModifier =
+          (updatedPlayer.totalHitModifier ?? 0) + 1;
+        updatedPlayer.hitModifier += 1;
+      } else if (perkId === "munitions-crate") {
+        const hasPistol = updatedPlayer.weapons.some((w) => w.id === "pistol");
+        if (hasPistol) {
+          updatedPlayer.weapons = updatedPlayer.weapons.map((w) =>
+            w.id === "pistol" ? { ...w, ammo: w.ammo + 15 } : w,
+          );
+        } else {
+          updatedPlayer.weapons = [
+            ...updatedPlayer.weapons,
+            { ...weapons[0]!, ammo: 15, uuid: crypto.randomUUID() },
+          ];
+        }
+      }
+
+      return {
+        ...state,
+        perks: [...state.perks, perkId],
+        player: updatedPlayer,
+        messages: appendMessages(state.messages, action.payload.messages),
+      };
+    }
+
+    case "last_stand_used": {
+      return {
+        ...state,
+        lastStandUsedThisNight: true,
+        player: {
+          ...state.player,
+          wounds: 1,
+        },
+        messages: appendMessages(state.messages, action.payload?.messages),
+      };
+    }
 
     case "restart":
       return {

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import pkg from "../package.json";
 import { GameProvider, LAMP_TARGET, useGame } from "./context/GameContext";
+import { createMessage } from "./utils/messages";
+import { perks, getPerkById } from "./datasheets/perks";
 import type { Enemy } from "./datasheets/enemies";
 import type { Room } from "./datasheets/rooms";
 import type { Trap } from "./datasheets/traps";
@@ -27,26 +29,172 @@ const ActiveStep = () => {
   const advanceStep = useAdvanceStep();
 
   if (state.rooms >= LAMP_TARGET) {
+    if ((state.night ?? 1) >= 5) {
+      return (
+        <div className="game-end">
+          <Stats />
+          <h1 className="game-end__title unifrakturcook-bold">
+            Dawn Breaks: The War Is Over
+          </h1>
+          <p>
+            Against impossible odds, you have kept the lamps burning and survived all 5 harrowing nights in The Trench.
+          </p>
+          <p>
+            The morning light pierces through the ruined fog and shattered earth. The sirens fall silent. You have reached <strong>The End</strong>.
+          </p>
+          <div className="chest__list campaign-summary">
+            <div className="inventory__cell-title inventory__cell-title--large">
+              Campaign Summary
+            </div>
+            <p>Nights Survived: 5 / 5</p>
+            <p>Horrors Slain: {state.enemiesKilled || 0}</p>
+            <p>
+              Active Perks:{" "}
+              {state.perks && state.perks.length > 0
+                ? state.perks.map((p) => getPerkById(p)?.name).filter(Boolean).join(", ")
+                : "None"}
+            </p>
+          </div>
+          <Message />
+          <button
+            className="btn btn--cta unifrakturcook-bold"
+            onClick={() =>
+              dispatch({
+                type: "restart",
+              })
+            }
+          >
+            Rise, once more
+          </button>
+        </div>
+      );
+    }
+
+    const currentNight = state.night ?? 1;
+    const isFirstNight = currentNight === 1;
+    const availablePerks = perks.filter((p) => !state.perks?.includes(p.id));
+    const needsPerkSelection =
+      (state.perks?.length ?? 0) < currentNight && availablePerks.length > 0;
+
     return (
       <div className="game-end">
         <Stats />
         <h1 className="game-end__title unifrakturcook-bold">
-          The Night Passes
+          {isFirstNight ? "The Night Passes" : `Night ${currentNight} Passes`}
         </h1>
-        <p>Another long night has passed in The Trench.</p>
-        <p>Rest, while you can... darkness is already descending.</p>
-        <p style={{ opacity: 0.6, fontSize: "12px" }}>Seed: {state.seed}</p>
+        <p>
+          {isFirstNight
+            ? "Another long night has passed in The Trench."
+            : `Against terrifying odds, you survived Night ${currentNight} in The Trench.`}
+        </p>
+        <p>Rest, while you can... dawn is fleeting and darkness will return.</p>
+
+        {needsPerkSelection ? (
+          <div className="dawn-perks">
+            <h2 className="unifrakturcook-bold step-title">
+              Dawn {currentNight} Perk
+            </h2>
+            <p>
+              Select 1 perk to strengthen your soldier for Night {currentNight + 1}:
+            </p>
+            <ul className="chest__list">
+              {availablePerks.map((perk) => (
+                <li key={perk.id} className="chest-item">
+                  <div>
+                    <div className="inventory__cell-title">
+                      [{perk.code}] {perk.name}
+                    </div>
+                    <p>{perk.description}</p>
+                    <p className="dawn-perks__flavor">
+                      &ldquo;{perk.flavor}&rdquo;
+                    </p>
+                  </div>
+                  <div>
+                    <button
+                      className="btn btn--cta unifrakturcook-bold"
+                      onClick={() => {
+                        dispatch({
+                          type: "perk_select",
+                          payload: {
+                            perkId: perk.id,
+                            messages: [
+                              createMessage(
+                                `Acquired Dawn Perk: [${perk.code}] ${perk.name} - ${perk.description}`,
+                              ),
+                            ],
+                          },
+                        });
+                      }}
+                    >
+                      Claim
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <div className="dawn-perks">
+            <p className="dawn-perks__status">
+              ✓ Dawn Perk selected for Night {currentNight + 1}. Ready to advance into the dark.
+            </p>
+            {state.perks && state.perks.length > 0 && (
+              <ul className="chest__list">
+                {state.perks.map((pId) => {
+                  const perk = getPerkById(pId);
+                  if (!perk) return null;
+                  return (
+                    <li key={perk.id} className="chest-item">
+                      <div>
+                        <div className="inventory__cell-title">
+                          [{perk.code}] {perk.name}
+                        </div>
+                        <p>{perk.description}</p>
+                      </div>
+                      <div>
+                        <button className="btn btn--cta unifrakturcook-bold" disabled>
+                          Claimed
+                        </button>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+        )}
+
         <Message />
-        <button
-          className="btn btn--cta unifrakturcook-bold"
-          onClick={() =>
-            dispatch({
-              type: "restart",
-            })
-          }
-        >
-          Rise, once more
-        </button>
+        <div className="btn-group">
+          <button
+            className="btn btn--cta unifrakturcook-bold"
+            onClick={() =>
+              dispatch({
+                type: "restart",
+              })
+            }
+          >
+            Start again
+          </button>
+          <button
+            className="btn btn--cta unifrakturcook-bold"
+            disabled={needsPerkSelection}
+            onClick={() => {
+              advanceStep({
+                fightOn: true,
+                messages: [
+                  createMessage(
+                    `You steel your nerves to fight on for Night ${currentNight + 1}${
+                      isFirstNight ? " (+1 Toughness, Max HP increased to 20)" : ""
+                    }.`,
+                  ),
+                ],
+              });
+            }}
+          >
+            Fight on for Night {currentNight + 1} <AdvanceArrow />
+          </button>
+        </div>
       </div>
     );
   }
@@ -60,7 +208,6 @@ const ActiveStep = () => {
           A valiant effort. Let us pray other brave individuals will continue to
           keep the lamps lit each night.
         </p>
-        <p style={{ opacity: 0.6, fontSize: "12px" }}>Seed: {state.seed}</p>
         <Message />
         <button
           className="btn btn--cta unifrakturcook-bold"

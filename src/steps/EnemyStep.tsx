@@ -47,7 +47,12 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
           <>
             <button
               className="btn btn--cta unifrakturcook-bold"
-              onClick={() => fightLoop(state.player, enemy, dispatch)}
+              onClick={() =>
+                fightLoop(state.player, enemy, dispatch, {
+                  perks: state.perks,
+                  lastStandUsed: state.lastStandUsedThisNight,
+                })
+              }
               disabled={!equippedWeapon || equippedWeapon.ammo === 0}
             >
               Fight
@@ -72,10 +77,11 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
                   const fleeDamage = rollDice(3);
 
                   if (state.player.wounds - fleeDamage > 0) {
+                    const remainingWounds = state.player.wounds - fleeDamage;
                     dispatch({
                       type: "player_wounded",
                       payload: {
-                        wounds: state.player.wounds - fleeDamage,
+                        wounds: remainingWounds,
                       },
                     });
 
@@ -84,6 +90,7 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
                     // Move on
                     advanceStep({
                       rooms: 0,
+                      playerWounds: remainingWounds,
                       messages: [
                         createMessage(
                           `Rolled D3: Fleeing dealt ${fleeDamage} damage`,
@@ -91,6 +98,28 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
                       ],
                     });
                   } else {
+                    if (
+                      state.perks?.includes("last-stand") &&
+                      !state.lastStandUsedThisNight
+                    ) {
+                      dispatch({
+                        type: "last_stand_used",
+                        payload: {
+                          messages: [
+                            createMessage(
+                              `Rolled D3: Fleeing dealt ${fleeDamage} damage`,
+                            ),
+                            createMessage(
+                              "Last Stand! Defied death and survived at 1 HP.",
+                            ),
+                          ],
+                        },
+                      });
+                      removeTemporaryModifiers(state.player, dispatch);
+                      advanceStep({ rooms: 0, playerWounds: 1 });
+                      return;
+                    }
+
                     dispatch({
                       type: "player_wounded",
                       payload: {
