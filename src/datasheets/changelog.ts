@@ -5,126 +5,14 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
-    version: "5.0.17",
-    changes: [
-      "Removed temporary HUD preview perks so the Perks section only displays when the player has actually acquired perks.",
-    ],
-  },
-  {
-    version: "5.0.16",
-    changes: [
-      "Rebalanced monster HP across all three tiers by ~15% to reduce campaign combat attrition (e.g. Trench Tyrant 10 HP, Zombie Soldier 5 HP, Possessed Soldier 7 HP).",
-    ],
-  },
-  {
-    version: "5.0.15",
-    changes: [
-      "Adjusted perk badge padding to 5px 8px 2px.",
-    ],
-  },
-  {
-    version: "5.0.14",
-    changes: [
-      "Explicitly include table references in roll messages (e.g. 'You rolled 14 on Table I (Exploration) then 14 on Table III A (Monsters). Encountered: Zombie Soldier').",
-    ],
-  },
-  {
-    version: "5.0.13",
-    changes: [
-      "Adjusted perk badge vertical padding (5px top, 4px bottom) and line-height to center button text.",
-      "Wrapped perk buttons in a dedicated flex container (.stats__perks-badges) so wrapped buttons align under the first button rather than under the Perks label.",
-    ],
-  },
-  {
-    version: "5.0.12",
-    changes: [
-      "Reverted 'Perks:' heading back to inline layout alongside perk buttons.",
-    ],
-  },
-  {
-    version: "5.0.11",
-    changes: [
-      "Made 'Perks:' heading full width in Stats HUD so perk buttons render neatly underneath.",
-      "Added inset box shadow (0px 0 0 1px inset #242424) to stats cells and perks container.",
-    ],
-  },
-  {
-    version: "5.0.10",
-    changes: [
-      "Updated .inventory__cell-title to 16px and bold (700).",
-      "Replaced inline CSS styles across Stats HUD, Dawn Perk selection, and Campaign Summary with clean BEM classes.",
-    ],
-  },
-  {
-    version: "5.0.9",
-    changes: [
-      "Added 10px padding and a dashed border (matching the HUD and chest themes) around the Inventory container.",
-    ],
-  },
-  {
-    version: "5.0.8",
-    changes: [
-      "Updated perk text and expanded detail cards in Stats HUD to 16px font size.",
-    ],
-  },
-  {
-    version: "5.0.7",
-    changes: [
-      "Updated perk badge buttons in Stats HUD to 16px font size.",
-    ],
-  },
-  {
-    version: "5.0.6",
-    changes: [
-      "Updated 'Perks:' label in Stats HUD to 16px and white (#ffffff) matching the stats table typography.",
-      "Added temporary HUD preview of starter perks for visual inspection and interactive testing.",
-    ],
-  },
-  {
-    version: "5.0.5",
-    changes: [
-      "Set perks font size in Stats HUD to 13px matching the stats cells.",
-      "Made perks in Stats HUD clickable buttons that expand an inline detail card showing what each acquired perk does.",
-    ],
-  },
-  {
-    version: "5.0.4",
-    changes: [
-      "Reordered Dawn navigation buttons: placed 'Start again' on the left and 'Fight on for Night X' forward button on the right.",
-    ],
-  },
-  {
-    version: "5.0.3",
-    changes: [
-      "Removed duplicate seed text from victory, dawn, and game over screens in favor of the interactive shareable seed link in the footer.",
-    ],
-  },
-  {
-    version: "5.0.2",
-    changes: [
-      "Redesigned the Dawn Perk selection to match Chest item styling: dashed border container, Special Elite typewriter typography, and Gothic Claim buttons.",
-      "Styled Campaign Summary and Perks HUD badges with consistent typewriter fonts and monochrome borders.",
-    ],
-  },
-  {
-    version: "5.0.1",
-    changes: [
-      "Replaced Enemies counter with Lamps lit in the HUD (Cell 4) with progress bar, giving Night: X / 5 its own dedicated top-right slot (Cell 2).",
-      "Fixed Sharpshooter perk bug where permanent hit modifier was cleared when temporary cigarette buffs wore off.",
-      "Fixed empty weapons being deleted from inventory, allowing Munitions Crate to reload the Pistol at dawn.",
-      "Extended Last Stand perk protection to cover lethal damage from traps, booby-trapped chests, and fleeing.",
-      "Aligned Night 5 Chapel healing with physical print rules (restores 1d3 health).",
-      "Made StepCounter cross symbol deterministic from stepId so decorative UI does not consume seedable game dice rolls.",
-    ],
-  },
-  {
     version: "5.0.0",
     changes: [
-      "Major Release: Expanded The Trench into a 5-Night campaign culminating at Night 5 ('The End').",
-      "Added Tier 3 Night 4–5 monster table: Ironclad Abomination, Dreadstalker Hound, Flamethrower Fiend, Trench Archon, and The Trench Sovereign.",
-      "Introduced Roguelike Survival Perks earned at each Dawn: Ironclad, Sharpshooter, Combat Medic, Bayonet Vigor, Munitions Crate, Trench Armor, Adrenaline Surge, and Last Stand.",
-      "Added environmental night conditions and escalating trench perils across Nights 1 to 5.",
-      "Updated physical tabletop manual and scorecard with 5-Night tracker, 3-tier monster tables, and Dawn perks ledger.",
+      "5-Night Campaign Culmination: Expanded The Trench into a 5-Night epic campaign culminating at Night 5 ('The End') with 13 lamps per night.",
+      "Roguelike Survival Perks: Introduced 8 unlockable Dawn perks (Ironclad, Sharpshooter, Combat Medic, Bayonet Vigor, Munitions Crate, Trench Armor, Adrenaline Surge, and Last Stand) chosen between nights with interactive HUD inspection badges.",
+      "Tiered Encounters & Scaling Monsters: Added Tier 2 (Nights 2–3) and Tier 3 (Nights 4–5 Apex Horrors) monster tables, escalating night perils, and scaling chest loot (First Aid Kits, Adrenaline Shots).",
+      "Tabletop & Print Alignment: Synchronized physical manual rules, tables, and scorecard for strictly 1x d20, 1x d6, paper, and pencil. Dice roll messages now explicitly state which manual tables were rolled.",
+      "HUD & Interface Overhaul: Replaced enemy counter with 'Lamps lit: X / 13' and dedicated Night tracker, styled Inventory and Dawn selections with typewriter borders, and converted all UI styling to pure BEM CSS.",
+      "Campaign Rebalancing: Tuned monster HP by ~15% across all three tiers to ensure balanced and tense survival attrition throughout all 5 nights.",
     ],
   },
   {
