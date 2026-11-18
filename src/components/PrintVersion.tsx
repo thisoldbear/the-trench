@@ -317,7 +317,7 @@ export const PrintVersion = ({ onBack }: { onBack: () => void }) => {
         <p>
           <em>Booby-Trap Check:</em> Before searching, roll 1d20. On a roll of{" "}
           <strong>1</strong>, the cache is rigged with explosives! Suffer{" "}
-          <strong>1d3 damage</strong> immediately and find nothing. Otherwise,
+          <strong>1d3 damage</strong> immediately (reduced by Trench Armor, minimum 1) and find nothing. Otherwise,
           check your roll result below:
         </p>
         <table className="print-table">
@@ -383,7 +383,7 @@ export const PrintVersion = ({ onBack }: { onBack: () => void }) => {
         {/* Booty Table Night 2+ */}
         <h3 className="sub-title">Table II B: Booty & Loot — Night 2+ (1d20)</h3>
         <p>
-          In Night 2 onwards, fallen officers and advanced medical supplies can be recovered. Booby traps deal <strong>1d3+1 damage</strong>:
+          In Night 2 onwards, fallen officers and advanced medical supplies can be recovered. Booby traps deal <strong>1d3+1 damage</strong> (reduced by Trench Armor, minimum 1):
         </p>
         <table className="print-table">
           <thead>
@@ -419,9 +419,18 @@ export const PrintVersion = ({ onBack }: { onBack: () => void }) => {
               </td>
             </tr>
             <tr>
-              <td>13 – 15</td>
+              <td>13</td>
               <td>
-                <strong>Morphine (13) / First Aid Kit (14–15):</strong> Restores 6 health [1 use].
+                <strong>Morphine:</strong> +2 Toughness; reduced on enemy hits [1 use].
+              </td>
+              <td>
+                <strong>Hip Flask:</strong> +1 Toughness &amp; +2 Damage [1 use].
+              </td>
+            </tr>
+            <tr>
+              <td>14 – 15</td>
+              <td>
+                <strong>First Aid Kit:</strong> Restores 6 health [1 use].
               </td>
               <td>
                 <strong>Hip Flask:</strong> +1 Toughness &amp; +2 Damage [1 use].

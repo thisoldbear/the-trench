@@ -5,26 +5,6 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
-    version: "5.0.2",
-    changes: [
-      "Chest trap accuracy: Dynamic Roman numerals for night perils on chest booby traps (e.g. Night III/IV/V peril) instead of hardcoded 'Night II'.",
-      "Perk alignment: Trench Armor now mitigates chest booby trap damage by 1 (minimum 1) with log attribution, matching its rule description.",
-      "Combat log cleanliness: Removed trailing whitespace in enemy damage messages when player has no active damage modifier.",
-      "Fleeing & trap synchronization: Preserved accurate player health when advancing into hazards immediately after fleeing with 0 lamps.",
-      "Data accuracy: Aligned Cigarettes description to specify '+1 to hit rolls' and standardized item acquisition messages.",
-      "Test coverage: Added full 5-night campaign simulation suite validating message consistency, math, and edge cases across 195 tests.",
-    ],
-  },
-  {
-    version: "5.0.1",
-    changes: [
-      "Combat log fix: Accurately report total enemy damage dealt in combat messages when player damage modifiers are active.",
-      "Equipment messaging fix: Correct Cigarettes activation message to display a constant +1 bonus instead of total hit modifier.",
-      "Modifier cleanup fix: Generalize hit modifier expiration message from Cigarettes to 'Temporary hit modifier wore off' so Adrenaline Shot expirations are properly attributed.",
-      "Data cleanup: Removed commented-out draft enemy data from enemy datasheets.",
-    ],
-  },
-  {
     version: "5.0.0",
     changes: [
       "5-Night Campaign Culmination: Expanded The Trench into a 5-Night epic campaign culminating at Night 5 ('The End') with 13 lamps per night.",
@@ -32,7 +12,7 @@ export const changelog: ChangelogEntry[] = [
       "Tiered Encounters & Scaling Monsters: Added Tier 2 (Nights 2–3) and Tier 3 (Nights 4–5 Apex Horrors) monster tables, escalating night perils, and scaling chest loot (First Aid Kits, Adrenaline Shots).",
       "Tabletop & Print Alignment: Synchronized physical manual rules, tables, and scorecard for strictly 1x d20, 1x d6, paper, and pencil. Dice roll messages now explicitly state which manual tables were rolled.",
       "HUD & Interface Overhaul: Replaced enemy counter with 'Lamps lit: X / 13' and dedicated Night tracker, styled Inventory and Dawn selections with typewriter borders, and converted all UI styling to pure BEM CSS.",
-      "Campaign Rebalancing: Tuned monster HP by ~15% across all three tiers to ensure balanced and tense survival attrition throughout all 5 nights.",
+      "Campaign Rebalancing & Audit: Tuned monster HP by ~15% across all three tiers, corrected combat and chest trap damage calculation logging, synchronized hazard health calculation when fleeing, and verified full campaign integrity across 195 automated tests.",
     ],
   },
   {
