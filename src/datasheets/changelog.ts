@@ -5,6 +5,13 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "5.0.5",
+    changes: [
+      "Set perks font size in Stats HUD to 13px matching the stats cells.",
+      "Made perks in Stats HUD clickable buttons that expand an inline detail card showing what each acquired perk does.",
+    ],
+  },
+  {
     version: "5.0.4",
     changes: [
       "Reordered Dawn navigation buttons: placed 'Start again' on the left and 'Fight on for Night X' forward button on the right.",

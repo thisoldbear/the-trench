@@ -1,9 +1,15 @@
 import { LAMP_TARGET, useGame } from "@/context/GameContext";
 import { getPerkById } from "@/datasheets/perks";
-import { memo, useMemo } from "react";
+import { memo, useMemo, useState } from "react";
 
 export const Stats = memo(() => {
   const { state } = useGame();
+  const [activePerkId, setActivePerkId] = useState<string | null>(null);
+
+  const activePerk = useMemo(
+    () => (activePerkId ? getPerkById(activePerkId) : null),
+    [activePerkId],
+  );
 
   const woundsGradient = useMemo(() => {
     const percent = (100 * state.player.wounds) / state.player.totalWounds;
@@ -117,32 +123,76 @@ export const Stats = memo(() => {
           className="stats__perks"
           style={{
             gridColumn: "1 / 3",
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "6px",
             padding: "8px 10px",
             border: "1px dashed #3d3c3c",
             fontSize: "13px",
-            alignItems: "center",
           }}
         >
-          <span style={{ opacity: 0.6, marginRight: "4px" }}>Perks:</span>
-          {state.perks.map((pId) => {
-            const perk = getPerkById(pId);
-            return (
-              <span
-                key={pId}
-                title={perk?.description}
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "6px",
+              alignItems: "center",
+            }}
+          >
+            <span style={{ opacity: 0.6, marginRight: "4px" }}>Perks:</span>
+            {state.perks.map((pId) => {
+              const perk = getPerkById(pId);
+              const isActive = activePerkId === pId;
+              return (
+                <button
+                  key={pId}
+                  type="button"
+                  title={perk?.description}
+                  onClick={() =>
+                    setActivePerkId((current) => (current === pId ? null : pId))
+                  }
+                  style={{
+                    fontFamily: "inherit",
+                    fontSize: "13px",
+                    color: "inherit",
+                    background: isActive ? "#333333" : "transparent",
+                    border: isActive
+                      ? "1px solid #ffffff"
+                      : "1px solid rgba(255, 255, 255, 0.3)",
+                    padding: "2px 7px",
+                    cursor: "pointer",
+                    lineHeight: 1.3,
+                  }}
+                >
+                  [{perk?.code ?? pId}] {perk?.name ?? pId}
+                </button>
+              );
+            })}
+          </div>
+
+          {activePerk && (
+            <div
+              style={{
+                marginTop: "8px",
+                paddingTop: "8px",
+                borderTop: "1px dashed #3d3c3c",
+                fontSize: "13px",
+                lineHeight: 1.4,
+              }}
+            >
+              <strong style={{ color: "#ffffff" }}>
+                [{activePerk.code}] {activePerk.name}:
+              </strong>{" "}
+              <span>{activePerk.description}</span>{" "}
+              <em
                 style={{
-                  border: "1px solid rgba(255, 255, 255, 0.3)",
-                  padding: "2px 6px",
+                  opacity: 0.6,
+                  display: "block",
+                  marginTop: "2px",
                   fontSize: "12px",
                 }}
               >
-                [{perk?.code ?? pId}] {perk?.name ?? pId}
-              </span>
-            );
-          })}
+                &ldquo;{activePerk.flavor}&rdquo;
+              </em>
+            </div>
+          )}
         </div>
       )}
     </div>
