@@ -42,27 +42,14 @@ const ActiveStep = () => {
           <p>
             The morning light pierces through the ruined fog and shattered earth. The sirens fall silent. You have reached <strong>The End</strong>.
           </p>
-          <div
-            style={{
-              margin: "20px 0",
-              textAlign: "left",
-              background: "#181818",
-              padding: "14px",
-              border: "1px dashed #444",
-              borderRadius: "4px",
-            }}
-          >
-            <h3 className="unifrakturcook-bold" style={{ margin: "0 0 10px 0", color: "#d4af37" }}>
+          <div className="chest__list" style={{ margin: "20px 0", textAlign: "left" }}>
+            <div className="inventory__cell-title" style={{ fontSize: "18px", marginBottom: "12px" }}>
               Campaign Summary
-            </h3>
-            <p style={{ margin: "4px 0", fontSize: "14px" }}>
-              <strong>Nights Survived:</strong> 5 / 5
-            </p>
-            <p style={{ margin: "4px 0", fontSize: "14px" }}>
-              <strong>Horrors Slain:</strong> {state.enemiesKilled || 0}
-            </p>
-            <p style={{ margin: "4px 0", fontSize: "14px" }}>
-              <strong>Active Perks:</strong>{" "}
+            </div>
+            <p>Nights Survived: 5 / 5</p>
+            <p>Horrors Slain: {state.enemiesKilled || 0}</p>
+            <p>
+              Active Perks:{" "}
               {state.perks && state.perks.length > 0
                 ? state.perks.map((p) => getPerkById(p)?.name).filter(Boolean).join(", ")
                 : "None"}
@@ -105,71 +92,83 @@ const ActiveStep = () => {
 
         {needsPerkSelection ? (
           <div style={{ margin: "20px 0", textAlign: "left" }}>
-            <h3 className="unifrakturcook-bold" style={{ margin: "0 0 8px 0", color: "#d4af37" }}>
-              Dawn {currentNight}: Choose a Roguelike Perk
-            </h3>
-            <p style={{ fontSize: "13px", opacity: 0.8, marginBottom: "12px" }}>
+            <h2 className="unifrakturcook-bold step-title">
+              Dawn {currentNight} Perk
+            </h2>
+            <p>
               Select 1 perk to strengthen your soldier for Night {currentNight + 1}:
             </p>
-            <div style={{ display: "grid", gap: "8px" }}>
+            <ul className="chest__list">
               {availablePerks.map((perk) => (
-                <button
-                  key={perk.id}
-                  className="btn"
-                  style={{
-                    textAlign: "left",
-                    padding: "10px 12px",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "4px",
-                    border: "1px solid #444",
-                    background: "#222",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => {
-                    dispatch({
-                      type: "perk_select",
-                      payload: {
-                        perkId: perk.id,
-                        messages: [
-                          createMessage(
-                            `Acquired Dawn Perk: [${perk.code}] ${perk.name} - ${perk.description}`,
-                          ),
-                        ],
-                      },
-                    });
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      width: "100%",
-                    }}
-                  >
-                    <strong style={{ color: "#d4af37" }}>
+                <li key={perk.id} className="chest-item">
+                  <div>
+                    <div className="inventory__cell-title">
                       [{perk.code}] {perk.name}
-                    </strong>
+                    </div>
+                    <p>{perk.description}</p>
+                    <p
+                      style={{
+                        fontSize: "13px",
+                        opacity: 0.6,
+                        fontStyle: "italic",
+                        marginTop: "4px",
+                      }}
+                    >
+                      &ldquo;{perk.flavor}&rdquo;
+                    </p>
                   </div>
-                  <span style={{ fontSize: "13px" }}>{perk.description}</span>
-                  <span
-                    style={{
-                      fontSize: "11px",
-                      opacity: 0.6,
-                      fontStyle: "italic",
-                    }}
-                  >
-                    &ldquo;{perk.flavor}&rdquo;
-                  </span>
-                </button>
+                  <div>
+                    <button
+                      className="btn btn--cta unifrakturcook-bold"
+                      onClick={() => {
+                        dispatch({
+                          type: "perk_select",
+                          payload: {
+                            perkId: perk.id,
+                            messages: [
+                              createMessage(
+                                `Acquired Dawn Perk: [${perk.code}] ${perk.name} - ${perk.description}`,
+                              ),
+                            ],
+                          },
+                        });
+                      }}
+                    >
+                      Claim
+                    </button>
+                  </div>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         ) : (
-          <div style={{ margin: "16px 0", textAlign: "left" }}>
-            <p style={{ fontSize: "13px", color: "#78a878", margin: 0 }}>
+          <div style={{ margin: "20px 0", textAlign: "left" }}>
+            <p style={{ color: "#78a878", marginBottom: "12px" }}>
               ✓ Dawn Perk selected for Night {currentNight + 1}. Ready to advance into the dark.
             </p>
+            {state.perks && state.perks.length > 0 && (
+              <ul className="chest__list">
+                {state.perks.map((pId) => {
+                  const perk = getPerkById(pId);
+                  if (!perk) return null;
+                  return (
+                    <li key={perk.id} className="chest-item">
+                      <div>
+                        <div className="inventory__cell-title">
+                          [{perk.code}] {perk.name}
+                        </div>
+                        <p>{perk.description}</p>
+                      </div>
+                      <div>
+                        <button className="btn btn--cta unifrakturcook-bold" disabled>
+                          Claimed
+                        </button>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </div>
         )}
 

@@ -119,11 +119,10 @@ export const Stats = memo(() => {
             gridColumn: "1 / 3",
             display: "flex",
             flexWrap: "wrap",
-            gap: "4px",
-            padding: "6px 10px",
+            gap: "6px",
+            padding: "8px 10px",
             border: "1px dashed #3d3c3c",
-            background: "#181818",
-            fontSize: "12px",
+            fontSize: "13px",
             alignItems: "center",
           }}
         >
@@ -135,11 +134,9 @@ export const Stats = memo(() => {
                 key={pId}
                 title={perk?.description}
                 style={{
-                  background: "#2a2a2a",
+                  border: "1px solid rgba(255, 255, 255, 0.3)",
                   padding: "2px 6px",
-                  border: "1px solid #444",
-                  borderRadius: "2px",
-                  color: "#d4af37",
+                  fontSize: "12px",
                 }}
               >
                 [{perk?.code ?? pId}] {perk?.name ?? pId}

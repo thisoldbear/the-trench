@@ -5,6 +5,13 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "5.0.2",
+    changes: [
+      "Redesigned the Dawn Perk selection to match Chest item styling: dashed border container, Special Elite typewriter typography, and Gothic Claim buttons.",
+      "Styled Campaign Summary and Perks HUD badges with consistent typewriter fonts and monochrome borders.",
+    ],
+  },
+  {
     version: "5.0.1",
     changes: [
       "Replaced Enemies counter with Lamps lit in the HUD (Cell 4) with progress bar, giving Night: X / 5 its own dedicated top-right slot (Cell 2).",
