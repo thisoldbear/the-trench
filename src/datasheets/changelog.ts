@@ -5,6 +5,12 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "5.0.16",
+    changes: [
+      "Rebalanced monster HP across all three tiers by ~15% to reduce campaign combat attrition (e.g. Trench Tyrant 10 HP, Zombie Soldier 5 HP, Possessed Soldier 7 HP).",
+    ],
+  },
+  {
     version: "5.0.15",
     changes: [
       "Adjusted perk badge padding to 5px 8px 2px.",
