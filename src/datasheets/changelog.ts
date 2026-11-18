@@ -5,6 +5,12 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "5.0.4",
+    changes: [
+      "Reordered Dawn navigation buttons: placed 'Start again' on the left and 'Fight on for Night X' forward button on the right.",
+    ],
+  },
+  {
     version: "5.0.3",
     changes: [
       "Removed duplicate seed text from victory, dawn, and game over screens in favor of the interactive shareable seed link in the footer.",

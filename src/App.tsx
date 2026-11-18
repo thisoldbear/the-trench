@@ -175,6 +175,16 @@ const ActiveStep = () => {
         <div className="btn-group">
           <button
             className="btn btn--cta unifrakturcook-bold"
+            onClick={() =>
+              dispatch({
+                type: "restart",
+              })
+            }
+          >
+            Start again
+          </button>
+          <button
+            className="btn btn--cta unifrakturcook-bold"
             disabled={needsPerkSelection}
             onClick={() => {
               advanceStep({
@@ -190,16 +200,6 @@ const ActiveStep = () => {
             }}
           >
             Fight on for Night {currentNight + 1} <AdvanceArrow />
-          </button>
-          <button
-            className="btn btn--cta unifrakturcook-bold"
-            onClick={() =>
-              dispatch({
-                type: "restart",
-              })
-            }
-          >
-            Rise, once more
           </button>
         </div>
       </div>
