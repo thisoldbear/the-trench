@@ -29,7 +29,7 @@ export function removeTemporaryModifiers(
     dispatch({
       type: "player_hit_modifier_remove",
       payload: {
-        messages: [createMessage("Cigarettes +1 to hit rolls wore off")],
+        messages: [createMessage("Temporary hit modifier wore off")],
       },
     });
   }

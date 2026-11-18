@@ -144,7 +144,7 @@ describe("applyEquipmentEffect", () => {
       expect(dispatch.mock.calls[0]![0]!.payload.hitModifier).toBe(1);
       expect(dispatch.mock.calls[0]![0]!.payload.messages).toHaveLength(1);
       expect(dispatch.mock.calls[0]![0]!.payload.messages[0]!.text).toContain(
-        "Cigarettes added 1 to hit results",
+        "Cigarettes added +1 to hit rolls",
       );
     });
 
@@ -161,7 +161,7 @@ describe("applyEquipmentEffect", () => {
       expect(dispatch).toHaveBeenCalledTimes(1);
       expect(dispatch.mock.calls[0]![0]!.payload.hitModifier).toBe(3);
       expect(dispatch.mock.calls[0]![0]!.payload.messages[0]!.text).toContain(
-        "Cigarettes added 3 to hit results",
+        "Cigarettes added +1 to hit rolls",
       );
     });
   });

@@ -5,6 +5,15 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "5.0.1",
+    changes: [
+      "Combat log fix: Accurately report total enemy damage dealt in combat messages when player damage modifiers are active.",
+      "Equipment messaging fix: Correct Cigarettes activation message to display a constant +1 bonus instead of total hit modifier.",
+      "Modifier cleanup fix: Generalize hit modifier expiration message from Cigarettes to 'Temporary hit modifier wore off' so Adrenaline Shot expirations are properly attributed.",
+      "Data cleanup: Removed commented-out draft enemy data from enemy datasheets.",
+    ],
+  },
+  {
     version: "5.0.0",
     changes: [
       "5-Night Campaign Culmination: Expanded The Trench into a 5-Night epic campaign culminating at Night 5 ('The End') with 13 lamps per night.",

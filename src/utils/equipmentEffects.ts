@@ -77,7 +77,7 @@ export function applyEquipmentEffect(
         hitModifier: playerState.hitModifier + 1,
         messages: [
           createMessage(
-            `Cigarettes added ${playerState.hitModifier + 1} to hit results for a short while`
+            "Cigarettes added +1 to hit rolls for a short while"
           ),
         ],
       },

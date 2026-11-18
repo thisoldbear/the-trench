@@ -34,7 +34,7 @@ describe("removeTemporaryModifiers", () => {
     );
     expect(dispatch.mock.calls[0]![0]!.payload.messages).toHaveLength(1);
     expect(dispatch.mock.calls[0]![0]!.payload.messages[0]!.text).toContain(
-      "Cigarettes +1 to hit rolls wore off",
+      "Temporary hit modifier wore off",
     );
   });
 

@@ -67,7 +67,8 @@ export function fightLoop(
         : 0;
     const damage =
       rollDice(weapon.damage) + weapon.damageModifier + meleeBonus + surgeBonus;
-    const enemyWounds = enemy.wounds - damage - player.damageModifier;
+    const totalDamage = damage + player.damageModifier;
+    const enemyWounds = enemy.wounds - totalDamage;
 
     if (enemyWounds <= 0) {
       dispatch({
@@ -76,7 +77,7 @@ export function fightLoop(
           wounds: 0,
           messages: [
             createMessage(
-              `You rolled a ${playerRolled}. ${enemy.name} took ${damage} damage ${player.damageModifier ? `(${damage} + ${player.damageModifier} modifier)` : ``}`,
+              `You rolled a ${playerRolled}. ${enemy.name} took ${totalDamage} damage ${player.damageModifier ? `(${damage} + ${player.damageModifier} modifier)` : ``}`,
             ),
             createMessage(`${enemy.name} was defeated`),
           ],
@@ -95,7 +96,7 @@ export function fightLoop(
         wounds: enemyWounds,
         messages: [
           createMessage(
-            `You rolled a ${playerRolled}. ${enemy.name} took ${damage} damage ${player.damageModifier ? `(${damage} + ${player.damageModifier} modifier)` : ``}`,
+            `You rolled a ${playerRolled}. ${enemy.name} took ${totalDamage} damage ${player.damageModifier ? `(${damage} + ${player.damageModifier} modifier)` : ``}`,
           ),
         ],
       },

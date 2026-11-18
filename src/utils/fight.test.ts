@@ -228,7 +228,7 @@ describe("fightLoop", () => {
     expect(dispatch.mock.calls[0]![0]!.payload.wounds).toBe(0);
     expect(dispatch.mock.calls[0]![0]!.payload.messages).toHaveLength(2);
     expect(dispatch.mock.calls[0]![0]!.payload.messages[0]!.text).toBe(
-      "You rolled a 5. Swarm of Rats took 2 damage (2 + 2 modifier)",
+      "You rolled a 5. Swarm of Rats took 4 damage (2 + 2 modifier)",
     );
     expect(dispatch.mock.calls[0]![0]!.payload.messages[1]!.text).toBe(
       "Swarm of Rats was defeated",

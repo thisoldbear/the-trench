@@ -32,17 +32,6 @@ export const enemies = [
     wounds: 4,
     totalWounds: 4,
   },
-  // {
-  //   _type: "enemy",
-  //   damage: 3,
-  //   damageModifier: 0,
-  //   name: "Spectral Soldier",
-  //   notes: "Unlim wounds - Run away (take d3 damage) Removes modifiers",
-  //   strength: 3,
-  //   toughness: 3,
-  //   wounds: 0,
-  //   totalWounds: 0,
-  // },
   {
     _type: "enemy",
     damage: 3,
