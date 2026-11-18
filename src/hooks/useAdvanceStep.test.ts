@@ -4,7 +4,7 @@ import { useGame } from "@/context/GameContext";
 import { generateInitialState } from "@/context/GameContext";
 import { useAdvanceStep } from "./useAdvanceStep";
 import { rooms } from "@/datasheets/rooms";
-import { enemies } from "@/datasheets/enemies";
+import { enemies, enemiesNight2 } from "@/datasheets/enemies";
 import { chests } from "@/datasheets/chests";
 import { traps } from "@/datasheets/traps";
 import { createMessage } from "@/utils/messages";
@@ -229,6 +229,167 @@ describe("useAdvanceStep", () => {
           messages: [
             expect.objectContaining({
               text: "You rolled 4. Entered: Dark Trench",
+            }),
+          ],
+        },
+      });
+    });
+  });
+
+  describe("Night 2 Advance", () => {
+    test("dispatches fight_on_another_night with Night 2 enemy when night: 2 is provided", () => {
+      vi.mocked(useGame).mockReturnValue({
+        state: {
+          ...generateInitialState(),
+          rooms: 13,
+          night: 1,
+        },
+        dispatch,
+      });
+
+      rollQueue = [14, 1]; // 14 (enemy), 1 (Gas Ghoul on Night 2)
+      const advanceStep = useAdvanceStep();
+      advanceStep({ night: 2 });
+
+      expect(dispatch).toHaveBeenCalledWith({
+        type: "fight_on_another_night",
+        payload: {
+          activeStep: enemiesNight2[0],
+          messages: [
+            expect.objectContaining({
+              text: "You rolled 14 then 1. Encountered: Gas Ghoul",
+            }),
+          ],
+        },
+      });
+    });
+
+    test("deals +1 trap damage during Night 2 and includes hazard notice", () => {
+      vi.mocked(useGame).mockReturnValue({
+        state: {
+          ...generateInitialState(),
+          rooms: 15,
+          night: 2,
+          player: {
+            ...generateInitialState().player,
+            wounds: 20,
+            totalWounds: 20,
+          },
+        },
+        dispatch,
+      });
+
+      rollQueue = [19, 10, 2]; // 19 (trap), 10 (traps[0] Barbed Wire damage 2), rollDice(2) = 2
+      // In Night 2, trap damage = base (2) + 1 = 3 damage!
+      const advanceStep = useAdvanceStep();
+      advanceStep();
+
+      expect(dispatch).toHaveBeenCalledWith({
+        type: "player_wounded",
+        payload: {
+          wounds: 17, // 20 - 3
+          messages: [
+            expect.objectContaining({
+              text: expect.stringContaining("Night II hazard"),
+            }),
+          ],
+        },
+      });
+    });
+
+    test("deals +2 trap damage during Night 4", () => {
+      vi.mocked(useGame).mockReturnValue({
+        state: {
+          ...generateInitialState(),
+          rooms: 5,
+          night: 4,
+          player: {
+            ...generateInitialState().player,
+            wounds: 20,
+            totalWounds: 20,
+          },
+        },
+        dispatch,
+      });
+
+      rollQueue = [19, 10, 2]; // 19 (trap), 10 (traps[0] Barbed Wire damage 2), rollDice(2) = 2
+      // In Night 4, trap damage = base (2) + 2 = 4 damage!
+      const advanceStep = useAdvanceStep();
+      advanceStep();
+
+      expect(dispatch).toHaveBeenCalledWith({
+        type: "player_wounded",
+        payload: {
+          wounds: 16, // 20 - 4
+          messages: [
+            expect.objectContaining({
+              text: expect.stringContaining("Night IV hazard"),
+            }),
+          ],
+        },
+      });
+    });
+
+    test("reduces trap damage by 1 when player has trench-armor perk", () => {
+      vi.mocked(useGame).mockReturnValue({
+        state: {
+          ...generateInitialState(),
+          rooms: 5,
+          night: 4,
+          perks: ["trench-armor"],
+          player: {
+            ...generateInitialState().player,
+            wounds: 20,
+            totalWounds: 20,
+          },
+        },
+        dispatch,
+      });
+
+      rollQueue = [19, 10, 2]; // 19 (trap), 10 (traps[0] damage 2), rollDice(2) = 2
+      // In Night 4 with trench-armor: base (2) + 2 - 1 = 3 damage!
+      const advanceStep = useAdvanceStep();
+      advanceStep();
+
+      expect(dispatch).toHaveBeenCalledWith({
+        type: "player_wounded",
+        payload: {
+          wounds: 17, // 20 - 3
+          messages: [
+            expect.objectContaining({
+              text: expect.stringContaining("Trench Armor reduced damage"),
+            }),
+          ],
+        },
+      });
+    });
+
+    test("heals 10 wounds at Chapel in Night 5 instead of full heal", () => {
+      vi.mocked(useGame).mockReturnValue({
+        state: {
+          ...generateInitialState(),
+          rooms: 5,
+          night: 5,
+          player: {
+            ...generateInitialState().player,
+            wounds: 5,
+            totalWounds: 20,
+          },
+        },
+        dispatch,
+      });
+
+      rollQueue = [1]; // 1 (Chapel)
+      const advanceStep = useAdvanceStep();
+      advanceStep();
+
+      expect(dispatch).toHaveBeenCalledWith({
+        type: "player_restored",
+        payload: {
+          wounds: 15, // 5 + 10
+          messages: [
+            expect.objectContaining({
+              text: expect.stringContaining("diminished sanctuary"),
             }),
           ],
         },

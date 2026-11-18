@@ -8,6 +8,7 @@ import type { Pause } from "@/datasheets/pause";
 import { weapons, type Weapon } from "@/datasheets/weapons";
 import { equipmentLoadout, weaponsLoadout } from "@/utils/loadout";
 import { generateRandomSeed, setSeed } from "@/utils/rollDice";
+import { createMessage } from "@/utils/messages";
 import {
   createContext,
   useContext,
@@ -34,6 +35,9 @@ export type GameState = {
   hasPaused: boolean;
   steps: number;
   seed: number | string;
+  night: number;
+  perks: string[];
+  lastStandUsedThisNight: boolean;
 };
 
 export type GameAction =
@@ -161,6 +165,13 @@ export type GameAction =
         rooms: number;
         messages?: GameState["messages"];
       };
+    }
+  | {
+      type: "fight_on_another_night";
+      payload?: {
+        activeStep?: GameState["activeStep"];
+        messages?: GameState["messages"];
+      };
     };
 
 export const MAX_MESSAGES = 50;
@@ -198,6 +209,9 @@ export const generateInitialState = (seed?: number | string) => {
     hasPaused: false,
     steps: 0,
     seed: activeSeed,
+    night: 1,
+    perks: [],
+    lastStandUsedThisNight: false,
   };
 
   return initialState;
@@ -440,6 +454,51 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         rooms: action.payload.rooms,
         messages: appendMessages(state.messages, action.payload.messages),
       };
+
+    case "fight_on_another_night": {
+      const nextNight = state.night + 1;
+      const isFirstNightClear = state.night === 1;
+      const newToughness = isFirstNightClear
+        ? state.player.totalToughness + 1
+        : state.player.totalToughness;
+      const newTotalWounds = isFirstNightClear ? 20 : state.player.totalWounds;
+      const newWounds = isFirstNightClear ? 20 : state.player.totalWounds;
+      const isEnemy = action.payload?.activeStep?._type === "enemy";
+      const isPause = action.payload?.activeStep?._type === "pause";
+      const resetEnemyCount = isEnemy && state.hasPaused;
+
+      return {
+        ...state,
+        night: nextNight,
+        rooms: 0,
+        player: {
+          ...state.player,
+          totalToughness: newToughness,
+          toughness: isFirstNightClear
+            ? Math.max(state.player.toughness + 1, newToughness)
+            : state.player.toughness,
+          totalWounds: newTotalWounds,
+          wounds: newWounds,
+        },
+        ...(action.payload?.activeStep
+          ? {
+              activeStep: action.payload.activeStep,
+              activeStepUuid: crypto.randomUUID(),
+              steps: state.steps + 1,
+              hasPaused: isPause ? true : resetEnemyCount ? false : state.hasPaused,
+              enemiesDefeatedCount: resetEnemyCount ? 0 : state.enemiesDefeatedCount,
+            }
+          : {}),
+        messages: appendMessages(
+          state.messages,
+          action.payload?.messages ?? [
+            createMessage(
+              `You steel your nerves to fight on for Night ${nextNight}${isFirstNightClear ? " (+1 Toughness, Max HP increased to 20)" : ""}.`,
+            ),
+          ],
+        ),
+      };
+    }
 
     case "restart":
       return {

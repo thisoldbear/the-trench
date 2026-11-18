@@ -1,5 +1,5 @@
 import { chests } from "@/datasheets/chests";
-import { enemies } from "@/datasheets/enemies";
+import { enemies, enemiesNight2, enemiesNight3 } from "@/datasheets/enemies";
 import { rooms } from "@/datasheets/rooms";
 import { traps } from "@/datasheets/traps";
 import { expect, test, vi, describe, beforeEach } from "vitest";
@@ -192,5 +192,69 @@ describe("resolveDecisionTable", () => {
     rollQueue = [20];
     const result = resolveDecisionTable();
     expect(result).toEqual({ step: rooms[0], rolls: [20] });
+  });
+
+  describe("Night 2 Enemies Table (night === 2 or rooms >= 13)", () => {
+    test("returns Gas Ghoul when secondDice is 1–14", () => {
+      rollQueue = [14, 1];
+      const result = resolveDecisionTable({ night: 2 });
+      expect(result).toEqual({ step: enemiesNight2[0], rolls: [14, 1] });
+    });
+
+    test("returns War Hound when secondDice is 15", () => {
+      rollQueue = [14, 15];
+      const result = resolveDecisionTable({ night: 2 });
+      expect(result).toEqual({ step: enemiesNight2[1], rolls: [14, 15] });
+    });
+
+    test("returns Corrupted Stormtrooper when secondDice is 16", () => {
+      rollQueue = [14, 16];
+      const result = resolveDecisionTable({ rooms: 14 });
+      expect(result).toEqual({ step: enemiesNight2[2], rolls: [14, 16] });
+    });
+
+    test("returns Possessed Officer when secondDice is 17-19", () => {
+      rollQueue = [14, 18];
+      const result = resolveDecisionTable(15);
+      expect(result).toEqual({ step: enemiesNight2[3], rolls: [14, 18] });
+    });
+
+    test("returns Golgotha Behemoth when secondDice is 20", () => {
+      rollQueue = [14, 20];
+      const result = resolveDecisionTable({ night: 2, rooms: 16 });
+      expect(result).toEqual({ step: enemiesNight2[4], rolls: [14, 20] });
+    });
+  });
+
+  describe("Night 4 & 5 Enemies Table (night >= 4)", () => {
+    test("returns Ironclad Abomination when secondDice is 1–14", () => {
+      rollQueue = [14, 1];
+      const result = resolveDecisionTable({ night: 4 });
+      expect(result).toEqual({ step: enemiesNight3[0], rolls: [14, 1] });
+    });
+
+    test("returns Dreadstalker Hound when secondDice is 15", () => {
+      rollQueue = [14, 15];
+      const result = resolveDecisionTable({ night: 4 });
+      expect(result).toEqual({ step: enemiesNight3[1], rolls: [14, 15] });
+    });
+
+    test("returns Flamethrower Fiend when secondDice is 16", () => {
+      rollQueue = [14, 16];
+      const result = resolveDecisionTable({ night: 5 });
+      expect(result).toEqual({ step: enemiesNight3[2], rolls: [14, 16] });
+    });
+
+    test("returns Trench Archon when secondDice is 17-19", () => {
+      rollQueue = [14, 18];
+      const result = resolveDecisionTable({ night: 5 });
+      expect(result).toEqual({ step: enemiesNight3[3], rolls: [14, 18] });
+    });
+
+    test("returns The Trench Sovereign when secondDice is 20", () => {
+      rollQueue = [14, 20];
+      const result = resolveDecisionTable({ night: 5 });
+      expect(result).toEqual({ step: enemiesNight3[4], rolls: [14, 20] });
+    });
   });
 });
