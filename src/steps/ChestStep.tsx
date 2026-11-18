@@ -81,7 +81,7 @@ export const ChestStep = ({ chest }: { chest: Chest }) => {
   const { state, dispatch } = useGame();
   const advanceStep = useAdvanceStep();
   const rollForEquipment = (): Equipment[] | Weapon[] | [] =>
-    rollOnChestTable(chest, dispatch, state.player);
+    rollOnChestTable(chest, dispatch, state.player, { night: state.night });
 
   const [foundEquipment, setFoundEquipment] = useState<
     Equipment[] | Weapon[] | []

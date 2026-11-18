@@ -149,4 +149,76 @@ describe("rollOnChestTable", () => {
       expect(dispatch).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe("Night 2 Chests (options.night === 2)", () => {
+    test("Night 2 chest trap deals 1d3+1 damage and includes Night II message", () => {
+      rollQueue = [1, 2]; // d20=1 (trap), d3=2 (+1 Night 2 peril = 3 damage)
+      const result = rollOnChestTable(
+        { ...chests[0] },
+        dispatch,
+        { wounds: 20 },
+        { night: 2 },
+      );
+
+      expect(result).toEqual([]);
+      expect(dispatch).toHaveBeenCalledTimes(1);
+      expect(dispatch.mock.calls[0]![0]!.type).toBe("player_wounded");
+      expect(dispatch.mock.calls[0]![0]!.payload.wounds).toBe(17);
+      expect(dispatch.mock.calls[0]![0]!.payload.messages[0]!.text).toContain(
+        "Night II peril",
+      );
+    });
+
+    test("Night 2 Medic Bag returns First Aid Kit on roll 16", () => {
+      rollQueue = [16];
+      const result = rollOnChestTable(
+        { ...chests[0] },
+        dispatch,
+        { wounds: 10 },
+        { night: 2 },
+      );
+
+      expect(result).toEqual([equipment[4]]);
+      expect(dispatch).not.toHaveBeenCalled();
+    });
+
+    test("Night 2 Medic Bag returns Adrenaline Shot on roll 20", () => {
+      rollQueue = [20];
+      const result = rollOnChestTable(
+        { ...chests[0] },
+        dispatch,
+        { wounds: 10 },
+        { night: 2 },
+      );
+
+      expect(result).toEqual([equipment[5]]);
+      expect(dispatch).not.toHaveBeenCalled();
+    });
+
+    test("Night 2 Corpse returns Adrenaline Shot on roll 17", () => {
+      rollQueue = [17];
+      const result = rollOnChestTable(
+        { ...chests[1] },
+        dispatch,
+        { wounds: 10 },
+        { night: 2 },
+      );
+
+      expect(result).toEqual([equipment[5]]);
+      expect(dispatch).not.toHaveBeenCalled();
+    });
+
+    test("Night 2 Corpse returns First Aid Kit on roll 20", () => {
+      rollQueue = [20];
+      const result = rollOnChestTable(
+        { ...chests[1] },
+        dispatch,
+        { wounds: 10 },
+        { night: 2 },
+      );
+
+      expect(result).toEqual([equipment[4]]);
+      expect(dispatch).not.toHaveBeenCalled();
+    });
+  });
 });

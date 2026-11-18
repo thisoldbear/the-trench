@@ -11,21 +11,24 @@ export function rollOnChestTable(
   chest: Chest,
   dispatch: Dispatch<GameAction>,
   currentPlayer: Pick<Player, "wounds"> = player,
+  options?: { night?: number },
 ) {
+  const isNightTwo = (options?.night ?? 1) >= 2;
   const diceResult = rollDice(20);
 
   if (diceResult <= 1) {
-    const woundRoll = rollDice(3);
+    const woundRoll = rollDice(3) + (isNightTwo ? 1 : 0);
     const remainingWounds = currentPlayer.wounds - woundRoll;
+    const trapMessage = isNightTwo
+      ? `${chest.name} was a trap. Received ${woundRoll} wounds (${woundRoll - 1} + 1 Night II peril).`
+      : `${chest.name} was a trap. Received ${woundRoll} wounds.`;
 
     if (remainingWounds <= 0) {
       dispatch({
         type: "player_wounded",
         payload: {
           wounds: 0,
-          messages: [
-            createMessage(`${chest.name} was a trap. Received ${woundRoll} wounds.`),
-          ],
+          messages: [createMessage(trapMessage)],
         },
       });
       dispatch({ type: "game_over" });
@@ -36,9 +39,7 @@ export function rollOnChestTable(
       type: "player_wounded",
       payload: {
         wounds: remainingWounds,
-        messages: [
-          createMessage(`${chest.name} was a trap. Received ${woundRoll} wounds.`),
-        ],
+        messages: [createMessage(trapMessage)],
       },
     });
 
@@ -46,6 +47,23 @@ export function rollOnChestTable(
   }
 
   if (chest.id === "medic-bag") {
+    if (isNightTwo) {
+      if (diceResult <= 8) {
+        // Bandage
+        return [equipment[0]!];
+      }
+      if (diceResult <= 13) {
+        // Morphine
+        return [equipment[1]!];
+      }
+      if (diceResult <= 17) {
+        // First Aid Kit (+6 HP)
+        return [equipment[4]!];
+      }
+      // 18-20: Adrenaline Shot (+2 hit, +2 damage)
+      return [equipment[5]!];
+    }
+
     // Empty
     if (diceResult <= 1) {
       return [];
@@ -63,6 +81,24 @@ export function rollOnChestTable(
   }
 
   if (chest.id === "corpse") {
+    if (isNightTwo) {
+      if (diceResult <= 12) {
+        const [, ...lootableWeapons] = weapons;
+        const weaponIndex = rollDice(lootableWeapons.length) - 1;
+        return [lootableWeapons[weaponIndex]!];
+      }
+      if (diceResult <= 15) {
+        // Hip flask
+        return [equipment[3]!];
+      }
+      if (diceResult <= 18) {
+        // Adrenaline Shot
+        return [equipment[5]!];
+      }
+      // 19-20: First Aid Kit
+      return [equipment[4]!];
+    }
+
     // Empty
     if (diceResult <= 1) {
       return [];
