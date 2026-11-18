@@ -11,6 +11,7 @@ import { rollDice } from "./rollDice";
 export type DecisionResult = {
   step: Room | Enemy | Trap | Chest;
   rolls: number[];
+  tables: string[];
 };
 
 export type DecisionOptions = {
@@ -30,22 +31,40 @@ export function resolveDecisionTable(
 
   // Chapel
   if (firstDice <= 2) {
-    return { step: rooms[1], rolls: [firstDice] };
+    return {
+      step: rooms[1],
+      rolls: [firstDice],
+      tables: ["Table I (Exploration)"],
+    };
   }
 
   // Trench
   if (firstDice <= 8) {
-    return { step: rooms[0], rolls: [firstDice] };
+    return {
+      step: rooms[0],
+      rolls: [firstDice],
+      tables: ["Table I (Exploration)"],
+    };
   }
 
   // Booty
   if (firstDice <= 12) {
     const secondDice = rollDice(20);
+    const bootyTable =
+      nightNum >= 2 ? "Table II B (Booty)" : "Table II A (Booty)";
     if (secondDice <= 10) {
-      return { step: chests[0], rolls: [firstDice, secondDice] };
+      return {
+        step: chests[0],
+        rolls: [firstDice, secondDice],
+        tables: ["Table I (Exploration)", bootyTable],
+      };
     }
 
-    return { step: chests[1], rolls: [firstDice, secondDice] };
+    return {
+      step: chests[1],
+      rolls: [firstDice, secondDice],
+      tables: ["Table I (Exploration)", bootyTable],
+    };
   }
 
   // Enemies
@@ -53,42 +72,55 @@ export function resolveDecisionTable(
     const secondDice = rollDice(20);
     const enemyList =
       nightNum >= 4 ? enemiesNight3 : nightNum >= 2 ? enemiesNight2 : enemies;
-    if (secondDice <= 14) {
-      return { step: enemyList[0], rolls: [firstDice, secondDice] };
-    }
+    const monsterTable =
+      nightNum >= 4
+        ? "Table III C (Monsters)"
+        : nightNum >= 2
+          ? "Table III B (Monsters)"
+          : "Table III A (Monsters)";
+    const enemy =
+      secondDice <= 14
+        ? enemyList[0]
+        : secondDice <= 15
+          ? enemyList[1]
+          : secondDice <= 16
+            ? enemyList[2]
+            : secondDice <= 19
+              ? enemyList[3]
+              : enemyList[4];
 
-    if (secondDice <= 15) {
-      return { step: enemyList[1], rolls: [firstDice, secondDice] };
-    }
-
-    if (secondDice <= 16) {
-      return { step: enemyList[2], rolls: [firstDice, secondDice] };
-    }
-
-    if (secondDice <= 19) {
-      return { step: enemyList[3], rolls: [firstDice, secondDice] };
-    }
-
-    return { step: enemyList[4], rolls: [firstDice, secondDice] };
+    return {
+      step: enemy,
+      rolls: [firstDice, secondDice],
+      tables: ["Table I (Exploration)", monsterTable],
+    };
   }
 
   // Trap
   if (firstDice <= 19) {
     const secondDice = rollDice(20);
-    if (secondDice <= 10) {
-      return { step: traps[0], rolls: [firstDice, secondDice] };
-    }
-    if (secondDice <= 15) {
-      return { step: traps[1], rolls: [firstDice, secondDice] };
-    }
-    if (secondDice <= 18) {
-      return { step: traps[2], rolls: [firstDice, secondDice] };
-    }
-    return { step: traps[3], rolls: [firstDice, secondDice] };
+    const trap =
+      secondDice <= 10
+        ? traps[0]
+        : secondDice <= 15
+          ? traps[1]
+          : secondDice <= 18
+            ? traps[2]
+            : traps[3];
+
+    return {
+      step: trap,
+      rolls: [firstDice, secondDice],
+      tables: ["Table I (Exploration)", "Table IV (Traps)"],
+    };
   }
 
   // Trench
-  return { step: rooms[0], rolls: [firstDice] };
+  return {
+    step: rooms[0],
+    rolls: [firstDice],
+    tables: ["Table I (Exploration)"],
+  };
 }
 
 export function rollOnDecisionTable(

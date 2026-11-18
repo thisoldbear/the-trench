@@ -5,6 +5,12 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "5.0.14",
+    changes: [
+      "Explicitly include table references in roll messages (e.g. 'You rolled 14 on Table I (Exploration) then 14 on Table III A (Monsters). Encountered: Zombie Soldier').",
+    ],
+  },
+  {
     version: "5.0.13",
     changes: [
       "Adjusted perk badge vertical padding (5px top, 4px bottom) and line-height to center button text.",

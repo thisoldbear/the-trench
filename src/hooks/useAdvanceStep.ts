@@ -49,7 +49,7 @@ export function useAdvanceStep() {
       return;
     }
 
-    const { step: activeStep, rolls } = resolveDecisionTable({
+    const { step: activeStep, rolls, tables } = resolveDecisionTable({
       rooms: isFightOn ? 0 : (opts?.rooms ?? state.rooms),
       night: currentNight,
     });
@@ -70,9 +70,13 @@ export function useAdvanceStep() {
       return "";
     };
 
-    const rollText = rolls.join(" then ");
+    const rollDescription =
+      rolls.length === 1
+        ? `You rolled ${rolls[0]} on ${tables[0]}`
+        : `You rolled ${rolls[0]} on ${tables[0]} then ${rolls[1]} on ${tables[1]}`;
+
     const stepMessage = createMessage(
-      `You rolled ${rollText}. ${prefix(activeStep)}${activeStep.name}`,
+      `${rollDescription}. ${prefix(activeStep)}${activeStep.name}`,
     );
 
     const stepMessages = [...(opts?.messages || []), stepMessage];

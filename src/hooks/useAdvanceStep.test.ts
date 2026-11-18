@@ -46,7 +46,7 @@ describe("useAdvanceStep", () => {
         activeStep: rooms[0],
         messages: [
           expect.objectContaining({
-            text: "You rolled 4. Entered: Dark Trench",
+            text: "You rolled 4 on Table I (Exploration). Entered: Dark Trench",
           }),
         ],
       },
@@ -65,7 +65,7 @@ describe("useAdvanceStep", () => {
           activeStep: rooms[1],
           messages: [
             expect.objectContaining({
-              text: "You rolled 1. Entered: Chapel",
+              text: "You rolled 1 on Table I (Exploration). Entered: Chapel",
             }),
           ],
         }),
@@ -84,7 +84,7 @@ describe("useAdvanceStep", () => {
         activeStep: enemies[0],
         messages: [
           expect.objectContaining({
-            text: "You rolled 15 then 14. Encountered: Zombie Soldier",
+            text: "You rolled 15 on Table I (Exploration) then 14 on Table III A (Monsters). Encountered: Zombie Soldier",
           }),
         ],
       },
@@ -102,7 +102,7 @@ describe("useAdvanceStep", () => {
         activeStep: chests[0],
         messages: [
           expect.objectContaining({
-            text: "You rolled 9 then 2. Found: Medic Bag",
+            text: "You rolled 9 on Table I (Exploration) then 2 on Table II A (Booty). Found: Medic Bag",
           }),
         ],
       },
@@ -122,7 +122,7 @@ describe("useAdvanceStep", () => {
           activeStep: traps[0],
           messages: [
             expect.objectContaining({
-              text: "You rolled 19 then 10. Trap: Barbed Wire",
+              text: "You rolled 19 on Table I (Exploration) then 10 on Table IV (Traps). Trap: Barbed Wire",
             }),
           ],
         }),
@@ -144,7 +144,7 @@ describe("useAdvanceStep", () => {
         messages: [
           expect.objectContaining({ text: "Some previous message" }),
           expect.objectContaining({
-            text: "You rolled 6. Entered: Dark Trench",
+            text: "You rolled 6 on Table I (Exploration). Entered: Dark Trench",
           }),
         ],
       },
@@ -228,7 +228,7 @@ describe("useAdvanceStep", () => {
           activeStep: rooms[0],
           messages: [
             expect.objectContaining({
-              text: "You rolled 4. Entered: Dark Trench",
+              text: "You rolled 4 on Table I (Exploration). Entered: Dark Trench",
             }),
           ],
         },
@@ -257,7 +257,7 @@ describe("useAdvanceStep", () => {
           activeStep: enemiesNight2[0],
           messages: [
             expect.objectContaining({
-              text: "You rolled 14 then 1. Encountered: Gas Ghoul",
+              text: "You rolled 14 on Table I (Exploration) then 1 on Table III B (Monsters). Encountered: Gas Ghoul",
             }),
           ],
         },
