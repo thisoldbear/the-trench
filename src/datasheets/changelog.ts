@@ -7,12 +7,12 @@ export const changelog: ChangelogEntry[] = [
   {
     version: "5.0.0",
     changes: [
-      "5-Night Campaign Culmination: Expanded The Trench into a 5-Night epic campaign culminating at Night 5 ('The End') with 13 lamps per night.",
-      "Roguelike Survival Perks: Introduced 8 unlockable Dawn perks (Ironclad, Sharpshooter, Combat Medic, Bayonet Vigor, Munitions Crate, Trench Armor, Adrenaline Surge, and Last Stand) chosen between nights with interactive HUD inspection badges.",
-      "Tiered Encounters & Scaling Monsters: Added Tier 2 (Nights 2–3) and Tier 3 (Nights 4–5 Apex Horrors) monster tables, escalating night perils, and scaling chest loot (First Aid Kits, Adrenaline Shots).",
-      "Tabletop & Print Alignment: Synchronized physical manual rules, tables, and scorecard for strictly 1x d20, 1x d6, paper, and pencil. Dice roll messages now explicitly state which manual tables were rolled.",
-      "HUD & Interface Overhaul: Replaced enemy counter with 'Lamps lit: X / 13' and dedicated Night tracker, styled Inventory and Dawn selections with typewriter borders, and converted all UI styling to pure BEM CSS.",
-      "Campaign Rebalancing & Audit: Tuned monster HP by ~15% across all three tiers, corrected combat and chest trap damage calculation logging, synchronized hazard health calculation when fleeing, and verified full campaign integrity across 195 automated tests.",
+      "5-Night Campaign: Survive 13 lamps per night across 5 escalating nights to reach The End.",
+      "Dawn Perks: 8 unlockable survival perks chosen at dawn between nights.",
+      "Tiered Monsters & Loot: Added Tier 2 and Tier 3 Apex Horrors, deadlier hazards, and high-tier chest drops.",
+      "Tabletop & Print Alignment: Synchronized physical manual and scorecard for strictly 1x d20 and 1x d6.",
+      "HUD & UI Overhaul: Dedicated lamp and night trackers, interactive perk badges, and pure BEM styling.",
+      "Balance & Polish: Tuned monster HP across all tiers and audited combat, hazard, and modifier logging.",
     ],
   },
   {
