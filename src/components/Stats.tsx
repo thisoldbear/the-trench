@@ -158,13 +158,13 @@ export const Stats = memo(() => {
                   }
                   style={{
                     fontFamily: "inherit",
-                    fontSize: "13px",
+                    fontSize: "16px",
                     color: "inherit",
                     background: isActive ? "#333333" : "transparent",
                     border: isActive
                       ? "1px solid #ffffff"
                       : "1px solid rgba(255, 255, 255, 0.3)",
-                    padding: "2px 7px",
+                    padding: "2px 8px",
                     cursor: "pointer",
                     lineHeight: 1.3,
                   }}
