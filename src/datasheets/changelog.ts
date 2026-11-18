@@ -5,6 +5,13 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "5.0.11",
+    changes: [
+      "Made 'Perks:' heading full width in Stats HUD so perk buttons render neatly underneath.",
+      "Added inset box shadow (0px 0 0 1px inset #242424) to stats cells and perks container.",
+    ],
+  },
+  {
     version: "5.0.10",
     changes: [
       "Updated .inventory__cell-title to 16px and bold (700).",
