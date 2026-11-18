@@ -420,5 +420,34 @@ describe("useAdvanceStep", () => {
       expect(actionTypes).toContain("last_stand_used");
       expect(actionTypes).not.toContain("game_over");
     });
+
+    test("respects opts.playerWounds when advancing into a trap after taking flee damage", () => {
+      vi.mocked(useGame).mockReturnValue({
+        state: {
+          ...generateInitialState(),
+          rooms: 0,
+          night: 1,
+          player: {
+            ...generateInitialState().player,
+            wounds: 10, // Stale state in React hook closure
+          },
+        },
+        dispatch,
+      });
+
+      // Advance into a trap dealing 2 damage, with playerWounds: 8 (reflecting recent flee damage)
+      rollQueue = [19, 10, 2];
+      const advanceStep = useAdvanceStep();
+      advanceStep({ rooms: 0, playerWounds: 8 });
+
+      expect(dispatch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: "player_wounded",
+          payload: expect.objectContaining({
+            wounds: 6, // 8 - 2 = 6, NOT 10 - 2 = 8
+          }),
+        }),
+      );
+    });
   });
 });

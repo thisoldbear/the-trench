@@ -77,10 +77,11 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
                   const fleeDamage = rollDice(3);
 
                   if (state.player.wounds - fleeDamage > 0) {
+                    const remainingWounds = state.player.wounds - fleeDamage;
                     dispatch({
                       type: "player_wounded",
                       payload: {
-                        wounds: state.player.wounds - fleeDamage,
+                        wounds: remainingWounds,
                       },
                     });
 
@@ -89,6 +90,7 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
                     // Move on
                     advanceStep({
                       rooms: 0,
+                      playerWounds: remainingWounds,
                       messages: [
                         createMessage(
                           `Rolled D3: Fleeing dealt ${fleeDamage} damage`,
@@ -114,7 +116,7 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
                         },
                       });
                       removeTemporaryModifiers(state.player, dispatch);
-                      advanceStep({ rooms: 0 });
+                      advanceStep({ rooms: 0, playerWounds: 1 });
                       return;
                     }
 

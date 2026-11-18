@@ -30,7 +30,7 @@ export const weapons = [
     damage: 3,
     damageModifier: 2,
     name: "Sword",
-    description: "The gentleman's choice",
+    description: "The gentleman's choice.",
     id: "sword",
     notes: "",
     strength: 3,

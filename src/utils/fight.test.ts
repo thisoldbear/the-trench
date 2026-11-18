@@ -190,6 +190,36 @@ describe("fightLoop", () => {
     expect(dispatch.mock.calls[2]![0]!.payload.messages).toHaveLength(2);
   });
 
+  test("decrements temporary toughness when enemy hits", () => {
+    // Player rolls 1 (miss)
+    // Enemy rolls 5 (hit), damage 2
+    // Player has boosted toughness 4 (totalToughness is 3)
+    rollQueue = [1, 5, 2];
+    fightLoop(
+      { ...testPlayer, toughness: 4, totalToughness: 3 },
+      { ...testEnemy },
+      dispatch,
+    );
+
+    // Should dispatch enemy_wounded, ammo remove, player_wounded, player_toughness_remove
+    expect(dispatch).toHaveBeenCalledTimes(4);
+    expect(dispatch.mock.calls[3]![0]!.type).toBe("player_toughness_remove");
+    expect(dispatch.mock.calls[3]![0]!.payload.toughness).toBe(3);
+    expect(dispatch.mock.calls[3]![0]!.payload.messages[0]!.text).toBe(
+      "Toughness decreased",
+    );
+  });
+
+  test("logs player damage without trailing space when no damage modifier", () => {
+    // Player rolls 6 (hit), rolls 2 damage
+    rollQueue = [6, 2];
+    fightLoop({ ...testPlayer }, { ...testEnemy }, dispatch);
+
+    const hitMsg = dispatch.mock.calls[0]![0]!.payload.messages[0]!.text;
+    expect(hitMsg).toBe("You rolled a 6. Swarm of Rats took 2 damage");
+    expect(hitMsg.endsWith(" ")).toBe(false);
+  });
+
   test("dispatches game_over when player is killed", () => {
     // Player rolls 1 (miss, needs 3+)
     // Enemy rolls 6 (hit, needs 5+), damage 3 → 3+0=3

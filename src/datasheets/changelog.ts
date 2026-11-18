@@ -5,6 +5,17 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "5.0.2",
+    changes: [
+      "Chest trap accuracy: Dynamic Roman numerals for night perils on chest booby traps (e.g. Night III/IV/V peril) instead of hardcoded 'Night II'.",
+      "Perk alignment: Trench Armor now mitigates chest booby trap damage by 1 (minimum 1) with log attribution, matching its rule description.",
+      "Combat log cleanliness: Removed trailing whitespace in enemy damage messages when player has no active damage modifier.",
+      "Fleeing & trap synchronization: Preserved accurate player health when advancing into hazards immediately after fleeing with 0 lamps.",
+      "Data accuracy: Aligned Cigarettes description to specify '+1 to hit rolls' and standardized item acquisition messages.",
+      "Test coverage: Added full 5-night campaign simulation suite validating message consistency, math, and edge cases across 195 tests.",
+    ],
+  },
+  {
     version: "5.0.1",
     changes: [
       "Combat log fix: Accurately report total enemy damage dealt in combat messages when player damage modifiers are active.",

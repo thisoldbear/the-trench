@@ -77,7 +77,7 @@ export function fightLoop(
           wounds: 0,
           messages: [
             createMessage(
-              `You rolled a ${playerRolled}. ${enemy.name} took ${totalDamage} damage ${player.damageModifier ? `(${damage} + ${player.damageModifier} modifier)` : ``}`,
+              `You rolled a ${playerRolled}. ${enemy.name} took ${totalDamage} damage${player.damageModifier ? ` (${damage} + ${player.damageModifier} modifier)` : ""}`,
             ),
             createMessage(`${enemy.name} was defeated`),
           ],
@@ -96,7 +96,7 @@ export function fightLoop(
         wounds: enemyWounds,
         messages: [
           createMessage(
-            `You rolled a ${playerRolled}. ${enemy.name} took ${totalDamage} damage ${player.damageModifier ? `(${damage} + ${player.damageModifier} modifier)` : ``}`,
+            `You rolled a ${playerRolled}. ${enemy.name} took ${totalDamage} damage${player.damageModifier ? ` (${damage} + ${player.damageModifier} modifier)` : ""}`,
           ),
         ],
       },

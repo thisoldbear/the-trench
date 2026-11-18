@@ -18,14 +18,32 @@ export function rollOnChestTable(
   },
 ) {
   const isNightTwo = (options?.night ?? 1) >= 2;
+  const currentNight = options?.night ?? 1;
   const diceResult = rollDice(20);
 
   if (diceResult <= 1) {
-    const woundRoll = rollDice(3) + (isNightTwo ? 1 : 0);
+    const baseWounds = rollDice(3);
+    const perilBonus = isNightTwo ? 1 : 0;
+    const hasTrenchArmor = Boolean(options?.perks?.includes("trench-armor"));
+    const romanNumerals = ["", "I", "II", "III", "IV", "V"];
+    const nightRoman = romanNumerals[currentNight] || `${currentNight}`;
+
+    const woundRoll = hasTrenchArmor
+      ? Math.max(1, baseWounds + perilBonus - 1)
+      : baseWounds + perilBonus;
     const remainingWounds = currentPlayer.wounds - woundRoll;
-    const trapMessage = isNightTwo
-      ? `${chest.name} was a trap. Received ${woundRoll} wounds (${woundRoll - 1} + 1 Night II peril).`
+
+    let trapMessage = isNightTwo
+      ? `${chest.name} was a trap. Received ${woundRoll} wounds (${baseWounds} + 1 Night ${nightRoman} peril).`
       : `${chest.name} was a trap. Received ${woundRoll} wounds.`;
+
+    if (hasTrenchArmor) {
+      if (isNightTwo) {
+        trapMessage = `${chest.name} was a trap. Received ${woundRoll} wounds (${baseWounds} + 1 Night ${nightRoman} peril - 1 Trench Armor). (Trench Armor reduced damage by 1)`;
+      } else {
+        trapMessage = `${chest.name} was a trap. Received ${woundRoll} wounds (${baseWounds} - 1 Trench Armor). (Trench Armor reduced damage by 1)`;
+      }
+    }
 
     if (remainingWounds <= 0) {
       if (options?.perks?.includes("last-stand") && !options?.lastStandUsed) {

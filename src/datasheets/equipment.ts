@@ -16,7 +16,7 @@ export const equipment = [
     _type: "equipment",
     name: "Cigarettes",
     id: "cigarettes",
-    description: "Adds +1 to roll results for a short while. Uses [x1].",
+    description: "Adds +1 to hit rolls for a short while. Uses [x1].",
   },
   {
     _type: "equipment",

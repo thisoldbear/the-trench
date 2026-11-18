@@ -12,6 +12,7 @@ export function useAdvanceStep() {
   const { state, dispatch } = useGame();
   return (opts?: {
     rooms?: number;
+    playerWounds?: number;
     messages?: { id: string; text: string }[];
     lampLit?: boolean;
     fightOn?: boolean;
@@ -25,7 +26,9 @@ export function useAdvanceStep() {
     const isNightTwoOrMore = currentNight >= 2;
     const playerTotalWounds =
       isFightOn && state.night === 1 ? 20 : state.player.totalWounds;
-    let playerCurrentWounds = isFightOn ? playerTotalWounds : state.player.wounds;
+    let playerCurrentWounds = isFightOn
+      ? playerTotalWounds
+      : (opts?.playerWounds ?? state.player.wounds);
 
     const isCurrentPause = state.activeStep?._type === "pause";
     const lampLit = Boolean(
