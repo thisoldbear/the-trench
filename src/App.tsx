@@ -55,7 +55,6 @@ const ActiveStep = () => {
                 : "None"}
             </p>
           </div>
-          <p style={{ opacity: 0.6, fontSize: "12px" }}>Seed: {state.seed}</p>
           <Message />
           <button
             className="btn btn--cta unifrakturcook-bold"
@@ -172,7 +171,6 @@ const ActiveStep = () => {
           </div>
         )}
 
-        <p style={{ opacity: 0.6, fontSize: "12px" }}>Seed: {state.seed}</p>
         <Message />
         <div className="btn-group">
           <button
@@ -217,7 +215,6 @@ const ActiveStep = () => {
           A valiant effort. Let us pray other brave individuals will continue to
           keep the lamps lit each night.
         </p>
-        <p style={{ opacity: 0.6, fontSize: "12px" }}>Seed: {state.seed}</p>
         <Message />
         <button
           className="btn btn--cta unifrakturcook-bold"

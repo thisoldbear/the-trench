@@ -5,6 +5,12 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "5.0.3",
+    changes: [
+      "Removed duplicate seed text from victory, dawn, and game over screens in favor of the interactive shareable seed link in the footer.",
+    ],
+  },
+  {
     version: "5.0.2",
     changes: [
       "Redesigned the Dawn Perk selection to match Chest item styling: dashed border container, Special Elite typewriter typography, and Gothic Claim buttons.",
