@@ -45,4 +45,15 @@ describe("PrintVersion component", () => {
 
     vi.unstubAllGlobals();
   });
+
+  test("contains Table III C, Table VII Dawn Perks, and 5-Night campaign scorecard", () => {
+    const onBack = vi.fn();
+    const result = PrintVersion({ onBack });
+
+    const tablesSection = result.props.children[4];
+    expect(tablesSection.props.className).toBe("print-section");
+
+    const scorecardSection = result.props.children[5];
+    expect(scorecardSection.props.className).toContain("scorecard-section");
+  });
 });
