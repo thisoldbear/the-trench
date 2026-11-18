@@ -5,6 +5,12 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "5.0.12",
+    changes: [
+      "Reverted 'Perks:' heading back to inline layout alongside perk buttons.",
+    ],
+  },
+  {
     version: "5.0.11",
     changes: [
       "Made 'Perks:' heading full width in Stats HUD so perk buttons render neatly underneath.",
