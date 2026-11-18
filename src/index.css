@@ -127,6 +127,80 @@ h1 {
   grid-area: 2 / 2 / 3 / 3;
   /* text-align: right; */
 }
+.stats__cell--5 {
+  grid-area: 3 / 1 / 4 / 2;
+}
+.stats__cell--6 {
+  grid-area: 3 / 2 / 4 / 3;
+}
+
+.stats__wounds--low {
+  color: #b9818e;
+}
+
+.stats__wounds--boosted {
+  color: #81b981;
+}
+
+.stats__mod-val--positive {
+  color: #78a878;
+}
+
+.stats__perks {
+  grid-column: 1 / 3;
+  padding: 8px 10px;
+  border: 1px dashed #3d3c3c;
+  font-size: 16px;
+}
+
+.stats__perks-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.stats__perks-label {
+  font-size: 16px;
+  color: #ffffff;
+  margin-right: 6px;
+}
+
+.stats__perk-badge {
+  font-family: inherit;
+  font-size: 16px;
+  color: inherit;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 2px 8px;
+  cursor: pointer;
+  line-height: 1.3;
+}
+
+.stats__perk-badge--active {
+  background: #333333;
+  border-color: #ffffff;
+}
+
+.stats__perk-detail {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed #3d3c3c;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.stats__perk-detail-title {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.stats__perk-detail-flavor {
+  opacity: 0.6;
+  display: block;
+  margin-top: 4px;
+  font-size: 14px;
+}
 
 .messages {
   text-align: left;
@@ -233,8 +307,36 @@ h1 {
 }
 
 .inventory__cell-title {
-  font-size: 15px;
+  font-size: 16px;
+  font-weight: bold;
   margin-bottom: 15px;
+}
+
+.inventory__cell-title--large {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.campaign-summary {
+  margin: 20px 0;
+  text-align: left;
+}
+
+.dawn-perks {
+  margin: 20px 0;
+  text-align: left;
+}
+
+.dawn-perks__flavor {
+  font-size: 13px;
+  opacity: 0.6;
+  font-style: italic;
+  margin-top: 4px;
+}
+
+.dawn-perks__status {
+  color: #78a878;
+  margin-bottom: 12px;
 }
 
 .inventory__cell-grid {

@@ -39,7 +39,7 @@ describe("Stats component", () => {
     expect(text).toContain("HP:");
   });
 
-  test("renders clickable perk badges with 16px font size and 16px white Perks label", () => {
+  test("renders clickable perk badges with BEM classes and Perks label", () => {
     vi.mocked(useGame).mockReturnValue({
       state: {
         ...generateInitialState(),
@@ -53,7 +53,7 @@ describe("Stats component", () => {
     expect(text).toContain("stats__perks");
     expect(text).toContain("[TGH] Ironclad");
     expect(text).toContain("[HIT] Sharpshooter");
-    expect(html).toContain("font-size:16px");
-    expect(html).toContain("color:#ffffff");
+    expect(html).toContain("stats__perks-label");
+    expect(html).toContain("stats__perk-badge");
   });
 });

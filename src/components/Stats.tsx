@@ -96,11 +96,7 @@ export const Stats = memo(() => {
           {state.player.damageModifier === 0 ? (
             " -"
           ) : (
-            <span
-              style={{
-                color: "#78a878",
-              }}
-            >
+            <span className="stats__mod-val--positive">
               {` `}+{state.player.damageModifier}
             </span>
           )}
@@ -113,11 +109,7 @@ export const Stats = memo(() => {
           {state.player.hitModifier === 0 ? (
             " -"
           ) : (
-            <span
-              style={{
-                color: "#78a878",
-              }}
-            >
+            <span className="stats__mod-val--positive">
               {` `}+{state.player.hitModifier}
             </span>
           )}
@@ -125,24 +117,9 @@ export const Stats = memo(() => {
       </div>
 
       {displayedPerks && displayedPerks.length > 0 && (
-        <div
-          className="stats__perks"
-          style={{
-            gridColumn: "1 / 3",
-            padding: "8px 10px",
-            border: "1px dashed #3d3c3c",
-            fontSize: "16px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "6px",
-              alignItems: "center",
-            }}
-          >
-            <span style={{ fontSize: "16px", color: "#ffffff", marginRight: "6px" }}>
+        <div className="stats__perks">
+          <div className="stats__perks-list">
+            <span className="stats__perks-label">
               Perks:
             </span>
             {displayedPerks.map((pId) => {
@@ -156,18 +133,7 @@ export const Stats = memo(() => {
                   onClick={() =>
                     setActivePerkId((current) => (current === pId ? null : pId))
                   }
-                  style={{
-                    fontFamily: "inherit",
-                    fontSize: "16px",
-                    color: "inherit",
-                    background: isActive ? "#333333" : "transparent",
-                    border: isActive
-                      ? "1px solid #ffffff"
-                      : "1px solid rgba(255, 255, 255, 0.3)",
-                    padding: "2px 8px",
-                    cursor: "pointer",
-                    lineHeight: 1.3,
-                  }}
+                  className={`stats__perk-badge ${isActive ? "stats__perk-badge--active" : ""}`}
                 >
                   [{perk?.code ?? pId}] {perk?.name ?? pId}
                 </button>
@@ -176,27 +142,12 @@ export const Stats = memo(() => {
           </div>
 
           {activePerk && (
-            <div
-              style={{
-                marginTop: "8px",
-                paddingTop: "8px",
-                borderTop: "1px dashed #3d3c3c",
-                fontSize: "16px",
-                lineHeight: 1.4,
-              }}
-            >
-              <strong style={{ color: "#ffffff" }}>
+            <div className="stats__perk-detail">
+              <strong className="stats__perk-detail-title">
                 [{activePerk.code}] {activePerk.name}:
               </strong>{" "}
               <span>{activePerk.description}</span>{" "}
-              <em
-                style={{
-                  opacity: 0.6,
-                  display: "block",
-                  marginTop: "4px",
-                  fontSize: "14px",
-                }}
-              >
+              <em className="stats__perk-detail-flavor">
                 &ldquo;{activePerk.flavor}&rdquo;
               </em>
             </div>

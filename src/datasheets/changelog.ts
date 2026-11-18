@@ -5,6 +5,13 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "5.0.10",
+    changes: [
+      "Updated .inventory__cell-title to 16px and bold (700).",
+      "Replaced inline CSS styles across Stats HUD, Dawn Perk selection, and Campaign Summary with clean BEM classes.",
+    ],
+  },
+  {
     version: "5.0.9",
     changes: [
       "Added 10px padding and a dashed border (matching the HUD and chest themes) around the Inventory container.",

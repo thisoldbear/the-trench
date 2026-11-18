@@ -42,8 +42,8 @@ const ActiveStep = () => {
           <p>
             The morning light pierces through the ruined fog and shattered earth. The sirens fall silent. You have reached <strong>The End</strong>.
           </p>
-          <div className="chest__list" style={{ margin: "20px 0", textAlign: "left" }}>
-            <div className="inventory__cell-title" style={{ fontSize: "18px", marginBottom: "12px" }}>
+          <div className="chest__list campaign-summary">
+            <div className="inventory__cell-title inventory__cell-title--large">
               Campaign Summary
             </div>
             <p>Nights Survived: 5 / 5</p>
@@ -90,7 +90,7 @@ const ActiveStep = () => {
         <p>Rest, while you can... dawn is fleeting and darkness will return.</p>
 
         {needsPerkSelection ? (
-          <div style={{ margin: "20px 0", textAlign: "left" }}>
+          <div className="dawn-perks">
             <h2 className="unifrakturcook-bold step-title">
               Dawn {currentNight} Perk
             </h2>
@@ -105,14 +105,7 @@ const ActiveStep = () => {
                       [{perk.code}] {perk.name}
                     </div>
                     <p>{perk.description}</p>
-                    <p
-                      style={{
-                        fontSize: "13px",
-                        opacity: 0.6,
-                        fontStyle: "italic",
-                        marginTop: "4px",
-                      }}
-                    >
+                    <p className="dawn-perks__flavor">
                       &ldquo;{perk.flavor}&rdquo;
                     </p>
                   </div>
@@ -141,8 +134,8 @@ const ActiveStep = () => {
             </ul>
           </div>
         ) : (
-          <div style={{ margin: "20px 0", textAlign: "left" }}>
-            <p style={{ color: "#78a878", marginBottom: "12px" }}>
+          <div className="dawn-perks">
+            <p className="dawn-perks__status">
               ✓ Dawn Perk selected for Night {currentNight + 1}. Ready to advance into the dark.
             </p>
             {state.perks && state.perks.length > 0 && (
