@@ -5,6 +5,28 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "5.0.0",
+    changes: [
+      "Major Release: Expanded The Trench into a 5-Night campaign culminating at Night 5 ('The End').",
+      "Added Tier 3 Night 4–5 monster table: Ironclad Abomination, Dreadstalker Hound, Flamethrower Fiend, Trench Archon, and The Trench Sovereign.",
+      "Introduced Roguelike Survival Perks earned at each Dawn: Ironclad, Sharpshooter, Combat Medic, Bayonet Vigor, Munitions Crate, Trench Armor, Adrenaline Surge, and Last Stand.",
+      "Added environmental night conditions and escalating trench perils across Nights 1 to 5.",
+      "Updated physical tabletop manual and scorecard with 5-Night tracker, 3-tier monster tables, and Dawn perks ledger.",
+    ],
+  },
+  {
+    version: "4.4.1",
+    changes: [
+      "Added 'Fight on for another night' continuation option after lighting 13 lamps: players can now advance into subsequent nights with a persistent Nights counter (resetting to 0/13 lamps per night).",
+      "Granted +1 base Toughness (increasing from 3 to 4) and raised maximum health to 20 (fully restored) upon entering Night 2.",
+      "Added a second table of deadlier enemies for Night 2+ encounters: Gas Ghoul, War Hound, Corrupted Stormtrooper, Possessed Officer, and Golgotha Behemoth.",
+      "Increased Night 2+ difficulty: trench hazards deal +1 damage, and sprung chest traps deal 1d3+1 damage.",
+      "Added cool high-tier equipment items in chests: First Aid Kit (restores 6 health) and Adrenaline Shot (+2 to hit and +2 damage).",
+      "Displayed 'Nights: {number}' in the stats HUD alongside the clean 13-lamp tracker for every night.",
+      "Updated tabletop physical print manual and scorecard with Night 2 monsters (Table III B), Nights tracker, and 20-wound health ledger.",
+    ],
+  },
+  {
     version: "4.4.0",
     changes: [
       "Streamlined dice across the entire game engine to strictly d20 and d6 (with d3 as d6 halved).",
