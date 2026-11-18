@@ -5,6 +5,13 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "5.0.13",
+    changes: [
+      "Adjusted perk badge vertical padding (5px top, 4px bottom) and line-height to center button text.",
+      "Wrapped perk buttons in a dedicated flex container (.stats__perks-badges) so wrapped buttons align under the first button rather than under the Perks label.",
+    ],
+  },
+  {
     version: "5.0.12",
     changes: [
       "Reverted 'Perks:' heading back to inline layout alongside perk buttons.",

@@ -54,6 +54,7 @@ describe("Stats component", () => {
     expect(text).toContain("[TGH] Ironclad");
     expect(text).toContain("[HIT] Sharpshooter");
     expect(html).toContain("stats__perks-label");
+    expect(html).toContain("stats__perks-badges");
     expect(html).toContain("stats__perk-badge");
   });
 });

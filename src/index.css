@@ -149,7 +149,7 @@ h1 {
 
 .stats__perks {
   grid-column: 1 / 3;
-  padding: 8px 10px;
+  padding: 10px;
   border: 1px dashed #3d3c3c;
   box-shadow: 0px 0 0 1px inset #242424;
   font-size: 16px;
@@ -157,26 +157,38 @@ h1 {
 
 .stats__perks-list {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  align-items: center;
+  align-items: flex-start;
+  gap: 8px;
 }
 
 .stats__perks-label {
   font-size: 16px;
   color: #ffffff;
-  margin-right: 6px;
+  padding-top: 4px;
+  flex-shrink: 0;
+  line-height: 1.2;
+}
+
+.stats__perks-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  flex: 1;
 }
 
 .stats__perk-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-family: inherit;
   font-size: 16px;
   color: inherit;
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 2px 8px;
+  padding: 5px 8px 4px;
   cursor: pointer;
-  line-height: 1.3;
+  line-height: 1.2;
 }
 
 .stats__perk-badge--active {

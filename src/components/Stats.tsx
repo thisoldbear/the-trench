@@ -122,23 +122,25 @@ export const Stats = memo(() => {
             <span className="stats__perks-label">
               Perks:
             </span>
-            {displayedPerks.map((pId) => {
-              const perk = getPerkById(pId);
-              const isActive = activePerkId === pId;
-              return (
-                <button
-                  key={pId}
-                  type="button"
-                  title={perk?.description}
-                  onClick={() =>
-                    setActivePerkId((current) => (current === pId ? null : pId))
-                  }
-                  className={`stats__perk-badge ${isActive ? "stats__perk-badge--active" : ""}`}
-                >
-                  [{perk?.code ?? pId}] {perk?.name ?? pId}
-                </button>
-              );
-            })}
+            <div className="stats__perks-badges">
+              {displayedPerks.map((pId) => {
+                const perk = getPerkById(pId);
+                const isActive = activePerkId === pId;
+                return (
+                  <button
+                    key={pId}
+                    type="button"
+                    title={perk?.description}
+                    onClick={() =>
+                      setActivePerkId((current) => (current === pId ? null : pId))
+                    }
+                    className={`stats__perk-badge ${isActive ? "stats__perk-badge--active" : ""}`}
+                  >
+                    [{perk?.code ?? pId}] {perk?.name ?? pId}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {activePerk && (
