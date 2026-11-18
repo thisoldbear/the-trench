@@ -198,6 +198,16 @@ h1 {
   height: 20px;
 }
 
+.inventory {
+  padding: 10px;
+  border: 1px dashed #3d3c3c;
+  margin-top: 20px;
+}
+
+.inventory__title {
+  margin-top: 0;
+}
+
 .inventory button {
   display: block;
   width: 100%;

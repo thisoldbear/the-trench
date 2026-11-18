@@ -5,6 +5,12 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "5.0.9",
+    changes: [
+      "Added 10px padding and a dashed border (matching the HUD and chest themes) around the Inventory container.",
+    ],
+  },
+  {
     version: "5.0.8",
     changes: [
       "Updated perk text and expanded detail cards in Stats HUD to 16px font size.",
