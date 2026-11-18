@@ -96,6 +96,28 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
                       ],
                     });
                   } else {
+                    if (
+                      state.perks?.includes("last-stand") &&
+                      !state.lastStandUsedThisNight
+                    ) {
+                      dispatch({
+                        type: "last_stand_used",
+                        payload: {
+                          messages: [
+                            createMessage(
+                              `Rolled D3: Fleeing dealt ${fleeDamage} damage`,
+                            ),
+                            createMessage(
+                              "Last Stand! Defied death and survived at 1 HP.",
+                            ),
+                          ],
+                        },
+                      });
+                      removeTemporaryModifiers(state.player, dispatch);
+                      advanceStep({ rooms: 0 });
+                      return;
+                    }
+
                     dispatch({
                       type: "player_wounded",
                       payload: {

@@ -286,5 +286,44 @@ describe("GameContext reducer - lamp and fleeing mechanics", () => {
       expect(nextState.lastStandUsedThisNight).toBe(true);
       expect(nextState.player.wounds).toBe(1);
     });
+
+    test("equipped_weapon_remove_ammo retains empty weapon in inventory with 0 ammo", () => {
+      const initial = generateInitialState();
+      const pistolUuid = initial.player.weapons[0]!.uuid;
+      const stateWith1Ammo = {
+        ...initial,
+        player: {
+          ...initial.player,
+          equippedWeapon: pistolUuid,
+          weapons: [{ ...initial.player.weapons[0]!, ammo: 1 }],
+        },
+      };
+
+      const nextState = gameReducer(stateWith1Ammo, {
+        type: "equipped_weapon_remove_ammo",
+      });
+
+      const pistol = nextState.player.weapons.find((w) => w.uuid === pistolUuid);
+      expect(pistol).toBeDefined();
+      expect(pistol?.ammo).toBe(0);
+    });
+
+    test("player_hit_modifier_remove restores hitModifier to totalHitModifier", () => {
+      const initial = generateInitialState();
+      const stateWithBuff = {
+        ...initial,
+        player: {
+          ...initial.player,
+          totalHitModifier: 1, // Sharpshooter perk
+          hitModifier: 2, // Sharpshooter + Cigarettes
+        },
+      };
+
+      const nextState = gameReducer(stateWithBuff, {
+        type: "player_hit_modifier_remove",
+      });
+
+      expect(nextState.player.hitModifier).toBe(1);
+    });
   });
 });

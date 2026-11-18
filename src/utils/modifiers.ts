@@ -10,6 +10,7 @@ export function removeTemporaryModifiers(
   player: {
     damageModifier: number;
     hitModifier: number;
+    totalHitModifier?: number;
   },
   dispatch: Dispatch<GameAction>,
 ) {
@@ -23,7 +24,8 @@ export function removeTemporaryModifiers(
     });
   }
 
-  if (player.hitModifier > 0) {
+  const baseHit = player.totalHitModifier ?? 0;
+  if (player.hitModifier > baseHit) {
     dispatch({
       type: "player_hit_modifier_remove",
       payload: {

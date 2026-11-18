@@ -364,7 +364,7 @@ describe("useAdvanceStep", () => {
       });
     });
 
-    test("heals 10 wounds at Chapel in Night 5 instead of full heal", () => {
+    test("heals 1d3 wounds at Chapel in Night 5 instead of full heal", () => {
       vi.mocked(useGame).mockReturnValue({
         state: {
           ...generateInitialState(),
@@ -379,14 +379,14 @@ describe("useAdvanceStep", () => {
         dispatch,
       });
 
-      rollQueue = [1]; // 1 (Chapel)
+      rollQueue = [1, 2]; // 1 (Chapel), 2 (1d3 heal = 2)
       const advanceStep = useAdvanceStep();
       advanceStep();
 
       expect(dispatch).toHaveBeenCalledWith({
         type: "player_restored",
         payload: {
-          wounds: 15, // 5 + 10
+          wounds: 7, // 5 + 2
           messages: [
             expect.objectContaining({
               text: expect.stringContaining("diminished sanctuary"),
@@ -394,6 +394,31 @@ describe("useAdvanceStep", () => {
           ],
         },
       });
+    });
+
+    test("triggers last_stand_used when trap damage is lethal and player has last-stand perk", () => {
+      vi.mocked(useGame).mockReturnValue({
+        state: {
+          ...generateInitialState(),
+          rooms: 0,
+          night: 1,
+          perks: ["last-stand"],
+          lastStandUsedThisNight: false,
+          player: {
+            ...generateInitialState().player,
+            wounds: 1,
+          },
+        },
+        dispatch,
+      });
+
+      rollQueue = [19, 10, 2]; // 19 (trap), 10 (traps[0] Barbed Wire), rollDice(2) = 2 (lethal)
+      const advanceStep = useAdvanceStep();
+      advanceStep();
+
+      const actionTypes = dispatch.mock.calls.map((c) => c[0]!.type);
+      expect(actionTypes).toContain("last_stand_used");
+      expect(actionTypes).not.toContain("game_over");
     });
   });
 });

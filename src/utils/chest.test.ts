@@ -220,5 +220,20 @@ describe("rollOnChestTable", () => {
       expect(result).toEqual([equipment[4]]);
       expect(dispatch).not.toHaveBeenCalled();
     });
+
+    test("Last Stand saves player from fatal chest booby trap", () => {
+      rollQueue = [1, 3]; // roll 1 (trap), d3=3 (fatal against 1 wound)
+      const result = rollOnChestTable(
+        { ...chests[0] },
+        dispatch,
+        { wounds: 1 },
+        { perks: ["last-stand"], lastStandUsed: false },
+      );
+
+      expect(result).toEqual([]);
+      const actionTypes = dispatch.mock.calls.map((c) => c[0]!.type);
+      expect(actionTypes).toContain("last_stand_used");
+      expect(actionTypes).not.toContain("game_over");
+    });
   });
 });

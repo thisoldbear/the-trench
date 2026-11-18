@@ -11,7 +11,11 @@ export function rollOnChestTable(
   chest: Chest,
   dispatch: Dispatch<GameAction>,
   currentPlayer: Pick<Player, "wounds"> = player,
-  options?: { night?: number },
+  options?: {
+    night?: number;
+    perks?: string[];
+    lastStandUsed?: boolean;
+  },
 ) {
   const isNightTwo = (options?.night ?? 1) >= 2;
   const diceResult = rollDice(20);
@@ -24,6 +28,19 @@ export function rollOnChestTable(
       : `${chest.name} was a trap. Received ${woundRoll} wounds.`;
 
     if (remainingWounds <= 0) {
+      if (options?.perks?.includes("last-stand") && !options?.lastStandUsed) {
+        dispatch({
+          type: "last_stand_used",
+          payload: {
+            messages: [
+              createMessage(trapMessage),
+              createMessage("Last Stand! Defied death and survived at 1 HP."),
+            ],
+          },
+        });
+        return [];
+      }
+
       dispatch({
         type: "player_wounded",
         payload: {

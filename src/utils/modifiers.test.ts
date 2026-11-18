@@ -62,6 +62,21 @@ describe("removeTemporaryModifiers", () => {
 
     expect(dispatch).not.toHaveBeenCalled();
   });
+
+  test("does not remove permanent hit modifier when hitModifier equals totalHitModifier", () => {
+    const player = { damageModifier: 0, hitModifier: 1, totalHitModifier: 1 };
+    removeTemporaryModifiers(player, dispatch);
+
+    expect(dispatch).not.toHaveBeenCalled();
+  });
+
+  test("removes only temporary excess when hitModifier exceeds totalHitModifier", () => {
+    const player = { damageModifier: 0, hitModifier: 2, totalHitModifier: 1 };
+    removeTemporaryModifiers(player, dispatch);
+
+    expect(dispatch).toHaveBeenCalledTimes(1);
+    expect(dispatch.mock.calls[0]![0]!.type).toBe("player_hit_modifier_remove");
+  });
 });
 
 describe("decrementDamageModifier", () => {

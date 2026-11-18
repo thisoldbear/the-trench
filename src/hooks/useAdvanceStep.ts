@@ -98,11 +98,12 @@ export function useAdvanceStep() {
 
     if (activeStep._type === "room" && activeStep.name === "Chapel") {
       const isNight5 = currentNight >= 5;
+      const rollAmount = isNight5 ? rollDice(3) : 0;
       const restoredWounds = isNight5
-        ? Math.min(playerCurrentWounds + 10, playerTotalWounds)
+        ? Math.min(playerCurrentWounds + rollAmount, playerTotalWounds)
         : playerTotalWounds;
       const chapelMessage = isNight5
-        ? "You prayed amid the eclipse. Health restored by 10 (diminished sanctuary)."
+        ? `You prayed in the desecrated chapel. Health restored by ${rollAmount} (diminished sanctuary).`
         : "You prayed. Health restored.";
 
       dispatch({
@@ -134,6 +135,19 @@ export function useAdvanceStep() {
       }
 
       if (playerCurrentWounds - trapDamage <= 0) {
+        if (state.perks?.includes("last-stand") && !state.lastStandUsedThisNight) {
+          dispatch({
+            type: "last_stand_used",
+            payload: {
+              messages: [
+                createMessage(damageMessage),
+                createMessage("Last Stand! Defied death and survived at 1 HP."),
+              ],
+            },
+          });
+          return;
+        }
+
         dispatch({
           type: "player_wounded",
           payload: {

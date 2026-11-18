@@ -295,9 +295,9 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         player: {
           ...state.player,
-          hitModifier: 0,
+          hitModifier: state.player.totalHitModifier ?? 0,
         },
-        messages: appendMessages(state.messages, action.payload.messages),
+        messages: appendMessages(state.messages, action.payload?.messages),
       };
 
     case "player_damage_add":
@@ -379,25 +379,21 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     }
 
     case "equipped_weapon_remove_ammo": {
-      const updatedWeapons = [...state.player.weapons]
-        .reduce((acc: Weapon[], curr: Weapon) => {
-          if (curr.uuid === state.player.equippedWeapon && curr.ammo > 0) {
-            return [
-              ...acc,
-              {
-                ...curr,
-                ammo: curr.ammo > 1 ? curr.ammo - 1 : 0,
-              },
-            ];
-          } else {
-            return [...acc, curr];
-          }
-        }, [])
-        .filter((weapon) => weapon.ammo > 0);
+      const updatedWeapons = [...state.player.weapons].map((curr: Weapon) => {
+        if (curr.uuid === state.player.equippedWeapon && curr.ammo > 0) {
+          return {
+            ...curr,
+            ammo: curr.ammo > 1 ? curr.ammo - 1 : 0,
+          };
+        }
+        return curr;
+      });
 
-      const validEquippedWeapon = updatedWeapons.find(w => w.uuid === state.player.equippedWeapon)?.uuid
-        ?? updatedWeapons[0]?.uuid
-        ?? null;
+      const equipped = updatedWeapons.find((w) => w.uuid === state.player.equippedWeapon);
+      const validEquippedWeapon =
+        equipped && (equipped.ammo > 0 || !equipped.limited)
+          ? equipped.uuid
+          : updatedWeapons.find((w) => w.ammo > 0 || !w.limited)?.uuid ?? null;
 
       return {
         ...state,
@@ -406,7 +402,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           weapons: updatedWeapons,
           equippedWeapon: validEquippedWeapon,
         },
-        messages: appendMessages(state.messages, action.payload.messages),
+        messages: appendMessages(state.messages, action.payload?.messages),
       };
     }
 
@@ -484,9 +480,14 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       // Munitions Crate reload perk
       const hasMunitions = state.perks.includes("munitions-crate");
       const updatedWeapons = hasMunitions
-        ? state.player.weapons.map((w) =>
-            w.id === "pistol" ? { ...w, ammo: Math.max(w.ammo, 15) } : w,
-          )
+        ? state.player.weapons.some((w) => w.id === "pistol")
+          ? state.player.weapons.map((w) =>
+              w.id === "pistol" ? { ...w, ammo: Math.max(w.ammo, 15) } : w,
+            )
+          : [
+              ...state.player.weapons,
+              { ...weapons[0]!, ammo: 15, uuid: crypto.randomUUID() },
+            ]
         : state.player.weapons;
 
       return {
@@ -533,11 +534,21 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         updatedPlayer.totalToughness += 1;
         updatedPlayer.toughness += 1;
       } else if (perkId === "sharpshooter") {
+        updatedPlayer.totalHitModifier =
+          (updatedPlayer.totalHitModifier ?? 0) + 1;
         updatedPlayer.hitModifier += 1;
       } else if (perkId === "munitions-crate") {
-        updatedPlayer.weapons = updatedPlayer.weapons.map((w) =>
-          w.id === "pistol" ? { ...w, ammo: w.ammo + 15 } : w,
-        );
+        const hasPistol = updatedPlayer.weapons.some((w) => w.id === "pistol");
+        if (hasPistol) {
+          updatedPlayer.weapons = updatedPlayer.weapons.map((w) =>
+            w.id === "pistol" ? { ...w, ammo: w.ammo + 15 } : w,
+          );
+        } else {
+          updatedPlayer.weapons = [
+            ...updatedPlayer.weapons,
+            { ...weapons[0]!, ammo: 15, uuid: crypto.randomUUID() },
+          ];
+        }
       }
 
       return {

@@ -5,6 +5,17 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "5.0.1",
+    changes: [
+      "Replaced Enemies counter with Lamps lit in the HUD (Cell 4) with progress bar, giving Night: X / 5 its own dedicated top-right slot (Cell 2).",
+      "Fixed Sharpshooter perk bug where permanent hit modifier was cleared when temporary cigarette buffs wore off.",
+      "Fixed empty weapons being deleted from inventory, allowing Munitions Crate to reload the Pistol at dawn.",
+      "Extended Last Stand perk protection to cover lethal damage from traps, booby-trapped chests, and fleeing.",
+      "Aligned Night 5 Chapel healing with physical print rules (restores 1d3 health).",
+      "Made StepCounter cross symbol deterministic from stepId so decorative UI does not consume seedable game dice rolls.",
+    ],
+  },
+  {
     version: "5.0.0",
     changes: [
       "Major Release: Expanded The Trench into a 5-Night campaign culminating at Night 5 ('The End').",

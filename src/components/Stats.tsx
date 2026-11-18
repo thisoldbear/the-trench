@@ -10,6 +10,11 @@ export const Stats = memo(() => {
     return `linear-gradient(90deg,#2d2d2d 0%, #2d2d2d ${percent}%, transparent ${percent}%)`;
   }, [state.player.wounds, state.player.totalWounds]);
 
+  const nightsGradient = useMemo(() => {
+    const percent = (100 * (state.night || 1)) / 5;
+    return `linear-gradient(90deg,#2d2d2d 0%, #2d2d2d ${percent}%, transparent ${percent}%)`;
+  }, [state.night]);
+
   const lampsGradient = useMemo(() => {
     const percent = (100 * state.rooms) / LAMP_TARGET;
     return `linear-gradient(90deg,#2d2d2d 0%, #2d2d2d ${percent}%, transparent ${percent}%)`;
@@ -43,13 +48,10 @@ export const Stats = memo(() => {
       <div
         className="stats__cell stats__cell--2"
         style={{
-          background: lampsGradient,
+          background: nightsGradient,
         }}
       >
-        <p style={{ display: "flex", justifyContent: "space-between", margin: 0 }}>
-          <span>Lamps lit: {state.rooms || 0} / {LAMP_TARGET}</span>
-          <span>Nights: {state.night || 1}</span>
-        </p>
+        <p>Night: {state.night || 1} / 5</p>
       </div>
       <div className="stats__cell stats__cell--3">
         <p>
@@ -67,8 +69,13 @@ export const Stats = memo(() => {
         </p>
       </div>
 
-      <div className="stats__cell stats__cell--4">
-        <p>Enemies: {state.enemiesKilled || 0} / ∞</p>
+      <div
+        className="stats__cell stats__cell--4"
+        style={{
+          background: lampsGradient,
+        }}
+      >
+        <p>Lamps lit: {state.rooms || 0} / {LAMP_TARGET}</p>
       </div>
 
       <div className="stats__cell stats__cell--5">

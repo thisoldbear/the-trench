@@ -7,11 +7,11 @@ export type Player = {
   weapons: Weapon[];
   equippedWeapon: Weapon["uuid"] | null;
   equipment: Equipment[];
-  totalEquipment: number;
   toughness: number;
   totalToughness: number;
   damageModifier: number;
   hitModifier: number;
+  totalHitModifier: number;
 };
 
 export const player: Player = {
@@ -20,9 +20,9 @@ export const player: Player = {
   weapons: [weapons[0], weapons[1]],
   equippedWeapon: null,
   equipment: [],
-  totalEquipment: 2,
   toughness: 3,
   totalToughness: 3,
   damageModifier: 0,
   hitModifier: 0,
+  totalHitModifier: 0,
 };
