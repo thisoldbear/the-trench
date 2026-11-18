@@ -5,6 +5,12 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "5.0.8",
+    changes: [
+      "Updated perk text and expanded detail cards in Stats HUD to 16px font size.",
+    ],
+  },
+  {
     version: "5.0.7",
     changes: [
       "Updated perk badge buttons in Stats HUD to 16px font size.",

@@ -131,7 +131,7 @@ export const Stats = memo(() => {
             gridColumn: "1 / 3",
             padding: "8px 10px",
             border: "1px dashed #3d3c3c",
-            fontSize: "13px",
+            fontSize: "16px",
           }}
         >
           <div
@@ -181,7 +181,7 @@ export const Stats = memo(() => {
                 marginTop: "8px",
                 paddingTop: "8px",
                 borderTop: "1px dashed #3d3c3c",
-                fontSize: "13px",
+                fontSize: "16px",
                 lineHeight: 1.4,
               }}
             >
@@ -193,8 +193,8 @@ export const Stats = memo(() => {
                 style={{
                   opacity: 0.6,
                   display: "block",
-                  marginTop: "2px",
-                  fontSize: "12px",
+                  marginTop: "4px",
+                  fontSize: "14px",
                 }}
               >
                 &ldquo;{activePerk.flavor}&rdquo;
