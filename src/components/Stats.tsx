@@ -6,6 +6,12 @@ export const Stats = memo(() => {
   const { state } = useGame();
   const [activePerkId, setActivePerkId] = useState<string | null>(null);
 
+  // Temporary preview of perks if none acquired yet, allowing immediate UI inspection
+  const displayedPerks =
+    state.perks && state.perks.length > 0
+      ? state.perks
+      : ["ironclad", "sharpshooter", "bayonet-vigor"];
+
   const activePerk = useMemo(
     () => (activePerkId ? getPerkById(activePerkId) : null),
     [activePerkId],
@@ -118,7 +124,7 @@ export const Stats = memo(() => {
         </p>
       </div>
 
-      {state.perks && state.perks.length > 0 && (
+      {displayedPerks && displayedPerks.length > 0 && (
         <div
           className="stats__perks"
           style={{
@@ -136,8 +142,10 @@ export const Stats = memo(() => {
               alignItems: "center",
             }}
           >
-            <span style={{ opacity: 0.6, marginRight: "4px" }}>Perks:</span>
-            {state.perks.map((pId) => {
+            <span style={{ fontSize: "16px", color: "#ffffff", marginRight: "6px" }}>
+              Perks:
+            </span>
+            {displayedPerks.map((pId) => {
               const perk = getPerkById(pId);
               const isActive = activePerkId === pId;
               return (
