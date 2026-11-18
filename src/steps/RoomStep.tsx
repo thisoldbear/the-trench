@@ -26,13 +26,13 @@ export const RoomStep = ({ room }: { room: Room }) => {
               const newRoomCount = state.rooms + 1;
               removeTemporaryModifiers(state.player, dispatch);
 
-              // If lighting this lamp wins the game, don't advance to next step
+              // If lighting this lamp wins the night, don't advance to next step
               if (newRoomCount >= LAMP_TARGET) {
                 dispatch({
                   type: "rooms_increment",
                   payload: {
                     rooms: newRoomCount,
-                    messages: [createMessage("Lit the lamp")],
+                    messages: [createMessage("Lit the 13th lamp! The night passes.")],
                   },
                 });
               } else {

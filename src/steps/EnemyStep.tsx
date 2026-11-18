@@ -47,7 +47,12 @@ export const EnemyStep = ({ enemy }: { enemy: Enemy }) => {
           <>
             <button
               className="btn btn--cta unifrakturcook-bold"
-              onClick={() => fightLoop(state.player, enemy, dispatch)}
+              onClick={() =>
+                fightLoop(state.player, enemy, dispatch, {
+                  perks: state.perks,
+                  lastStandUsed: state.lastStandUsedThisNight,
+                })
+              }
               disabled={!equippedWeapon || equippedWeapon.ammo === 0}
             >
               Fight

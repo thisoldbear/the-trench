@@ -31,10 +31,16 @@ export function resolveWeaponAmmo(
   }
 }
 
+export type FightOptions = {
+  perks?: string[];
+  lastStandUsed?: boolean;
+};
+
 export function fightLoop(
   player: Player,
   enemy: Enemy,
   dispatch: Dispatch<GameAction>,
+  options?: FightOptions,
 ) {
   if (player.wounds <= 0 || enemy.wounds <= 0) return;
 
@@ -50,7 +56,17 @@ export function fightLoop(
   const playerHit = playerRolled >= hitOn(weapon.strength, enemy.toughness);
 
   if (playerHit) {
-    const damage = rollDice(weapon.damage) + weapon.damageModifier;
+    const meleeBonus =
+      options?.perks?.includes("bayonet-vigor") && weapon._type === "melee"
+        ? 2
+        : 0;
+    const surgeBonus =
+      options?.perks?.includes("adrenaline-surge") &&
+      enemy.wounds === enemy.totalWounds
+        ? 2
+        : 0;
+    const damage =
+      rollDice(weapon.damage) + weapon.damageModifier + meleeBonus + surgeBonus;
     const enemyWounds = enemy.wounds - damage - player.damageModifier;
 
     if (enemyWounds <= 0) {
@@ -106,6 +122,20 @@ export function fightLoop(
     const playerWounds = player.wounds - damage;
 
     if (playerWounds <= 0) {
+      if (options?.perks?.includes("last-stand") && !options?.lastStandUsed) {
+        dispatch({
+          type: "last_stand_used",
+          payload: {
+            messages: [
+              createMessage(`${enemy.name} rolled a ${enemyRolled}`),
+              createMessage(`You took ${damage} damage`),
+              createMessage("Last Stand! Defied death and survived at 1 HP."),
+            ],
+          },
+        });
+        return;
+      }
+
       dispatch({
         type: "player_wounded",
         payload: {

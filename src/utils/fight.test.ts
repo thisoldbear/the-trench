@@ -250,4 +250,62 @@ describe("fightLoop", () => {
     expect(dispatch.mock.calls[0]![0]!.payload.wounds).toBe(3);
     expect(dispatch.mock.calls[1]![0]!.type).toBe("player_wounded");
   });
+
+  describe("perks in combat", () => {
+    test("bayonet-vigor adds +2 damage with melee weapon", () => {
+      const playerWithKnife = {
+        ...testPlayer,
+        equippedWeapon: "test-knife-uuid",
+      };
+      // Player rolls 3 (hit), damage roll 1 + 2 bayonet vigor = 3 damage (enemy down to 1 HP)
+      // Enemy rolls 1 (miss)
+      rollQueue = [3, 1, 1];
+      fightLoop(playerWithKnife, { ...testEnemy }, dispatch, {
+        perks: ["bayonet-vigor"],
+      });
+
+      expect(dispatch.mock.calls[0]![0]!.type).toBe("enemy_wounded");
+      expect(dispatch.mock.calls[0]![0]!.payload.wounds).toBe(1); // 4 - (1 + 2) = 1
+    });
+
+    test("adrenaline-surge adds +2 damage on the first hit when enemy is at full wounds", () => {
+      // Player rolls 3 (hit), damage roll 1 + 2 surge bonus = 3 damage (enemy down from 4 to 1 HP)
+      // Enemy rolls 1 (miss)
+      rollQueue = [3, 1, 1];
+      fightLoop(testPlayer, { ...testEnemy }, dispatch, {
+        perks: ["adrenaline-surge"],
+      });
+
+      expect(dispatch.mock.calls[0]![0]!.type).toBe("enemy_wounded");
+      expect(dispatch.mock.calls[0]![0]!.payload.wounds).toBe(1);
+    });
+
+    test("adrenaline-surge does not add damage on subsequent hits", () => {
+      // Enemy is already wounded (3 / 4 HP)
+      const woundedEnemy = { ...testEnemy, wounds: 3, totalWounds: 4 };
+      // Player rolls 3 (hit), damage roll 1 (no surge bonus) = 1 damage (enemy down to 2 HP)
+      // Enemy rolls 1 (miss)
+      rollQueue = [3, 1, 1];
+      fightLoop(testPlayer, woundedEnemy, dispatch, {
+        perks: ["adrenaline-surge"],
+      });
+
+      expect(dispatch.mock.calls[0]![0]!.type).toBe("enemy_wounded");
+      expect(dispatch.mock.calls[0]![0]!.payload.wounds).toBe(2);
+    });
+
+    test("last-stand saves player from lethal damage at 1 HP", () => {
+      // Player misses (roll 1)
+      // Enemy rolls 5 (hit), rolls damage 15 (fatal against 10 HP)
+      rollQueue = [1, 5, 15];
+      fightLoop(testPlayer, { ...testEnemy }, dispatch, {
+        perks: ["last-stand"],
+        lastStandUsed: false,
+      });
+
+      const types = dispatch.mock.calls.map((c) => c[0]!.type);
+      expect(types).toContain("last_stand_used");
+      expect(types).not.toContain("game_over");
+    });
+  });
 });

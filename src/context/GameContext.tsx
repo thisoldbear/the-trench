@@ -171,6 +171,20 @@ export type GameAction =
       payload?: {
         activeStep?: GameState["activeStep"];
         messages?: GameState["messages"];
+        perkId?: string;
+      };
+    }
+  | {
+      type: "perk_select";
+      payload: {
+        perkId: string;
+        messages?: GameState["messages"];
+      };
+    }
+  | {
+      type: "last_stand_used";
+      payload?: {
+        messages?: GameState["messages"];
       };
     };
 
@@ -467,12 +481,22 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       const isPause = action.payload?.activeStep?._type === "pause";
       const resetEnemyCount = isEnemy && state.hasPaused;
 
+      // Munitions Crate reload perk
+      const hasMunitions = state.perks.includes("munitions-crate");
+      const updatedWeapons = hasMunitions
+        ? state.player.weapons.map((w) =>
+            w.id === "pistol" ? { ...w, ammo: Math.max(w.ammo, 15) } : w,
+          )
+        : state.player.weapons;
+
       return {
         ...state,
         night: nextNight,
         rooms: 0,
+        lastStandUsedThisNight: false,
         player: {
           ...state.player,
+          weapons: updatedWeapons,
           totalToughness: newToughness,
           toughness: isFirstNightClear
             ? Math.max(state.player.toughness + 1, newToughness)
@@ -497,6 +521,42 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
             ),
           ],
         ),
+      };
+    }
+
+    case "perk_select": {
+      const perkId = action.payload.perkId;
+      if (state.perks.includes(perkId)) return state;
+
+      const updatedPlayer = { ...state.player };
+      if (perkId === "ironclad") {
+        updatedPlayer.totalToughness += 1;
+        updatedPlayer.toughness += 1;
+      } else if (perkId === "sharpshooter") {
+        updatedPlayer.hitModifier += 1;
+      } else if (perkId === "munitions-crate") {
+        updatedPlayer.weapons = updatedPlayer.weapons.map((w) =>
+          w.id === "pistol" ? { ...w, ammo: w.ammo + 15 } : w,
+        );
+      }
+
+      return {
+        ...state,
+        perks: [...state.perks, perkId],
+        player: updatedPlayer,
+        messages: appendMessages(state.messages, action.payload.messages),
+      };
+    }
+
+    case "last_stand_used": {
+      return {
+        ...state,
+        lastStandUsedThisNight: true,
+        player: {
+          ...state.player,
+          wounds: 1,
+        },
+        messages: appendMessages(state.messages, action.payload?.messages),
       };
     }
 
