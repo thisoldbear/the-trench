@@ -5,6 +5,12 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "5.3.2",
+    changes: [
+      "Lite Printed Edition Ruleset (LITE_RULES.md): Added a standalone 3-night physical tabletop ruleset (8 lamps per night, 3 enemy tiers, 2 loot tiers, Dawn perks, and printable Trench Log) playtested for balance, clarity, and edge cases.",
+    ],
+  },
+  {
     version: "5.3.1",
     changes: [
       "Spent Weapon Removal: Weapons with an ammo count that lack replenishment options (such as Grenades, Rifles, and Barbed Wire Bats) are now discarded and automatically removed from inventory when their ammo is exhausted.",
