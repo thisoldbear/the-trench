@@ -394,15 +394,35 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     }
 
     case "equipped_weapon_remove_ammo": {
-      const updatedWeapons = [...state.player.weapons].map((curr: Weapon) => {
-        if (curr.uuid === state.player.equippedWeapon && curr.ammo > 0) {
-          return {
-            ...curr,
-            ammo: curr.ammo > 1 ? curr.ammo - 1 : 0,
-          };
-        }
-        return curr;
-      });
+      const spentWeaponMessages: GameState["messages"] = [];
+      const updatedWeapons = [...state.player.weapons]
+        .map((curr: Weapon) => {
+          if (curr.uuid === state.player.equippedWeapon && curr.ammo > 0) {
+            return {
+              ...curr,
+              ammo: curr.ammo > 1 ? curr.ammo - 1 : 0,
+            };
+          }
+          return curr;
+        })
+        .filter((curr: Weapon) => {
+          if (curr.limited && curr.ammo <= 0) {
+            // Pistol and Shotgun have ammo replenishments available in loot crates, so keep them
+            if (curr.id === "pistol" || curr.id === "shotgun") {
+              return true;
+            }
+            // Weapons without replenishments (e.g. Grenade, Rifle, Barbed Wire Bat) are removed after use
+            spentWeaponMessages.push(
+              createMessage(
+                curr._type === "explosive"
+                  ? `${curr.name} was used and removed from inventory.`
+                  : `${curr.name} is out of ammo and was removed from inventory.`,
+              ),
+            );
+            return false;
+          }
+          return true;
+        });
 
       const equipped = updatedWeapons.find((w) => w.uuid === state.player.equippedWeapon);
       const validEquippedWeapon =
@@ -417,7 +437,10 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           weapons: updatedWeapons,
           equippedWeapon: validEquippedWeapon,
         },
-        messages: appendMessages(state.messages, action.payload?.messages),
+        messages: appendMessages(
+          appendMessages(state.messages, spentWeaponMessages),
+          action.payload?.messages,
+        ),
       };
     }
 

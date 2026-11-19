@@ -5,6 +5,13 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "5.3.1",
+    changes: [
+      "Spent Weapon Removal: Weapons with an ammo count that lack replenishment options (such as Grenades, Rifles, and Barbed Wire Bats) are now discarded and automatically removed from inventory when their ammo is exhausted.",
+      "Replenishable Weapons Retained: Pistols and Shotguns remain in inventory at 0 ammo so they can be replenished with loot cache ammunition.",
+    ],
+  },
+  {
     version: "5.3.0",
     changes: [
       "The Trench Twists Onward (Official Rule): Documented in Table I and rules manual that rolling Dark Trench immediately after lighting a lamp requires an immediate d20 reroll on Table I until a non-lamp encounter is obtained (no consecutive lamps).",

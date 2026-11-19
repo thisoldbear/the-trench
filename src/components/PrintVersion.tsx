@@ -168,7 +168,10 @@ export const PrintVersion = ({ onBack }: { onBack: () => void }) => {
           <li>
             Choose your equipped weapon (you may freely switch between any carried
             weapons with available ammo). If the weapon has limited ammo, deduct{" "}
-            <strong>1 ammo</strong> whether you hit or miss.
+            <strong>1 ammo</strong> whether you hit or miss. Weapons without replenishment
+            options (such as Grenades, Rifles, and Barbed Wire Bats) are discarded
+            from inventory once their ammo reaches 0. Pistols and Shotguns are kept as
+            you can find ammunition in loot crates.
           </li>
           <li>
             Roll 1d6 (+ any active Hit Modifier from Cigarettes). If the roll

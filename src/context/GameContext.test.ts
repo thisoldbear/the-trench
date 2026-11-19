@@ -318,7 +318,7 @@ describe("GameContext reducer - lamp and fleeing mechanics", () => {
       expect(nextState.player.wounds).toBe(1);
     });
 
-    test("equipped_weapon_remove_ammo retains empty weapon in inventory with 0 ammo", () => {
+    test("equipped_weapon_remove_ammo retains pistol in inventory with 0 ammo because it is replenishable", () => {
       const initial = generateInitialState();
       const pistolUuid = initial.player.weapons[0]!.uuid;
       const stateWith1Ammo = {
@@ -337,6 +337,74 @@ describe("GameContext reducer - lamp and fleeing mechanics", () => {
       const pistol = nextState.player.weapons.find((w) => w.uuid === pistolUuid);
       expect(pistol).toBeDefined();
       expect(pistol?.ammo).toBe(0);
+    });
+
+    test("equipped_weapon_remove_ammo retains shotgun in inventory with 0 ammo because it is replenishable", () => {
+      const initial = generateInitialState();
+      const shotgun = {
+        _type: "gun" as const,
+        damage: 6 as const,
+        damageModifier: 3,
+        name: "Shotgun",
+        description: "PULL!",
+        id: "shotgun" as const,
+        notes: "",
+        strength: 4,
+        limited: true,
+        ammo: 1,
+        maxAmmo: 11,
+        uuid: "test-shotgun-uuid",
+      };
+      const stateWithShotgun = {
+        ...initial,
+        player: {
+          ...initial.player,
+          equippedWeapon: "test-shotgun-uuid",
+          weapons: [...initial.player.weapons, shotgun],
+        },
+      };
+
+      const nextState = gameReducer(stateWithShotgun, {
+        type: "equipped_weapon_remove_ammo",
+      });
+
+      const foundShotgun = nextState.player.weapons.find((w) => w.uuid === "test-shotgun-uuid");
+      expect(foundShotgun).toBeDefined();
+      expect(foundShotgun?.ammo).toBe(0);
+    });
+
+    test("equipped_weapon_remove_ammo removes non-replenishable weapons (like grenade) when ammo reaches 0", () => {
+      const initial = generateInitialState();
+      const grenade = {
+        _type: "explosive" as const,
+        damage: 6 as const,
+        damageModifier: 4,
+        name: "Grenade",
+        description: "Duck and cover.",
+        id: "grenade" as const,
+        notes: "",
+        strength: 5,
+        limited: true,
+        ammo: 1,
+        maxAmmo: 1,
+        uuid: "test-grenade-uuid",
+      };
+      const stateWithGrenade = {
+        ...initial,
+        player: {
+          ...initial.player,
+          equippedWeapon: "test-grenade-uuid",
+          weapons: [...initial.player.weapons, grenade],
+        },
+      };
+
+      const nextState = gameReducer(stateWithGrenade, {
+        type: "equipped_weapon_remove_ammo",
+      });
+
+      const foundGrenade = nextState.player.weapons.find((w) => w.uuid === "test-grenade-uuid");
+      expect(foundGrenade).toBeUndefined();
+      expect(nextState.messages.some((m) => m.text.includes("Grenade was used and removed"))).toBe(true);
     });
 
     test("player_hit_modifier_remove restores hitModifier to totalHitModifier", () => {
