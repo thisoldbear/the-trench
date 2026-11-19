@@ -1,6 +1,7 @@
 import type { Dispatch } from "react";
 import type { GameAction } from "@/context/GameContext";
 import type { Equipment } from "@/datasheets/equipment";
+import type { Weapon } from "@/datasheets/weapons";
 import { player } from "@/datasheets/player";
 import { createMessage } from "./messages";
 
@@ -12,6 +13,7 @@ export type PlayerEquipmentState = {
   damageModifier: number;
   hitModifier: number;
   healBonus?: number;
+  weapons?: Weapon[];
 };
 
 export function applyEquipmentEffect(
@@ -125,5 +127,47 @@ export function applyEquipmentEffect(
         ],
       },
     });
+  }
+
+  if (equipment.id === "pistol-ammo") {
+    const pistol = playerState.weapons?.find((w) => w.id === "pistol");
+    if (pistol) {
+      const added = Math.min(10, 20 - pistol.ammo);
+      dispatch({
+        type: "weapon_ammo_add",
+        payload: {
+          weaponId: "pistol",
+          amount: 10,
+          messages: [
+            createMessage(
+              added > 0
+                ? `Pistol ammo replenished (+${added} rounds, now ${pistol.ammo + added}/20).`
+                : "Pistol is already at maximum ammo capacity (20 rounds).",
+            ),
+          ],
+        },
+      });
+    }
+  }
+
+  if (equipment.id === "shotgun-ammo") {
+    const shotgun = playerState.weapons?.find((w) => w.id === "shotgun");
+    if (shotgun) {
+      const added = Math.min(5, 11 - shotgun.ammo);
+      dispatch({
+        type: "weapon_ammo_add",
+        payload: {
+          weaponId: "shotgun",
+          amount: 5,
+          messages: [
+            createMessage(
+              added > 0
+                ? `Shotgun ammo replenished (+${added} shells, now ${shotgun.ammo + added}/11).`
+                : "Shotgun is already at maximum ammo capacity (11 shells).",
+            ),
+          ],
+        },
+      });
+    }
   }
 }

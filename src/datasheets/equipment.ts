@@ -38,8 +38,23 @@ export const equipment = [
     description:
       "Surge of raw courage. Adds +2 to hit rolls and +2 to damage rolls for a short while. Uses [x1].",
   },
+  {
+    _type: "equipment",
+    name: "Pistol Ammo",
+    id: "pistol-ammo",
+    description: "Replenishes up to 10 rounds for the Pistol (max 20). Uses [x1].",
+    requiresWeapon: "pistol",
+  },
+  {
+    _type: "equipment",
+    name: "Shotgun Ammo",
+    id: "shotgun-ammo",
+    description: "Replenishes up to 5 shells for the Shotgun (max 11). Uses [x1].",
+    requiresWeapon: "shotgun",
+  },
 ] as const;
 
 export type Equipment = (typeof equipment)[number] & {
   uuid?: string;
+  requiresWeapon?: string;
 };

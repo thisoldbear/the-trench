@@ -321,4 +321,29 @@ describe("resolveDecisionTable", () => {
       });
     });
   });
+
+  describe("Trench Twists (disallowDarkTrench option)", () => {
+    test("rerolls Table I when roll is in Dark Trench range (3-8 or 20)", () => {
+      // First roll 4 (Dark Trench), second roll 20 (Dark Trench), third roll 1 (Chapel)
+      rollQueue = [4, 20, 1];
+      const result = resolveDecisionTable({ disallowDarkTrench: true });
+      expect(result).toEqual({
+        step: rooms[1],
+        rolls: [1],
+        tables: ["Table I (Exploration)"],
+        rerolledRolls: [4, 20],
+      });
+    });
+
+    test("does not reroll when first roll is a non-Dark-Trench encounter", () => {
+      rollQueue = [1];
+      const result = resolveDecisionTable({ disallowDarkTrench: true });
+      expect(result).toEqual({
+        step: rooms[1],
+        rolls: [1],
+        tables: ["Table I (Exploration)"],
+      });
+      expect(result.rerolledRolls).toBeUndefined();
+    });
+  });
 });

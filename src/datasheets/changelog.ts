@@ -5,6 +5,24 @@ export type ChangelogEntry = {
 
 export const changelog: ChangelogEntry[] = [
   {
+    version: "5.1.1",
+    changes: [
+      "The Trench Twists Onward (Official Rule): Documented in Table I and rules manual that rolling Dark Trench immediately after lighting a lamp requires an immediate d20 reroll on Table I until a non-lamp encounter is obtained (no consecutive lamps).",
+      "Explicit Message Logging: The UI message thread now explicitly logs when a consecutive lamp roll is rerolled, ensuring complete transparency with dice rolls and tabletop rules.",
+      "In-App Encounter Description: Updated Dark Trench description to highlight the trench twisting rule.",
+    ],
+  },
+  {
+    version: "5.1.0",
+    changes: [
+      "Ammo Replenishment & Loot Drops: Pistol Ammo and Shotgun Ammo can now be found in fallen soldier loot caches to replenish ammo.",
+      "Weapon Prerequisite Notice: Taking ammo from loot crates when the matching weapon is not in inventory notes 'Requires: {weapon}' and safely stores the ammo in equipment until the weapon is acquired.",
+      "Increased Weapon Ammo Capacity: Raised Pistol maximum ammo capacity by +5 (from 15 to 20 rounds) and Shotgun maximum ammo capacity by +5 (from 6 to 11 shells).",
+      "Bloodied Fists Base Weapon: All soldiers are now permanently equipped with Bloodied Fists as an innate melee base weapon (infinite uses, Str 2, 1d3 damage), ensuring you can always fight when ammunition runs dry.",
+      "Tabletop & Print Alignment: Updated tabletop manual and print scorecard with Bloodied Fists, expanded 20-round Pistol tracker, and ammo drop rates on Table II A/B.",
+    ],
+  },
+  {
     version: "5.0.0",
     changes: [
       "5-Night Campaign: Survive 13 lamps per night across 5 escalating nights to reach The End.",

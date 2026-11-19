@@ -117,20 +117,28 @@ export function rollOnChestTable(
 
   if (chest.id === "corpse") {
     if (isNightTwo) {
-      if (diceResult <= 12) {
+      if (diceResult <= 7) {
         const [, ...lootableWeapons] = weapons;
         const weaponIndex = rollDice(lootableWeapons.length) - 1;
         return [lootableWeapons[weaponIndex]!];
       }
-      if (diceResult <= 15) {
+      if (diceResult <= 10) {
+        // Pistol Ammo
+        return [equipment[6]!];
+      }
+      if (diceResult <= 12) {
+        // Shotgun Ammo
+        return [equipment[7]!];
+      }
+      if (diceResult <= 14) {
         // Hip flask
         return [equipment[3]!];
       }
-      if (diceResult <= 18) {
+      if (diceResult <= 17) {
         // Adrenaline Shot
         return [equipment[5]!];
       }
-      // 19-20: First Aid Kit
+      // 18-20: First Aid Kit
       return [equipment[4]!];
     }
 
@@ -139,14 +147,24 @@ export function rollOnChestTable(
       return [];
     }
 
-    if (diceResult <= 14) {
+    if (diceResult <= 8) {
       const [, ...lootableWeapons] = weapons;
       const weaponIndex = rollDice(lootableWeapons.length) - 1;
       return [lootableWeapons[weaponIndex]!];
     }
 
+    if (diceResult <= 11) {
+      // Pistol Ammo
+      return [equipment[6]!];
+    }
+
+    if (diceResult <= 14) {
+      // Shotgun Ammo
+      return [equipment[7]!];
+    }
+
     if (diceResult <= 16) {
-      // Gin
+      // Gin / Cigarettes
       return [equipment[2]!];
     }
 

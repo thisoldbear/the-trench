@@ -45,6 +45,7 @@ export function useAdvanceStep() {
         type: "active_step",
         payload: {
           activeStep: pauseStep,
+          ...(lampLit ? { lastExplorationWasLamp: true } : {}),
           ...opts,
           messages: opts?.messages || [],
         },
@@ -52,9 +53,19 @@ export function useAdvanceStep() {
       return;
     }
 
-    const { step: activeStep, rolls, tables } = resolveDecisionTable({
+    const disallowDarkTrench = Boolean(
+      state.lastExplorationWasLamp || (!isCurrentPause && lampLit),
+    );
+
+    const {
+      step: activeStep,
+      rolls,
+      tables,
+      rerolledRolls,
+    } = resolveDecisionTable({
       rooms: isFightOn ? 0 : (opts?.rooms ?? state.rooms),
       night: currentNight,
+      disallowDarkTrench,
     });
 
     const prefix = (activeStep: Room | Enemy | Trap | Chest): string => {
@@ -82,7 +93,20 @@ export function useAdvanceStep() {
       `${rollDescription}. ${prefix(activeStep)}${activeStep.name}`,
     );
 
-    const stepMessages = [...(opts?.messages || []), stepMessage];
+    const rerollMessages =
+      rerolledRolls && rerolledRolls.length > 0
+        ? [
+            createMessage(
+              `Rolled ${rerolledRolls.join(", ")} on Table I (Exploration) (Dark Trench). The trench twists onward (no consecutive lamps): rerolled Table I.`,
+            ),
+          ]
+        : [];
+
+    const stepMessages = [
+      ...(opts?.messages || []),
+      ...rerollMessages,
+      stepMessage,
+    ];
 
     if (isFightOn) {
       dispatch({
@@ -97,6 +121,7 @@ export function useAdvanceStep() {
         type: "active_step",
         payload: {
           activeStep,
+          ...(state.lastExplorationWasLamp ? { lastExplorationWasLamp: false } : {}),
           ...opts,
           messages: stepMessages,
         },

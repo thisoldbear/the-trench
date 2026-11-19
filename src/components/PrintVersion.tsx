@@ -1,7 +1,7 @@
 import { LAMP_TARGET } from "@/context/GameContext";
 import { enemies, enemiesNight2, enemiesNight3 } from "@/datasheets/enemies";
 import { traps } from "@/datasheets/traps";
-import { weapons } from "@/datasheets/weapons";
+import { weapons, bloodiedFists } from "@/datasheets/weapons";
 import { equipment } from "@/datasheets/equipment";
 import { perks } from "@/datasheets/perks";
 
@@ -71,7 +71,11 @@ export const PrintVersion = ({ onBack }: { onBack: () => void }) => {
         </p>
         <ul className="print-list">
           <li>
-            <strong>Pistol:</strong> Strength 3, Damage 1d6+0, 15 Rounds of
+            <strong>Bloodied Fists:</strong> Strength 2, Damage 1d3, Infinite
+            Ammo (Innate base weapon; always equipped when out of ammo).
+          </li>
+          <li>
+            <strong>Pistol:</strong> Strength 3, Damage 1d6+0, 20 Rounds of
             Ammo (Standard Issue).
           </li>
           <li>
@@ -102,7 +106,7 @@ export const PrintVersion = ({ onBack }: { onBack: () => void }) => {
           <li>
             <strong>Dark Trench (3–8, 20):</strong> A narrow passage stretched
             into the blackness. Light 1 lamp on your scorecard and clear any
-            temporary combat modifiers. Once <strong>{LAMP_TARGET} lamps</strong> are
+            temporary combat modifiers. <em>The Trench Twists Onward:</em> You cannot encounter two Dark Trenches in a row—if you roll Dark Trench immediately after lighting a lamp, reroll on Table I until a non-lamp encounter is rolled. Once <strong>{LAMP_TARGET} lamps</strong> are
             lit, the night passes! You may end your run in victory or <strong>Fight on for another night</strong> (lighting {LAMP_TARGET} lamps each night) across a 5-Night campaign culminating at Night 5 (The End).
           </li>
           <li>
@@ -264,6 +268,9 @@ export const PrintVersion = ({ onBack }: { onBack: () => void }) => {
 
         {/* Exploration Table */}
         <h3 className="sub-title">Table I: Exploration & Encounters (1d20)</h3>
+        <p style={{ margin: "4px 0 10px 0", fontSize: "13px" }}>
+          <strong>The Trench Twists Onward:</strong> If you roll Dark Trench (3–8, 20) immediately after lighting a lamp, reroll on Table I until a non-lamp encounter is rolled. You cannot encounter two Dark Trenches in a row.
+        </p>
         <table className="print-table">
           <thead>
             <tr>
@@ -281,7 +288,7 @@ export const PrintVersion = ({ onBack }: { onBack: () => void }) => {
             <tr>
               <td>3 – 8</td>
               <td><strong>Dark Trench</strong></td>
-              <td>Light a lamp! Check off 1 lamp on the scorecard.</td>
+              <td>Light a lamp! Check off 1 lamp on the scorecard. (Reroll if rolled immediately after lighting a lamp).</td>
             </tr>
             <tr>
               <td>9 – 12</td>
@@ -301,7 +308,7 @@ export const PrintVersion = ({ onBack }: { onBack: () => void }) => {
             <tr>
               <td>20</td>
               <td><strong>Dark Trench</strong></td>
-              <td>Light a lamp! Check off 1 lamp on the scorecard.</td>
+              <td>Light a lamp! Check off 1 lamp on the scorecard. (Reroll if rolled immediately after lighting a lamp).</td>
             </tr>
           </tbody>
         </table>
@@ -336,13 +343,31 @@ export const PrintVersion = ({ onBack }: { onBack: () => void }) => {
               </td>
             </tr>
             <tr>
-              <td>2 – 14</td>
+              <td>2 – 8</td>
               <td>
                 <strong>Bandage:</strong> Restores 3 health [1 use].
               </td>
               <td>
                 <strong>Fallen Weapon:</strong> Roll 1d6 on Table V (Weapons
                 1–6) to determine which weapon is recovered!
+              </td>
+            </tr>
+            <tr>
+              <td>9 – 11</td>
+              <td>
+                <strong>Bandage:</strong> Restores 3 health [1 use].
+              </td>
+              <td>
+                <strong>Pistol Ammo:</strong> Replenishes up to 10 rounds for Pistol (max 20) [1 use].
+              </td>
+            </tr>
+            <tr>
+              <td>12 – 14</td>
+              <td>
+                <strong>Bandage:</strong> Restores 3 health [1 use].
+              </td>
+              <td>
+                <strong>Shotgun Ammo:</strong> Replenishes up to 5 shells for Shotgun (max 11) [1 use].
               </td>
             </tr>
             <tr>
@@ -401,7 +426,7 @@ export const PrintVersion = ({ onBack }: { onBack: () => void }) => {
               </td>
             </tr>
             <tr>
-              <td>2 – 8</td>
+              <td>2 – 7</td>
               <td>
                 <strong>Bandage:</strong> Restores 3 health [1 use].
               </td>
@@ -410,12 +435,30 @@ export const PrintVersion = ({ onBack }: { onBack: () => void }) => {
               </td>
             </tr>
             <tr>
-              <td>9 – 12</td>
+              <td>8</td>
+              <td>
+                <strong>Bandage:</strong> Restores 3 health [1 use].
+              </td>
+              <td>
+                <strong>Pistol Ammo:</strong> Replenishes up to 10 rounds for Pistol (max 20) [1 use].
+              </td>
+            </tr>
+            <tr>
+              <td>9 – 10</td>
               <td>
                 <strong>Morphine:</strong> +2 Toughness; reduced on enemy hits [1 use].
               </td>
               <td>
-                <strong>Fallen Weapon:</strong> Roll 1d6 on Table V (Weapons 1–6).
+                <strong>Pistol Ammo:</strong> Replenishes up to 10 rounds for Pistol (max 20) [1 use].
+              </td>
+            </tr>
+            <tr>
+              <td>11 – 12</td>
+              <td>
+                <strong>Morphine:</strong> +2 Toughness; reduced on enemy hits [1 use].
+              </td>
+              <td>
+                <strong>Shotgun Ammo:</strong> Replenishes up to 5 shells for Shotgun (max 11) [1 use].
               </td>
             </tr>
             <tr>
@@ -428,7 +471,7 @@ export const PrintVersion = ({ onBack }: { onBack: () => void }) => {
               </td>
             </tr>
             <tr>
-              <td>14 – 15</td>
+              <td>14</td>
               <td>
                 <strong>First Aid Kit:</strong> Restores 6 health [1 use].
               </td>
@@ -437,7 +480,7 @@ export const PrintVersion = ({ onBack }: { onBack: () => void }) => {
               </td>
             </tr>
             <tr>
-              <td>16 – 17</td>
+              <td>15 – 17</td>
               <td>
                 <strong>First Aid Kit:</strong> Restores 6 health [1 use].
               </td>
@@ -446,16 +489,7 @@ export const PrintVersion = ({ onBack }: { onBack: () => void }) => {
               </td>
             </tr>
             <tr>
-              <td>18</td>
-              <td>
-                <strong>Adrenaline Shot:</strong> +2 to Hit &amp; +2 Damage [1 use].
-              </td>
-              <td>
-                <strong>Adrenaline Shot:</strong> +2 to Hit &amp; +2 Damage [1 use].
-              </td>
-            </tr>
-            <tr>
-              <td>19 – 20</td>
+              <td>18 – 20</td>
               <td>
                 <strong>Adrenaline Shot:</strong> +2 to Hit &amp; +2 Damage [1 use].
               </td>
@@ -699,6 +733,7 @@ export const PrintVersion = ({ onBack }: { onBack: () => void }) => {
         {/* Weapons Reference Table */}
         <h3 className="sub-title">Table V: Weapons Reference</h3>
         <p style={{ margin: "4px 0 10px 0", fontSize: "13px" }}>
+          Bloodied Fists is your innate base weapon (always equipped when out of ammo).
           Pistol is standard starting issue. Roll <strong>1d6</strong> on numbers 1–6
           for starting secondary weapon and corpse weapon loot.
         </p>
@@ -715,6 +750,15 @@ export const PrintVersion = ({ onBack }: { onBack: () => void }) => {
             </tr>
           </thead>
           <tbody>
+            <tr>
+              <td><em>Base</em></td>
+              <td><strong>{bloodiedFists.name}</strong></td>
+              <td>{bloodiedFists._type}</td>
+              <td>{bloodiedFists.strength}</td>
+              <td>1d{bloodiedFists.damage}</td>
+              <td>Infinite</td>
+              <td>{bloodiedFists.description}</td>
+            </tr>
             {weapons.map((w, idx) => (
               <tr key={w.name}>
                 <td>{idx === 0 ? <em>Start</em> : <strong>{idx}</strong>}</td>
@@ -884,10 +928,10 @@ export const PrintVersion = ({ onBack }: { onBack: () => void }) => {
           </div>
           <div className="ammo-row">
             <span className="ammo-name">
-              <strong>Pistol (15 Ammo):</strong>
+              <strong>Pistol (20 Ammo):</strong>
             </span>
             <div className="ammo-boxes">
-              {Array.from({ length: 15 }, (_, i) => (
+              {Array.from({ length: 20 }, (_, i) => (
                 <span key={i} className="box-square" title={`Round ${i + 1}`} />
               ))}
             </div>

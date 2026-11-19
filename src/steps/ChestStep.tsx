@@ -11,15 +11,31 @@ import { StepCounter } from "../components/StepCounter";
 import { AdvanceArrow } from "../components/AdvanceArrow";
 
 const ChestItem = ({ item }: { item: Equipment | Weapon }) => {
-  const { dispatch } = useGame();
+  const { state, dispatch } = useGame();
 
   const [taken, setTaken] = useState(false);
+
+  const isPistolAmmo = item.id === "pistol-ammo";
+  const isShotgunAmmo = item.id === "shotgun-ammo";
+  const hasPistol = state.player.weapons.some((w) => w.id === "pistol");
+  const hasShotgun = state.player.weapons.some((w) => w.id === "shotgun");
+  const requiresWeapon =
+    isPistolAmmo && !hasPistol
+      ? "Pistol"
+      : isShotgunAmmo && !hasShotgun
+        ? "Shotgun"
+        : null;
 
   return (
     <li className="chest-item">
       <div>
         <div className="inventory__cell-title">{item.name}</div>
         {item._type === "equipment" && <p>{item.description}</p>}
+        {requiresWeapon && (
+          <p className="inventory__cell-requires">
+            {`Requires: ${requiresWeapon}`}
+          </p>
+        )}
         {item._type !== "equipment" && (
           <div className="inventory__cell-grid">
             <div className="inventory__cell-grid-cell--1">

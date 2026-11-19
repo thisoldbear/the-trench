@@ -1,5 +1,5 @@
 import type { Equipment } from "./equipment";
-import { weapons, type Weapon } from "./weapons";
+import { weapons, bloodiedFists, type Weapon } from "./weapons";
 
 export type Player = {
   totalWounds: number;
@@ -17,7 +17,7 @@ export type Player = {
 export const player: Player = {
   totalWounds: 15,
   wounds: 15,
-  weapons: [weapons[0], weapons[1]],
+  weapons: [weapons[0], weapons[1], bloodiedFists],
   equippedWeapon: null,
   equipment: [],
   toughness: 3,

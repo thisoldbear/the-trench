@@ -12,11 +12,13 @@ export type DecisionResult = {
   step: Room | Enemy | Trap | Chest;
   rolls: number[];
   tables: string[];
+  rerolledRolls?: number[];
 };
 
 export type DecisionOptions = {
   rooms?: number;
   night?: number;
+  disallowDarkTrench?: boolean;
 };
 
 export function resolveDecisionTable(
@@ -27,7 +29,20 @@ export function resolveDecisionTable(
       ? (options >= 13 ? 2 : options)
       : (options?.night ?? ((options?.rooms ?? 0) >= 13 ? 2 : 1));
 
-  const firstDice = rollDice(20);
+  const disallowDarkTrench =
+    typeof options === "object" ? Boolean(options?.disallowDarkTrench) : false;
+
+  let firstDice = rollDice(20);
+  const rerolledRolls: number[] = [];
+
+  if (disallowDarkTrench) {
+    while ((firstDice >= 3 && firstDice <= 8) || firstDice === 20) {
+      rerolledRolls.push(firstDice);
+      firstDice = rollDice(20);
+    }
+  }
+
+  const rerollPayload = rerolledRolls.length > 0 ? { rerolledRolls } : {};
 
   // Chapel
   if (firstDice <= 2) {
@@ -35,6 +50,7 @@ export function resolveDecisionTable(
       step: rooms[1],
       rolls: [firstDice],
       tables: ["Table I (Exploration)"],
+      ...rerollPayload,
     };
   }
 
@@ -44,6 +60,7 @@ export function resolveDecisionTable(
       step: rooms[0],
       rolls: [firstDice],
       tables: ["Table I (Exploration)"],
+      ...rerollPayload,
     };
   }
 
@@ -57,6 +74,7 @@ export function resolveDecisionTable(
         step: chests[0],
         rolls: [firstDice, secondDice],
         tables: ["Table I (Exploration)", bootyTable],
+        ...rerollPayload,
       };
     }
 
@@ -64,6 +82,7 @@ export function resolveDecisionTable(
       step: chests[1],
       rolls: [firstDice, secondDice],
       tables: ["Table I (Exploration)", bootyTable],
+      ...rerollPayload,
     };
   }
 
@@ -93,6 +112,7 @@ export function resolveDecisionTable(
       step: enemy,
       rolls: [firstDice, secondDice],
       tables: ["Table I (Exploration)", monsterTable],
+      ...rerollPayload,
     };
   }
 
@@ -112,6 +132,7 @@ export function resolveDecisionTable(
       step: trap,
       rolls: [firstDice, secondDice],
       tables: ["Table I (Exploration)", "Table IV (Traps)"],
+      ...rerollPayload,
     };
   }
 
@@ -120,6 +141,7 @@ export function resolveDecisionTable(
     step: rooms[0],
     rolls: [firstDice],
     tables: ["Table I (Exploration)"],
+    ...rerollPayload,
   };
 }
 

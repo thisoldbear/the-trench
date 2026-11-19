@@ -1,4 +1,4 @@
-import { weapons, type Weapon } from "@/datasheets/weapons";
+import { weapons, bloodiedFists, type Weapon } from "@/datasheets/weapons";
 import { rollDice } from "./rollDice";
 import { equipment, type Equipment } from "@/datasheets/equipment";
 
@@ -21,6 +21,10 @@ export function weaponsLoadout(): Weapon[] {
           },
         ]
       : []),
+    {
+      ...bloodiedFists,
+      uuid: crypto.randomUUID(),
+    },
   ];
 }
 

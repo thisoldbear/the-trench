@@ -53,47 +53,77 @@ export const Inventory = memo(() => {
           </div>
         ))}
 
-        {state.player.equipment.map((equipment, index) => (
-          <div className="inventory__cell" key={equipment.uuid}>
-            <button
-              className="special-elite-regular"
-              disabled={!state.activeStep}
-              onClick={() => {
-                applyEquipmentEffect(
-                  equipment,
-                  {
-                    wounds: state.player.wounds,
-                    totalWounds: state.player.totalWounds,
-                    toughness: state.player.toughness,
-                    totalToughness: state.player.totalToughness,
-                    damageModifier: state.player.damageModifier,
-                    hitModifier: state.player.hitModifier,
-                    healBonus: state.perks?.includes("combat-medic") ? 3 : 0,
-                  },
-                  dispatch,
-                );
+        {state.player.equipment.map((equipment) => {
+          const isPistolAmmo = equipment.id === "pistol-ammo";
+          const isShotgunAmmo = equipment.id === "shotgun-ammo";
+          const pistol = state.player.weapons.find((w) => w.id === "pistol");
+          const shotgun = state.player.weapons.find((w) => w.id === "shotgun");
+          const requiresWeapon =
+            isPistolAmmo && !pistol
+              ? "Pistol"
+              : isShotgunAmmo && !shotgun
+                ? "Shotgun"
+                : null;
+          const isAmmoFull =
+            (isPistolAmmo && pistol && pistol.ammo >= 20) ||
+            (isShotgunAmmo && shotgun && shotgun.ammo >= 11);
 
-                dispatch({
-                  type: "equipment_remove",
-                  payload: {
-                    equipment: state.player.equipment.filter(
-                      (item) => item.uuid !== equipment.uuid,
-                    ),
-                    messages: [
-                      {
-                        id: crypto.randomUUID(),
-                        text: `${equipment.name} was used`,
-                      },
-                    ],
-                  },
-                });
-              }}
-            >
-              <div className="inventory__cell-title">{equipment.name}</div>
-              {equipment.description}
-            </button>
-          </div>
-        ))}
+          const isDisabled =
+            !state.activeStep || Boolean(requiresWeapon) || Boolean(isAmmoFull);
+
+          return (
+            <div className="inventory__cell" key={equipment.uuid}>
+              <button
+                className="special-elite-regular"
+                disabled={isDisabled}
+                onClick={() => {
+                  applyEquipmentEffect(
+                    equipment,
+                    {
+                      wounds: state.player.wounds,
+                      totalWounds: state.player.totalWounds,
+                      toughness: state.player.toughness,
+                      totalToughness: state.player.totalToughness,
+                      damageModifier: state.player.damageModifier,
+                      hitModifier: state.player.hitModifier,
+                      healBonus: state.perks?.includes("combat-medic") ? 3 : 0,
+                      weapons: state.player.weapons,
+                    },
+                    dispatch,
+                  );
+
+                  dispatch({
+                    type: "equipment_remove",
+                    payload: {
+                      equipment: state.player.equipment.filter(
+                        (item) => item.uuid !== equipment.uuid,
+                      ),
+                      messages: [
+                        {
+                          id: crypto.randomUUID(),
+                          text: `${equipment.name} was used`,
+                        },
+                      ],
+                    },
+                  });
+                }}
+              >
+                <div className="inventory__cell-title">{equipment.name}</div>
+                {equipment.description}
+                {requiresWeapon && (
+                  <div className="inventory__cell-requires">
+                    {`Requires: ${requiresWeapon}`}
+                  </div>
+                )}
+                {isAmmoFull && (
+                  <div className="inventory__cell-status">
+                    Ammo Full ({isPistolAmmo ? `${pistol?.ammo}/20` : `${shotgun?.ammo}/11`})
+                  </div>
+                )}
+              </button>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

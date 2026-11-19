@@ -38,6 +38,7 @@ export type GameState = {
   night: number;
   perks: string[];
   lastStandUsedThisNight: boolean;
+  lastExplorationWasLamp: boolean;
 };
 
 export type GameAction =
@@ -47,6 +48,7 @@ export type GameAction =
         activeStep: GameState["activeStep"];
         messages?: GameState["messages"];
         rooms?: number;
+        lastExplorationWasLamp?: boolean;
       };
     }
   | {
@@ -153,6 +155,14 @@ export type GameAction =
       };
     }
   | {
+      type: "weapon_ammo_add";
+      payload: {
+        weaponId: string;
+        amount: number;
+        messages?: GameState["messages"];
+      };
+    }
+  | {
       type: "restart";
       payload?: {
         seed?: number | string;
@@ -226,6 +236,7 @@ export const generateInitialState = (seed?: number | string) => {
     night: 1,
     perks: [],
     lastStandUsedThisNight: false,
+    lastExplorationWasLamp: false,
   };
 
   return initialState;
@@ -247,6 +258,10 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         steps: state.steps + 1,
         hasPaused: isPause ? true : resetEnemyCount ? false : state.hasPaused,
         enemiesDefeatedCount: resetEnemyCount ? 0 : state.enemiesDefeatedCount,
+        lastExplorationWasLamp:
+          action.payload.lastExplorationWasLamp !== undefined
+            ? action.payload.lastExplorationWasLamp
+            : state.lastExplorationWasLamp,
       };
     }
 
@@ -448,6 +463,49 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       };
     }
 
+    case "weapon_ammo_add": {
+      const { weaponId, amount } = action.payload;
+      const targetWeapon = state.player.weapons.find((w) => w.id === weaponId);
+      if (!targetWeapon) {
+        return {
+          ...state,
+          messages: appendMessages(state.messages, action.payload.messages),
+        };
+      }
+      const maxCap =
+        weaponId === "pistol"
+          ? 20
+          : weaponId === "shotgun"
+            ? 11
+            : (targetWeapon.maxAmmo ?? targetWeapon.ammo);
+      const updatedWeapons = state.player.weapons.map((w) => {
+        if (w.id === weaponId) {
+          return {
+            ...w,
+            ammo: Math.min(w.ammo + amount, maxCap),
+          };
+        }
+        return w;
+      });
+
+      // If player had no equipped weapon or equipped weapon had 0 ammo, equip the replenished weapon
+      const currentEquipped = updatedWeapons.find((w) => w.uuid === state.player.equippedWeapon);
+      const equippedNeedsChange = !currentEquipped || (currentEquipped.limited && currentEquipped.ammo <= 0);
+      const newEquipped = equippedNeedsChange
+        ? updatedWeapons.find((w) => w.id === weaponId)?.uuid ?? state.player.equippedWeapon
+        : state.player.equippedWeapon;
+
+      return {
+        ...state,
+        player: {
+          ...state.player,
+          weapons: updatedWeapons,
+          equippedWeapon: newEquipped,
+        },
+        messages: appendMessages(state.messages, action.payload.messages),
+      };
+    }
+
     case "game_over":
       return {
         ...state,
@@ -495,6 +553,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         night: nextNight,
         rooms: 0,
         lastStandUsedThisNight: false,
+        lastExplorationWasLamp: false,
         player: {
           ...state.player,
           weapons: updatedWeapons,

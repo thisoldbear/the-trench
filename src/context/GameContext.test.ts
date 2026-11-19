@@ -261,6 +261,7 @@ describe("GameContext reducer - lamp and fleeing mechanics", () => {
 
     test("perk_select with munitions-crate grants +15 pistol ammo immediately", () => {
       const state = generateInitialState();
+      const initialPistolAmmo = state.player.weapons.find((w) => w.id === "pistol")?.ammo ?? 20;
       const nextState = gameReducer(state, {
         type: "perk_select",
         payload: { perkId: "munitions-crate" },
@@ -268,7 +269,37 @@ describe("GameContext reducer - lamp and fleeing mechanics", () => {
 
       expect(nextState.perks).toContain("munitions-crate");
       const pistol = nextState.player.weapons.find((w) => w.id === "pistol");
-      expect(pistol?.ammo).toBe(30);
+      expect(pistol?.ammo).toBe(initialPistolAmmo + 15);
+    });
+
+    test("weapon_ammo_add replenishes ammo up to weapon capacity", () => {
+      const state = generateInitialState();
+      // Deplete pistol ammo to 5
+      const stateWithLowAmmo = {
+        ...state,
+        player: {
+          ...state.player,
+          weapons: state.player.weapons.map((w) =>
+            w.id === "pistol" ? { ...w, ammo: 5 } : w,
+          ),
+        },
+      };
+
+      const replenishedState = gameReducer(stateWithLowAmmo, {
+        type: "weapon_ammo_add",
+        payload: { weaponId: "pistol", amount: 10 },
+      });
+
+      const pistol = replenishedState.player.weapons.find((w) => w.id === "pistol");
+      expect(pistol?.ammo).toBe(15);
+
+      // Capped at 20 max capacity
+      const cappedState = gameReducer(replenishedState, {
+        type: "weapon_ammo_add",
+        payload: { weaponId: "pistol", amount: 10 },
+      });
+      const cappedPistol = cappedState.player.weapons.find((w) => w.id === "pistol");
+      expect(cappedPistol?.ammo).toBe(20);
     });
 
     test("last_stand_used sets lastStandUsedThisNight and leaves player at 1 HP", () => {

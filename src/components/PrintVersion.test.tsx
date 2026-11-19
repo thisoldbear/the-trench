@@ -92,6 +92,7 @@ describe("PrintVersion component", () => {
     const renderedText = JSON.stringify(result);
 
     // Weapons
+    expect(renderedText).toContain("Bloodied Fists");
     expect(renderedText).toContain("Pistol");
     expect(renderedText).toContain("Knife");
     expect(renderedText).toContain("Sword");
@@ -107,6 +108,8 @@ describe("PrintVersion component", () => {
     expect(renderedText).toContain("Hip Flask");
     expect(renderedText).toContain("First Aid Kit");
     expect(renderedText).toContain("Adrenaline Shot");
+    expect(renderedText).toContain("Pistol Ammo");
+    expect(renderedText).toContain("Shotgun Ammo");
 
     // Perks
     expect(renderedText).toContain("Ironclad");
@@ -128,5 +131,8 @@ describe("PrintVersion component", () => {
     expect(renderedText).toContain("Night 5 (THE END)");
     expect(renderedText).toContain("Lamp ");
     expect(renderedText).toContain("lamps per night");
+
+    // Tabletop rules
+    expect(renderedText).toContain("The Trench Twists Onward");
   });
 });

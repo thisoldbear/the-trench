@@ -331,6 +331,19 @@ h1 {
   margin-bottom: 12px;
 }
 
+.inventory__cell-requires {
+  color: #b9818e;
+  font-weight: bold;
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.inventory__cell-status {
+  color: #888;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
 .campaign-summary {
   margin: 20px 0;
   text-align: left;

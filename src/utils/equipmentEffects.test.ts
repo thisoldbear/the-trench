@@ -266,4 +266,78 @@ describe("applyEquipmentEffect", () => {
       expect(dispatch.mock.calls[1]![0]!.payload.damageModifier).toBe(3);
     });
   });
+
+  describe("pistol-ammo", () => {
+    test("replenishes pistol ammo by up to 10 rounds", () => {
+      const playerState = {
+        wounds: 10,
+        toughness: 3,
+        damageModifier: 0,
+        hitModifier: 0,
+        weapons: [
+          {
+            _type: "gun" as const,
+            damage: 6 as const,
+            damageModifier: 0,
+            name: "Pistol",
+            description: "Standard issue.",
+            id: "pistol" as const,
+            notes: "",
+            strength: 3,
+            limited: true,
+            ammo: 5,
+            maxAmmo: 20,
+            uuid: "test-pistol",
+          },
+        ],
+      };
+
+      applyEquipmentEffect(equipment[6]!, playerState, dispatch);
+
+      expect(dispatch).toHaveBeenCalledTimes(1);
+      expect(dispatch.mock.calls[0]![0]!.type).toBe("weapon_ammo_add");
+      expect(dispatch.mock.calls[0]![0]!.payload.weaponId).toBe("pistol");
+      expect(dispatch.mock.calls[0]![0]!.payload.amount).toBe(10);
+      expect(dispatch.mock.calls[0]![0]!.payload.messages[0]!.text).toContain(
+        "Pistol ammo replenished (+10 rounds, now 15/20)",
+      );
+    });
+  });
+
+  describe("shotgun-ammo", () => {
+    test("replenishes shotgun ammo by up to 5 shells", () => {
+      const playerState = {
+        wounds: 10,
+        toughness: 3,
+        damageModifier: 0,
+        hitModifier: 0,
+        weapons: [
+          {
+            _type: "gun" as const,
+            damage: 6 as const,
+            damageModifier: 3,
+            name: "Shotgun",
+            description: "PULL!",
+            id: "shotgun" as const,
+            notes: "",
+            strength: 4,
+            limited: true,
+            ammo: 2,
+            maxAmmo: 11,
+            uuid: "test-shotgun",
+          },
+        ],
+      };
+
+      applyEquipmentEffect(equipment[7]!, playerState, dispatch);
+
+      expect(dispatch).toHaveBeenCalledTimes(1);
+      expect(dispatch.mock.calls[0]![0]!.type).toBe("weapon_ammo_add");
+      expect(dispatch.mock.calls[0]![0]!.payload.weaponId).toBe("shotgun");
+      expect(dispatch.mock.calls[0]![0]!.payload.amount).toBe(5);
+      expect(dispatch.mock.calls[0]![0]!.payload.messages[0]!.text).toContain(
+        "Shotgun ammo replenished (+5 shells, now 7/11)",
+      );
+    });
+  });
 });

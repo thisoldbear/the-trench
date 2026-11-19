@@ -1,3 +1,18 @@
+export const bloodiedFists = {
+  _type: "melee",
+  damage: 3,
+  damageModifier: 0,
+  name: "Bloodied Fists",
+  description: "When all else fails. Raw, desperate violence.",
+  id: "bloodied-fists",
+  notes: "",
+  strength: 2,
+  limited: false,
+  ammo: 99,
+  maxAmmo: 99,
+  uuid: "",
+} as const;
+
 export const weapons = [
   {
     _type: "gun",
@@ -9,7 +24,8 @@ export const weapons = [
     notes: "",
     strength: 3,
     limited: true,
-    ammo: 15,
+    ammo: 20,
+    maxAmmo: 20,
     uuid: "",
   },
   {
@@ -23,6 +39,7 @@ export const weapons = [
     strength: 3,
     limited: false,
     ammo: 99,
+    maxAmmo: 99,
     uuid: "",
   },
   {
@@ -36,6 +53,7 @@ export const weapons = [
     strength: 3,
     limited: false,
     ammo: 99,
+    maxAmmo: 99,
     uuid: "",
   },
   {
@@ -49,6 +67,7 @@ export const weapons = [
     strength: 4,
     limited: true,
     ammo: 15,
+    maxAmmo: 15,
     uuid: "",
   },
   {
@@ -61,7 +80,8 @@ export const weapons = [
     notes: "",
     strength: 4,
     limited: true,
-    ammo: 6,
+    ammo: 11,
+    maxAmmo: 11,
     uuid: "",
   },
   {
@@ -75,6 +95,7 @@ export const weapons = [
     strength: 5,
     limited: true,
     ammo: 1,
+    maxAmmo: 1,
     uuid: "",
   },
   {
@@ -88,11 +109,13 @@ export const weapons = [
     strength: 4,
     limited: true,
     ammo: 6,
+    maxAmmo: 6,
     uuid: "",
   },
 ] as const;
 
-export type Weapon = Omit<(typeof weapons)[number], "ammo" | "uuid"> & {
+export type Weapon = Omit<(typeof weapons)[number] | typeof bloodiedFists, "ammo" | "uuid"> & {
   ammo: number;
   uuid: string;
+  maxAmmo?: number;
 };

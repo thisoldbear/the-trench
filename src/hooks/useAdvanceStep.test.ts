@@ -167,6 +167,7 @@ describe("useAdvanceStep", () => {
             name: "A moment of respite",
           }),
           rooms: 1,
+          lastExplorationWasLamp: true,
           messages: [
             expect.objectContaining({ text: "Lit the lamp" }),
           ],
@@ -174,6 +175,38 @@ describe("useAdvanceStep", () => {
       });
       // Should not have rolled on decision table
       expect(rollDice).not.toHaveBeenCalled();
+    });
+
+    test("rerolls Table I when rolling Dark Trench immediately after lighting a lamp (Trench Twists rule)", () => {
+      vi.mocked(useGame).mockReturnValue({
+        state: {
+          ...generateInitialState(),
+          rooms: 1,
+          lastExplorationWasLamp: true,
+        },
+        dispatch,
+      });
+
+      // Roll 4 (Dark Trench -> rerolled), then 1 (Chapel -> accepted)
+      rollQueue = [4, 1];
+      const advanceStep = useAdvanceStep();
+      advanceStep();
+
+      expect(dispatch).toHaveBeenCalledWith({
+        type: "active_step",
+        payload: expect.objectContaining({
+          activeStep: rooms[1],
+          lastExplorationWasLamp: false,
+          messages: [
+            expect.objectContaining({
+              text: "Rolled 4 on Table I (Exploration) (Dark Trench). The trench twists onward (no consecutive lamps): rerolled Table I.",
+            }),
+            expect.objectContaining({
+              text: "You rolled 1 on Table I (Exploration). Entered: Chapel",
+            }),
+          ],
+        }),
+      });
     });
 
     test("triggers a pause step after 3 enemies have been defeated", () => {

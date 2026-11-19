@@ -25,37 +25,41 @@ describe("weaponsLoadout", () => {
     expect(result[0]!.uuid).not.toBe("");
   });
 
-  test("includes second weapon based on dice roll", () => {
-    rollQueue = [1]; // (1-1) % 7 = 0 → weapons[1] (Knife)
+  test("includes second weapon based on dice roll and always includes Bloodied Fists", () => {
+    rollQueue = [1]; // (1-1) % 6 = 0 → weapons[1] (Knife)
     const result = weaponsLoadout();
 
-    expect(result).toHaveLength(2);
+    expect(result).toHaveLength(3);
     expect(result[0]!.id).toBe("pistol");
     expect(result[1]!.id).toBe("knife");
+    expect(result[2]!.id).toBe("bloodied-fists");
   });
 
   test("selects Sword when dice roll is 2", () => {
-    rollQueue = [2]; // (2-1) % 7 = 1 → weapons[2] (Sword)
+    rollQueue = [2]; // (2-1) % 6 = 1 → weapons[2] (Sword)
     const result = weaponsLoadout();
 
-    expect(result).toHaveLength(2);
+    expect(result).toHaveLength(3);
     expect(result[1]!.id).toBe("sword");
+    expect(result[2]!.id).toBe("bloodied-fists");
   });
 
   test("selects Rifle when dice roll is 3", () => {
-    rollQueue = [3]; // (3-1) % 7 = 2 → weapons[3] (Rifle)
+    rollQueue = [3]; // (3-1) % 6 = 2 → weapons[3] (Rifle)
     const result = weaponsLoadout();
 
-    expect(result).toHaveLength(2);
+    expect(result).toHaveLength(3);
     expect(result[1]!.id).toBe("rifle");
+    expect(result[2]!.id).toBe("bloodied-fists");
   });
 
   test("wraps around with modulo when dice roll is 6", () => {
     rollQueue = [6]; // (6-1) % 6 = 5 → weapons[6] (Barbed Wire Bat)
     const result = weaponsLoadout();
 
-    expect(result).toHaveLength(2);
+    expect(result).toHaveLength(3);
     expect(result[1]!.id).toBe("barbed-wire-bat");
+    expect(result[2]!.id).toBe("bloodied-fists");
   });
 
   test("each weapon has a unique UUID", () => {

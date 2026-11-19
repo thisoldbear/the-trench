@@ -100,12 +100,28 @@ describe("rollOnChestTable", () => {
       expect(dispatch).not.toHaveBeenCalled();
     });
 
-    test("returns random weapon when roll is 14", () => {
-      rollQueue = [14];
+    test("returns random weapon when roll is 8", () => {
+      rollQueue = [8];
       const result = rollOnChestTable({ ...chests[1] }, dispatch);
 
       expect(result).toHaveLength(1);
       expect(weapons as readonly unknown[]).toContainEqual(result[0]);
+      expect(dispatch).not.toHaveBeenCalled();
+    });
+
+    test("returns Pistol Ammo when roll is 9-11", () => {
+      rollQueue = [10];
+      const result = rollOnChestTable({ ...chests[1] }, dispatch);
+
+      expect(result).toEqual([equipment[6]]);
+      expect(dispatch).not.toHaveBeenCalled();
+    });
+
+    test("returns Shotgun Ammo when roll is 12-14", () => {
+      rollQueue = [14];
+      const result = rollOnChestTable({ ...chests[1] }, dispatch);
+
+      expect(result).toEqual([equipment[7]]);
       expect(dispatch).not.toHaveBeenCalled();
     });
 
